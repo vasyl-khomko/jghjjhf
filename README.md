@@ -1,250 +1,372 @@
-# ![Markdown Here logo](https://raw.github.com/adam-p/markdown-here/master/src/common/images/icon48.png) Markdown Here
+# Artisan Console
 
-[**Visit the website.**](http://markdown-here.com)  
-[**Get it for Chrome.**](https://chrome.google.com/webstore/detail/elifhakcjgalahccnjkneoccemfahfoa)  
-[**Get it for Firefox.**](https://addons.mozilla.org/en-US/firefox/addon/markdown-here/)  
-[**Get it for Safari.**](https://s3.amazonaws.com/markdown-here/markdown-here.safariextz)  
-[**Get it for Thunderbird and Postbox.**](https://addons.mozilla.org/en-US/thunderbird/addon/markdown-here/)  
-[**Get it for Opera.**](https://addons.opera.com/en/extensions/details/markdown-here/)  
-[**Discuss it and ask questions in the Google Group.**](https://groups.google.com/forum/?fromgroups#!forum/markdown-here/)
+- [Introduction](#introduction)
+- [Writing Commands](#writing-commands)
+	- [Command Structure](#command-structure)
+- [Command I/O](#command-io)
+	- [Defining Input Expectations](#defining-input-expectations)
+	- [Retrieving Input](#retrieving-input)
+	- [Prompting For Input](#prompting-for-input)
+		- [Writing Output](#writing-output)
+- [Registering Commands](#registering-commands)
+- [Calling Commands Via Code](#calling-commands-via-code)
+
+# Artisan Console 4
+
+- [Introduction](#introduction)
+- [Writing Commands](#writing-commands)
+  - [Command Structure](#command-structure)
+- [Command I/O](#command-io)
+  - [Defining Input Expectations](#defining-input-expectations)
+  - [Retrieving Input](#retrieving-input)
+     - [Prompting For Input](#prompting-for-input)
+    - [Writing Output](#writing-output)
+- [Registering Commands](#registering-commands)
+- [Calling Commands Via Code](#calling-commands-via-code)
 
-*Markdown Here* is a Google Chrome, Firefox, Safari, Opera, and Thunderbird extension that lets you write email<sup>&dagger;</sup> in Markdown<sup>&Dagger;</sup> and render them before sending. It also supports syntax highlighting (just specify the language in a fenced code block).
+<a name="introduction"></a>
+## Introduction
 
-Writing email with code in it is pretty tedious. Writing Markdown with code in it is easy. I found myself writing email in Markdown in the Github in-browser editor, then copying the preview into email. This is a pretty absurd workflow, so I decided create a tool to write and render Markdown right in the email.
+Artisan is the name of the command-line interface included with Laravel. It provides a number of helpful commands for your use while developing your application. It is driven by the powerful Symfony Console component. To view a list of all available Artisan commands, you may use the `list` command:
+
+    php artisan list
 
-To discover what can be done with Markdown in *Markdown Here*, check out the [Markdown Here Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet) and the other [wiki pages](https://github.com/adam-p/markdown-here/wiki).
+Every command also includes a "help" screen which displays and describes the command's available arguments and options. To view a help screen, simply precede the name of the command with `help`:
 
-<sup>&dagger;: And Google Groups posts, and Blogger posts, and Evernote notes, and Wordpress posts! <a href="#compatibility">See more</a>.</sup>  
-<sup>&Dagger;: And TeX mathematical formulae!</sup>
+    php artisan help migrate
 
-![screenshot of conversion](https://raw.github.com/adam-p/markdown-here/master/store-assets/markdown-here-image1.gimp.png)
+<a name="writing-commands"></a>
+## Writing Commands
 
-### Table of Contents
+In addition to the commands provided with Artisan, you may also build your own custom commands for working with your application. You may store your custom commands in the `app/Console/Commands` directory; however, you are free to choose your own storage location as long as your commands can be autoloaded based on your `composer.json` settings.
 
-**[Installation Instructions](#installation-instructions)**  
-**[Usage Instructions](#usage-instructions)**  
-**[Troubleshooting](#troubleshooting)**  
-**[Compatibility](#compatibility)**  
-**[Notes and Miscellaneous](#notes-and-miscellaneous)**  
-**[Building the Extension Bundles](#building-the-extension-bundles)**  
-**[Next Steps, Credits, Feedback, License](#next-steps)**
+To create a new command, you may use the `make:console` Artisan command, which will generate a command stub to help you get started:
 
-## Installation Instructions
+    php artisan make:console SendEmails
 
-### Chrome
+The command above would generate a class at `app/Console/Commands/SendEmails.php`. When creating the command, the `--command` option may be used to assign the terminal command name:
 
-#### Chrome Web Store
+    php artisan make:console SendEmails --command=emails:send
 
-Go to the [Chrome Web Store page for *Markdown Here*](https://chrome.google.com/webstore/detail/elifhakcjgalahccnjkneoccemfahfoa) and install normally.
+<a name="command-structure"></a>
+### Command Structure
 
-After installing, make sure to reload your webmail or restart Chrome!
+Once your command is generated, you should fill out the `signature` and `description` properties of the class, which will be used when displaying your command on the `list` screen.
 
-#### Manual/Development
+The `handle` method will be called when your command is executed. You may place any command logic in this method. Let's take a look at an example command.
 
-  1. Clone this repo.
-  2. In Chrome, open the Extensions settings. (Wrench button, Tools, Extensions.)
-  3. On the Extensions settings page, click the "Developer Mode" checkbox.
-  4. Click the now-visible "Load unpacked extension…" button. Navigate to the directory where you cloned the repo, then the `src` directory under that.
-  5. The *Markdown Here* extension should now be visible in your extensions list.
-  6. Reload your webmail page (and maybe application) before trying to convert an email.
+Note that we are able to inject any dependencies we need into the command's constructor. The Laravel [service container](/docs/{{version}}/container) will automatically inject all dependencies type-hinted in the constructor. For greater code reusability, it is good practice to keep your console commands light and let them defer to application services to accomplish their tasks.
 
-### Firefox and Thunderbird
+    <?php
 
-#### Mozilla Add-ons site
+    namespace App\Console\Commands;
 
-Go to the [Firefox Add-ons page for *Markdown Here*](https://addons.mozilla.org/en-US/firefox/addon/markdown-here/) and install normally.
+    use App\User;
+    use App\DripEmailer;
+    use Illuminate\Console\Command;
 
-Or go to the "Tools > Add-ons" menu and then search for "Markdown Here".
+    class SendEmails extends Command
+    {
+        /**
+         * The name and signature of the console command.
+         *
+         * @var string
+         */
+        protected $signature = 'email:send {user}';
 
-After installing, make sure to restart Firefox/Thunderbird!
+        /**
+         * The console command description.
+         *
+         * @var string
+         */
+        protected $description = 'Send drip e-mails to a user';
 
-**Note:** It takes up to a month for Mozilla to approve changes to the Firefox/Thunderbird extension, so updates (features, fixes) will lag behind what is shown here. You can manually choose to install the newest version before it's reviewed from the list of versions: <https://addons.mozilla.org/en-US/firefox/addon/markdown-here/versions/>
+        /**
+         * The drip e-mail service.
+         *
+         * @var DripEmailer
+         */
+        protected $drip;
 
-#### Manual/Development
+        /**
+         * Create a new command instance.
+         *
+         * @param  DripEmailer  $drip
+         * @return void
+         */
+        public function __construct(DripEmailer $drip)
+        {
+            parent::__construct();
 
-  1. Clone this repo.
-  2. Follow the instructions in the MDN ["Setting up an extension development environment"](https://developer.mozilla.org/en/Setting_up_extension_development_environment) article.
+            $this->drip = $drip;
+        }
 
-### Safari
+        /**
+         * Execute the console command.
+         *
+         * @return mixed
+         */
+        public function handle()
+        {
+            $this->drip->send(User::find($this->argument('user')));
+        }
+    }
 
-[Download the extension directly.](https://s3.amazonaws.com/markdown-here/markdown-here.safariextz) When it has finished downloading, double click it to install.
+<a name="command-io"></a>
+## Command I/O
 
-#### Preferences
+<a name="defining-input-expectations"></a>
+### Defining Input Expectations
 
-To get to the Markdown Here preferences, open the Safari preferences and then go to the "Extensions" tab. Then click the "Click me to show Markdown Here options" box.
+When writing console commands, it is common to gather input from the user through arguments or options. Laravel makes it very convenient to define the input you expect from the user using the `signature` property on your commands. The `signature` property allows you to define the name, arguments, and options for the command in a single, expressive, route-like syntax.
 
-### Opera
+All user supplied arguments and options are wrapped in curly braces. In the following example, the command defines one **required** argument: `user`:
 
-Note that *Markdown Here* only works with Opera versions 16 and higher (i.e., the ones that are based on Chromium).
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'email:send {user}';
 
-Go to the [Opera Add-ons store page for *Markdown Here*](https://addons.opera.com/en/extensions/details/markdown-here/) and install normally.
+You may also make arguments optional and define default values for optional arguments:
 
-After installing, make sure to reload your webmail or restart Chrome!
+    // Optional argument...
+    email:send {user?}
 
-## Usage Instructions
+    // Optional argument with default value...
+    email:send {user=foo}
 
-Install it, and then…
+Options, like arguments, are also a form of user input. However, they are prefixed by two hyphens (`--`) when they are specified on the command line. We can define options in the signature like so:
 
-  1. In Chrome/Safari/Opera, *make sure* you reload your web mail page before trying to use Markdown Here.
-  2. In Chrome/Firefox/Safari/Opera, log into your Gmail, Hotmail, or Yahoo account and start a new email. In Thunderbird, start a new message.
-  3. Make sure you're using the rich editor. 
-  * In Gmail, click the "Rich formatting" link, if it's visible.
-  * In Thunderbird, make sure "Compose messages in HTML format" is enabled in your "Account Settings", "Composition & Addressing" pane.
-  4. Compose an email in Markdown. For example:
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'email:send {user} {--queue}';
 
-<pre>**Hello** `world`.
+In this example, the `--queue` switch may be specified when calling the Artisan command. If the `--queue` switch is passed, the value of the option will be `true`. Otherwise, the value will be `false`:
 
-   ```javascript
-   alert('Hello syntax highlighting.');
-   ```
-   </pre>
+    php artisan email:send 1 --queue
 
-  1. Right-click in the compose box and choose the "Markdown Toggle" item from the context menu. Or click the button that appears in your address bar. Or use the hotkey (<kbd>CTRL</kbd>+<kbd>ALT</kbd>+<kbd>M</kbd> by default).
-  2. You should see your email rendered correctly from Markdown into rich HTML.
-  3. Send your awesome email to everyone you know. It will appear to them the same way it looks to you.
+You may also specify that the option should be assigned a value by the user by suffixing the option name with a `=` sign, indicating that a value should be provided:
 
-### Revert to Markdown
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'email:send {user} {--queue=}';
 
-After rendering your Markdown to pretty HTML, you can still get back to your original Markdown. Just right-click anywhere in the newly rendered Markdown and click "Markdown Toggle" -- your email compose body will change back to the Markdown you had written.
+In this example, the user may pass a value for the option like so:
 
-Note that any changes you make to the pretty HTML will be lost when you revert to Markdown.
+    php artisan email:send 1 --queue=default
 
-In Gmail, you can also use the browser's Undo command (<kbd>CTRL</kbd>+<kbd>Z</kbd> / <kbd>CMD</kbd>+<kbd>Z</kbd>, or from the Edit menu). Be warned that you might also lose the last few characters you entered.
+You may also assign default values to options:
 
-### Replies
+    email:send {user} {--queue=default}
 
-In Gmail, Thunderbird, and Google Groups, you can use "Markdown Toggle" normally: just write your reply (top, bottom, inline, wherever) and then convert. The original email that you're replying to will be left alone. (Technically: Existing `blockquote` blocks will be left intact.)
+To assign a shortcut when defining an option, you may specify it before the option name and use a | delimiter to separate the shortcut from the full option name:
 
-In Hotmail and Yahoo (which don't put the original in a `blockquote`), and optionally in Gmail, Thunderbird, and Google Groups, you can ensure that only the part of the reply that you wrote gets converted by selecting what you want to convert and then clicking "Markdown Toggle" -- see the next section.
+    email:send {user} {--Q|queue}
 
-### Selection/Piecemeal Conversion
+#### Input Descriptions
 
-Sometimes you don't want to convert the entire email; sometimes your email isn't entirely Markdown. To convert only part of the email, select the text (with your mouse or keyboard), right-click on it, and click the "Markdown Toggle" menu item. Your selection is magically rendered into pretty HTML.
+You may assign descriptions to input arguments and options by separating the parameter from the description using a colon:
 
-To revert back to Markdown, just put your cursor anywhere in the block of converted text, right click, and click the "Markdown Toggle" menu item again. Now it's magically back to the original Markdown.
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'email:send
+                            {user : The ID of the user}
+                            {--queue= : Whether the job should be queued}';
 
-![screenshot of selection conversion](https://raw.github.com/adam-p/markdown-here/master/store-assets/markdown-here-image2.gimp.png)
+<a name="retrieving-input"></a>
+### Retrieving Input
 
-#### Things to know about converting/reverting a selection
+While your command is executing, you will obviously need to access the values for the arguments and options accepted by your command. To do so, you may use the `argument` and `option` methods:
 
-* If you select only part of a block of text, only that text will be converted. The converted block will be wrapped in a paragraph element, so the original line will be broken up. You probably don't want to ever do this.
+To retrieve the value of an argument, use the `argument` method:
 
-* You can select and revert multiple converted blocks at the same time. One upshot of this is that you can select your entire email, click "Markdown Toggle", and all portions of it that you had converted will be reverted.
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
+        $userId = $this->argument('user');
 
-* If you don't have anything selected when you click "Markdown Toggle", *Markdown Here* will check if there are converted blocks anywhere in the message and revert them. If there no converted blocks are found, it will convert the entire email.
+        //
+    }
 
-### Options
+If you need to retrieve all of the arguments as an `array`, call `argument` with no parameters:
 
-The *Markdown Here* Options page can be accessed via the Chrome, Firefox, Safari, or Thunderbird extensions list. The available options include:
+    $arguments = $this->argument();
 
-* Styling modifications for the rendered Markdown.
-* Syntax highlighting theme selection and modification.
-* TeX math formulae processing enabling and customization.
-* What the hotkey should be.
+Options may be retrieved just as easily as arguments using the `option` method. Like the `argument` method, you may call `option` without any parameters in order to retrieve all of the options as an `array`:
 
-For Chrome and Firefox, any changes made in the *Markdown Here* Options are automatically synchronized between your other installations of that browser (if you have the sync feature enabled in the browser).
+    // Retrieve a specific option...
+    $queueName = $this->option('queue');
 
-![screenshot of options](https://raw.githubusercontent.com/adam-p/markdown-here/master/store-assets/markdown-here-chrome-options-1.gimp.png)
+    // Retrieve all options...
+    $options = $this->option();
 
-## Troubleshooting
+If the argument or option does not exist, `null` will be returned.
 
-See the [Troubleshooting wiki page](https://github.com/adam-p/markdown-here/wiki/Troubleshooting).
+<a name="prompting-for-input"></a>
+### Prompting For Input
 
-## Compatibility
+In addition to displaying output, you may also ask the user to provide input during the execution of your command. The `ask` method will prompt the user with the given question, accept their input, and then return the user's input back to your command:
 
-See the [Compatibility wiki page](https://github.com/adam-p/markdown-here/wiki/Compatibility).
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
+        $name = $this->ask('What is your name?');
+    }
 
-## Notes and Miscellaneous
+The `secret` method is similar to `ask`, but the user's input will not be visible to them as they type in the console. This method is useful when asking for sensitive information such as a password:
 
-* *Markdown Here* uses [Github Flavored Markdown](http://github.github.com/github-flavored-markdown/), with the limitation that GFM special links are not supported ([issue #11](https://github.com/adam-p/markdown-here/issues/11)); nor will they be, as MDH is not Github-specific.
+    $password = $this->secret('What is the password?');
 
-* Available languages for syntax highlighting (and the way they should be written in the fenced code block) can be seen on the [highlight.js demo page](http://softwaremaniacs.org/media/soft/highlight/test.html).
+#### Asking For Confirmation
 
-* Images embedded inline in your Markdown will be retained when you "Markdown Toggle". Gmail allows you to put images inline in your email -- this can be much easier than referencing an external image.
+If you need to ask the user for a simple confirmation, you may use the `confirm` method. By default, this method will return `false`. However, if the user enters `y` in response to the prompt, the method will return `true`.
 
-* Email signatures are automatically excluded from conversion. Specifically, anything after the semi-standard `'-- '` (note the trailing space) is left alone.
-  
-  * Note that Hotmail and Yahoo do *not* automatically add the `'-- '` to signatures, so you have to add it yourself.
+    if ($this->confirm('Do you wish to continue? [y|N]')) {
+        //
+    }
 
-* The "Markdown Toggle" menu item shows up for more element types than it can correctly render. This is intended to help people realize that they're not using a rich editor. Otherwise they just don't see the menu item and don't know why.
+#### Giving The User A Choice
 
-* Styling:
-  
-  * The use of browser-specific styles (-moz-, -webkit-) should be avoided. If used, they may not render correctly for people reading the email in a different browser from the one where the email was sent.
-  * The use of state-dependent styles (like `a:hover`) don't work because they don't match at the time the styles are made explicit. (In email, styles must be explicitly applied to all elements -- stylesheets get stripped.)
+The `anticipate` method can be used to provided autocompletion for possible choices. The user can still choose any answer, regardless of the choices.
 
-* For more tweaky features, visit the [Tips and Tricks](https://github.com/adam-p/markdown-here/wiki/Tips-and-Tricks) section.
+    $name = $this->anticipate('What is your name?', ['Taylor', 'Dayle']);
 
-## Building the Extension Bundles
+If you need to give the user a predefined set of choices, you may use the `choice` method. The user chooses the index of the answer, but the value of the answer will be returned to you. You may set the default value to be returned if nothing is chosen:
 
-"Building" is really just zipping. Create all archives relative to the `src` directory.
+    $name = $this->choice('What is your name?', ['Taylor', 'Dayle'], false);
 
-Before zipping, delete the `src/common/test` directory. This will prevent the autotests from ending up in the release.
+<a name="writing-output"></a>
+### Writing Output
 
-An important preparatory step is to remove any system-generated hidden files that shouldn't be included in the release file (like Windows' `desktop.ini` and OS X's `.DS_Store`, etc.). This shell command will delete those unwanted files:
+To send output to the console, use the `line`, `info`, `comment`, `question` and `error` methods. Each of these methods will use the appropriate ANSI colors for their purpose.
 
-    find . -name "desktop.ini" -or -name ".*" -and -not -name "." -and -not -name ".git*" -print0 | xargs -0 rm -rf
-    
+To display an information message to the user, use the `info` method. Typically, this will display in the console as green text:
 
-### Chrome and Opera extension
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
+        $this->info('Display this on the screen');
+    }
 
-Create a file with a `.zip` extension containing these files and directories:
+To display an error message, use the `error` method. Error message text is typically displayed in red:
 
-    manifest.json
-    common/
-    chrome/
-    
+    $this->error('Something went wrong!');
 
-### Firefox/Thunderbird extension
+If you want to display plain console output, use the `line` method. The `line` method does not receive any unique coloration:
 
-Create a file with a `.xpi` extension containing these files and directories:
+    $this->line('Display this on the screen');
 
-    chrome.manifest
-    install.rdf
-    common/
-    firefox/
-    
+#### Table Layouts
 
-### Safari extension
+The `table` method makes it easy to correctly format multiple rows / columns of data. Just pass in the headers and rows to the method. The width and height will be dynamically calculated based on the given data:
 
-The browser-specific code is located in the [`markdown-here-safari`](https://github.com/adam-p/markdown-here-safari) project.
+    $headers = ['Name', 'Email'];
 
-Use the Safari Extension Builder.
+    $users = App\User::all(['name', 'email'])->toArray();
 
-## Next Steps
+    $this->table($headers, $users);
 
-See the [issues list](https://github.com/adam-p/markdown-here/issues) and the [Notes Wiki](https://github.com/adam-p/markdown-here/wiki/Development-Notes). All ideas, bugs, plans, complaints, and dreams will end up in one of those two places.
+#### Progress Bars
 
-Feel free to create a feature request issue if what you want isn't already there. If you'd prefer a less formal approach to floating an idea, post to the ["markdown-here" Google Group](https://groups.google.com/forum/?fromgroups=#!forum/markdown-here).
+For long running tasks, it could be helpful to show a progress indicator. Using the output object, we can start, advance and stop the Progress Bar. You have to define the number of steps when you start the progress, then advance the Progress Bar after each step:
 
-It also takes a fair bit of work to stay up-to-date with the latest changes in all the applications and web sites where Markdown Here works.
+    $users = App\User::all();
 
-## Credits
+    $bar = $this->output->createProgressBar(count($users));
 
-*Markdown Here* was coded on the shoulders of giants.
+    foreach ($users as $user) {
+        $this->performTask($user);
 
-* Markdown-to-HTML: [chjj / marked](https://github.com/chjj/marked)
-* Syntax highlighting: [isagalaev / highlight.js](https://github.com/isagalaev/highlight.js)
-* HTML-to-text: [mtrimpe / jsHtmlToText](https://github.com/mtrimpe/jsHtmlToText)
+        $bar->advance();
+    }
 
-## Feedback
+    $bar->finish();
 
-All bugs, feature requests, pull requests, feedback, etc., are welcome. [Create an issue](https://github.com/adam-p/markdown-here/issues). Or [post to the "markdown-here" Google Group](https://groups.google.com/forum/?fromgroups=#!forum/markdown-here).
+For more advanced options, check out the [Symfony Progress Bar component documentation](http://symfony.com/doc/2.7/components/console/helpers/progressbar.html).
 
-## License
+<a name="registering-commands"></a>
+## Registering Commands
 
-### Code
+Once your command is finished, you need to register it with Artisan so it will be available for use. This is done within the `app/Console/Kernel.php` file.
 
-MIT License: http://adampritchard.mit-license.org/ or see [the `LICENSE` file](https://github.com/adam-p/markdown-here/blob/master/LICENSE).
+Within this file, you will find a list of commands in the `commands` property. To register your command, simply add the class name to the list. When Artisan boots, all the commands listed in this property will be resolved by the [service container](/docs/{{version}}/container) and registered with Artisan:
 
-### Logo
+    protected $commands = [
+        Commands\SendEmails::class
+    ];
 
-Copyright 2015, [Austin Anderson](http://protractor.ninja/). Licensed to Markdown Here under the [MDH contributor license agreement](https://github.com/adam-p/markdown-here/blob/master/CLA-individual.md).
+<a name="calling-commands-via-code"></a>
+## Calling Commands Via Code
 
-### Other images
+Sometimes you may wish to execute an Artisan command outside of the CLI. For example, you may wish to fire an Artisan command from a route or controller. You may use the `call` method on the `Artisan` facade to accomplish this. The `call` method accepts the name of the command as the first argument, and an array of command parameters as the second argument. The exit code will be returned:
 
-[Creative Commons Attribution 3.0 Unported (CC BY 3.0) License](http://creativecommons.org/licenses/by/3.0/)
+    Route::get('/foo', function () {
+        $exitCode = Artisan::call('email:send', [
+            'user' => 1, '--queue' => 'default'
+        ]);
 
-* * *
+        //
+    });
 
-![Dos Equis man says](https://raw.github.com/adam-p/markdown-here/master/store-assets/dos-equis-MDH.jpg)
+Using the `queue` method on the `Artisan` facade, you may even queue Artisan commands so they are processed in the background by your [queue workers](/docs/{{version}}/queues):
+
+    Route::get('/foo', function () {
+        Artisan::queue('email:send', [
+            'user' => 1, '--queue' => 'default'
+        ]);
+
+        //
+    });
+
+If you need to specify the value of an option that does not accept string values, such as the `--force` flag on the `migrate:refresh` command, you may pass a boolean `true` or `false`:
+
+    $exitCode = Artisan::call('migrate:refresh', [
+        '--force' => true,
+    ]);
+
+### Calling Commands From Other Commands
+
+Sometimes you may wish to call other commands from an existing Artisan command. You may do so using the `call` method. This `call` method accepts the command name and an array of command parameters:
+
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
+        $this->call('email:send', [
+            'user' => 1, '--queue' => 'default'
+        ]);
+
+        //
+    }
+
+If you would like to call another console command and suppress all of its output, you may use the `callSilent` method. The `callSilent` method has the same signature as the `call` method:
+
+    $this->callSilent('email:send', [
+        'user' => 1, '--queue' => 'default'
+    ]);
