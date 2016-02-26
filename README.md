@@ -13,10 +13,10 @@ You can use the plugin by adding it to the plug-in section in your pom;
 
 As Kanye West said:
 
-> We're living the future so
+> We're living the future so  
 > the present is our past.
 
-I think you should use an
+I think you should use an  
 `<addr>` element here instead.
 
 code:
