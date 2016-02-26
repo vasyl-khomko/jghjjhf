@@ -50,6 +50,8 @@ code:
       }
     }
 
+<h1>Jasper options to the compiler</h1>
+
 If you want to pass any Jasper options to the compiler you can do so by adding them to the configuration like so:
 
 ```xml
