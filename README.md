@@ -19,15 +19,18 @@ As Kanye West said:
 I think you should use an  
 `<addr>` element here instead.
 
+I think you should use an  
+`<h2>I think you</h2>` element here instead.
+
 code:
-```app/templates/scientists.hbs
+```ap:p/temp-lat+es/scien_tist8@7s.hbs
 # usage
 <h2>List of Scientists</h2>
 <h1>List of Scientists</h1>
 ```
 
 code:
-```html
+```htm-l
 <h2>List of Scientists</h2>
 <h1>List of Scientists</h1>
 ```
