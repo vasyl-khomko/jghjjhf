@@ -19,7 +19,7 @@ code:
 ```
 
 code:
-```app/templates/scientists.hbs
+```html
 <h2>List of Scientists</h2>
 <h1>List of Scientists</h1>
 ```
