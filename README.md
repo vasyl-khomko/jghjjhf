@@ -38,13 +38,13 @@ code:
     
 
 code:
-
-    function fancyAlert(arg) {
-      if(arg) {
-        $.facebox({div:'#foo'})
-      }
-    }
-    
+``` javascript
+function fancyAlert(arg) {
+  if(arg) {
+    $.facebox({div:'#foo'})
+  }
+}
+```
 
 If you want to pass any Jasper options to the compiler you can do so by adding them to the configuration like so:
 
