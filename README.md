@@ -23,7 +23,7 @@ I think you should use an
 `<h2>I think you</h2>` element here instead.
 
 code:
-```ap:p/temp-lat+es/scien_tist8@7s.hbs
+```рпарпа.hbs
 # usage
 <h2>List of Scientists</h2>
 <h1>List of Scientists</h1>
