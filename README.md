@@ -1,277 +1,393 @@
-# SQLite compiled to JavaScript
-[![Build Status](https://travis-ci.org/kripken/sql.js.svg?branch=master)](http://travis-ci.org/kripken/sql.js) [![CDNJS version](https://img.shields.io/cdnjs/v/sql.js.svg)](https://cdnjs.com/libraries/sql.js)
+<p align="center">
+  <a href="https://fastapi.tiangolo.com"><img src="https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png" alt="FastAPI"></a>
+</p>
+<p align="center">
+    <em>FastAPI framework, high performance, easy to learn, fast to code, ready for production</em>
+</p>
+<p align="center">
+<a href="https://travis-ci.org/tiangolo/fastapi" target="_blank">
+    <img src="https://travis-ci.org/tiangolo/fastapi.svg?branch=master" alt="Build Status">
+</a>
+<a href="https://codecov.io/gh/tiangolo/fastapi" target="_blank">
+    <img src="https://codecov.io/gh/tiangolo/fastapi/branch/master/graph/badge.svg" alt="Coverage">
+</a>
+<a href="https://pypi.org/project/fastapi" target="_blank">
+    <img src="https://badge.fury.io/py/fastapi.svg" alt="Package version">
+</a>
+<a href="https://gitter.im/tiangolo/fastapi?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge" target="_blank">
+    <img src="https://badges.gitter.im/tiangolo/fastapi.svg" alt="Join the chat at https://gitter.im/tiangolo/fastapi">
+</a>
+</p>
 
-For the impatients, try the demo here: http://kripken.github.io/sql.js/examples/GUI
+---
 
-*sql.js* is a port of [SQLite](http://sqlite.org/about.html) to Webassembly, by compiling the SQLite C code with [Emscripten](http://kripken.github.io/emscripten-site/docs/introducing_emscripten/about_emscripten.html). It uses a [virtual database file stored in memory](https://kripken.github.io/emscripten-site/docs/porting/files/file_systems_overview.html), and thus **doesn't persist the changes** made to the database. However, it allows you to **import** any existing sqlite file, and to **export** the created database as a [JavaScript typed array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays).
+**Documentation**: <a href="https://fastapi.tiangolo.com" target="_blank">https://fastapi.tiangolo.com</a>
 
-There are no C bindings or node-gyp compilation here, sql.js is a simple JavaScript file, that can be used like any traditional JavaScript library. If you are building a native application in JavaScript (using Electron for instance), or are working in node.js, you will likely prefer to use [a native binding of SQLite to JavaScript](https://www.npmjs.com/package/sqlite3).
+**Source Code**: <a href="https://github.com/tiangolo/fastapi" target="_blank">https://github.com/tiangolo/fastapi</a>
 
-SQLite is public domain, sql.js is MIT licensed.
+---
 
-Sql.js predates WebAssembly, and thus started as an [asm.js](https://en.wikipedia.org/wiki/Asm.js) project. It still supports asm.js for backwards compatibility.
+FastAPI is a modern, fast (high-performance), web framework for building APIs with Python 3.6+ based on standard Python type hints.
 
-## Version of binaries
-Sql.js was last built with: Emscripten version 1.38.30 (2019-04-16) [Release History](https://emscripten.org/docs/introducing_emscripten/release_notes.html) SqlLite version: 3.28.0 (2019-04-16) [Release History](https://www.sqlite.org/changes.html)
+The key features are:
 
-## Documentation
-A [full documentation](http://kripken.github.io/sql.js/documentation/#http://kripken.github.io/sql.js/documentation/class/Database.html) generated from comments inside the source code, is available.
+* **Fast**: Very high performance, on par with **NodeJS** and **Go** (thanks to Starlette and Pydantic). [One of the fastest Python frameworks available](#performance).
 
-## Usage
+* **Fast to code**: Increase the speed to develop features by about 200% to 300% *.
+* **Fewer bugs**: Reduce about 40% of human (developer) induced errors. *
+* **Intuitive**: Great editor support. <abbr title="also known as auto-complete, autocompletion, IntelliSense">Completion</abbr> everywhere. Less time debugging.
+* **Easy**: Designed to be easy to use and learn. Less time reading docs.
+* **Short**: Minimize code duplication. Multiple features from each parameter declaration. Fewer bugs.
+* **Robust**: Get production-ready code. With automatic interactive documentation.
+* **Standards-based**: Based on (and fully compatible with) the open standards for APIs: <a href="https://github.com/OAI/OpenAPI-Specification" target="_blank">OpenAPI</a> (previously known as Swagger) and <a href="http://json-schema.org/" target="_blank">JSON Schema</a>.
 
-```javascript
-var initSqlJs = require('sql.js');
-// or if you are in a browser:
-// var initSqlJs = window.initSqlJs;
+<small>* estimation based on tests on an internal development team, building production applications.</small>
 
-initSqlJs().then(SQL => {
+## Opinions
 
-  // Create a database
-  var db = new SQL.Database();
-  // NOTE: You can also use new SQL.Database(data) where
-  // data is an Uint8Array representing an SQLite database file
+"*[...] I'm using **FastAPI** a ton these days. [...] I'm actually planning to use it for all of my team's **ML services at Microsoft**. Some of them are getting integrated into the core **Windows** product and some **Office** products.*"
 
-  // Execute some sql
-  sqlstr = "CREATE TABLE hello (a int, b char);";
-  sqlstr += "INSERT INTO hello VALUES (0, 'hello');"
-  sqlstr += "INSERT INTO hello VALUES (1, 'world');"
-  db.run(sqlstr); // Run the query without returning anything
+<div style="text-align: right; margin-right: 10%;">Kabir Khan - <strong>Microsoft</strong> <a href="https://github.com/tiangolo/fastapi/pull/26" target="_blank"><small>(ref)</small></a></div>
 
-  var res = db.exec("SELECT * FROM hello");
-  /*
-  [
-    {columns:['a','b'], values:[[0,'hello'],[1,'world']]}
-  ]
-  */
+---
 
-  // Prepare an sql statement
-  var stmt = db.prepare("SELECT * FROM hello WHERE a=:aval AND b=:bval");
+"*I’m over the moon excited about **FastAPI**. It’s so fun!*"
 
-  // Bind values to the parameters and fetch the results of the query
-  var result = stmt.getAsObject({':aval' : 1, ':bval' : 'world'});
-  console.log(result); // Will print {a:1, b:'world'}
+<div style="text-align: right; margin-right: 10%;">Brian Okken - <strong><a href="https://pythonbytes.fm/episodes/show/123/time-to-right-the-py-wrongs?time_in_sec=855" target="_blank">Python Bytes</a> podcast host</strong> <a href="https://twitter.com/brianokken/status/1112220079972728832" target="_blank"><small>(ref)</small></a></div>
 
-  // Bind other values
-  stmt.bind([0, 'hello']);
-  while (stmt.step()) console.log(stmt.get()); // Will print [0, 'hello']
+---
 
-  // You can also use JavaScript functions inside your SQL code
-  // Create the js function you need
-  function add(a, b) {return a+b;}
-  // Specifies the SQL function's name, the number of it's arguments, and the js function to use
-  db.create_function("add_js", add);
-  // Run a query in which the function is used
-  db.run("INSERT INTO hello VALUES (add_js(7, 3), add_js('Hello ', 'world'));"); // Inserts 10 and 'Hello world'
+"*Honestly, what you've built looks super solid and polished. In many ways, it's what I wanted **Hug** to be - it's really inspiring to see someone build that.*"
 
-  // free the memory used by the statement
-  stmt.free();
-  // You can not use your statement anymore once it has been freed.
-  // But not freeing your statements causes memory leaks. You don't want that.
+<div style="text-align: right; margin-right: 10%;">Timothy Crosley - <strong><a href="http://www.hug.rest/" target="_blank">Hug</a> creator</strong> <a href="https://news.ycombinator.com/item?id=19455465" target="_blank"><small>(ref)</small></a></div>
 
-  // Export the database to an Uint8Array containing the SQLite database file
-  var binaryArray = db.export();
-});
+---
 
+"*If you're looking to learn one **modern framework** for building REST APIs, check out **FastAPI** [...] It's fast, easy to use and easy to learn [...]*"
+
+"*We've switched over to **FastAPI** for our **APIs** [...] I think you'll like it [...]*"
+
+<div style="text-align: right; margin-right: 10%;">Ines Montani - Matthew Honnibal - <strong><a href="https://explosion.ai" target="_blank">Explosion AI</a> founders - <a href="https://spacy.io" target="_blank">spaCy</a> creators</strong> <a href="https://twitter.com/_inesmontani/status/1144173225322143744" target="_blank"><small>(ref)</small></a> - <a href="https://twitter.com/honnibal/status/1144031421859655680" target="_blank"><small>(ref)</small></a></div>
+
+---
+
+"*We adopted the **FastAPI** library to spawn a **REST** server that can be queried to obtain **predictions**. [for Ludwig]*"
+
+<div style="text-align: right; margin-right: 10%;">Piero Molino, Yaroslav Dudin, and Sai Sumanth Miryala - <strong>Uber</strong> <a href="https://eng.uber.com/ludwig-v0-2/" target="_blank"><small>(ref)</small></a></div>
+
+---
+
+## Requirements
+
+Python 3.6+
+
+FastAPI stands on the shoulders of giants:
+
+* <a href="https://www.starlette.io/" target="_blank">Starlette</a> for the web parts. * <a href="https://pydantic-docs.helpmanual.io/" target="_blank">Pydantic</a> for the data parts.
+
+
+## Installation
+
+```bash
+$ pip install fastapi
 ```
 
-## Demo
-There are a few examples [available here](https://kripken.github.io/sql.js/index.html). The most full-featured is the [Sqlite Interpreter](https://kripken.github.io/sql.js/examples/GUI/index.html).
+You will also need an ASGI server, for production such as <a href="http://www.uvicorn.org" target="_blank">Uvicorn</a> or <a href="https://gitlab.com/pgjones/hypercorn" target="_blank">Hypercorn</a>.
 
-## Examples
-The test files provide up to date example of the use of the api.
-### Inside the browser
-#### Example **HTML** file:
-```html
-<meta charset="utf8" />
-<html>
-  <script src='/dist/sql-wasm.js'></script>
-  <script>
-    config = {
-      locateFile: filename => `/dist/${filename}` 
-    }
-    // The `initSqlJs` function is globally provided by all of the main dist files if loaded in the browser.
-    // We must specify this locateFile function if we are loading a wasm file from anywhere other than the current html page's folder.
-    initSqlJs(config).then(function(SQL){
-      //Create the database
-      var db = new SQL.Database();
-      // Run a query without reading the results
-      db.run("CREATE TABLE test (col1, col2);");
-      // Insert two rows: (1,111) and (2,222)
-      db.run("INSERT INTO test VALUES (?,?), (?,?)", [1,111,2,222]);
-
-      // Prepare a statement
-      var stmt = db.prepare("SELECT * FROM test WHERE col1 BETWEEN $start AND $end");
-      stmt.getAsObject({$start:1, $end:1}); // {col1:1, col2:111}
-
-      // Bind new values
-      stmt.bind({$start:1, $end:2});
-      while(stmt.step()) { //
-        var row = stmt.getAsObject();
-        console.log('Here is a row: ' + JSON.stringify(row));
-      }
-    });
-  </script>
-  <body>
-    Output is in Javascript console
-  </body>
-</html>
+```bash
+$ pip install uvicorn
 ```
 
-#### Creating a database from a file chosen by the user
-`SQL.Database` constructor takes an array of integer representing a database file as an optional parameter. The following code uses an HTML input as the source for loading a database:
-```javascript
-dbFileElm.onchange = () => {
-  var f = dbFileElm.files[0];
-  var r = new FileReader();
-  r.onload = function() {
-    var Uints = new Uint8Array(r.result);
-    db = new SQL.Database(Uints);
-  }
-  r.readAsArrayBuffer(f);
-}
+## Example
+
+### Create it
+
+* Create a file `main.py` with:
+
+```Python
+from fastapi import FastAPI
+
+app = FastAPI()
+
+
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
+
+
+@app.get("/items/{item_id}")
+def read_item(item_id: int, q: str = None):
+    return {"item_id": item_id, "q": q}
 ```
-See : http://kripken.github.io/sql.js/examples/GUI/gui.js
+<details markdown="1">
+<summary>Or use <code>async def</code>...</summary>
 
-#### Loading a database from a server
-
-```javascript
-var xhr = new XMLHttpRequest();
-// For example: https://github.com/lerocha/chinook-database/raw/master/ChinookDatabase/DataSources/Chinook_Sqlite.sqlite
-xhr.open('GET', '/path/to/database.sqlite', true);
-xhr.responseType = 'arraybuffer';
-
-xhr.onload = e => {
-  var uInt8Array = new Uint8Array(this.response);
-  var db = new SQL.Database(uInt8Array);
-  var contents = db.exec("SELECT * FROM my_table");
-  // contents is now [{columns:['col1','col2',...], values:[[first row], [second row], ...]}]
-};
-xhr.send();
-```
-See: https://github.com/kripken/sql.js/wiki/Load-a-database-from-the-server
-
-
-### Use from node.js
-
-`sql.js` is [hosted on npm](https://www.npmjs.org/package/sql.js). To install it, you can simply run `npm install sql.js`. Alternatively, you can simply download `sql-wasm.js` and `sql-wasm.wasm`, from the download link below.
-
-#### read a database from the disk:
-```javascript
-var fs = require('fs');
-var initSqlJs = require('sql-wasm.js');
-var filebuffer = fs.readFileSync('test.sqlite');
-
-initSqlJs().then(function(SQL){
-  // Load the db
-  var db = new SQL.Database(filebuffer);
-});
-
+If your code uses `async` / `await`, use `async def`:
+```Python hl_lines="7 12" from fastapi import FastAPI
+app = FastAPI()
+@app.get("/") async def read_root(): return {"Hello": "World"}
+@app.get("/items/{item_id}") async def read_item(item_id: int, q: str = None): return {"item_id": item_id, "q": q}
 ```
 
-#### write a database to the disk
-You need to convert the result of `db.export` to a buffer
-```javascript
-var fs = require("fs");
-// [...] (create the database)
-var data = db.export();
-var buffer = new Buffer(data);
-fs.writeFileSync("filename.sqlite", buffer);
+**Note**:
+
+If you don't know, check the _"In a hurry?"_ section about 
+
+<a href="https://fastapi.tiangolo.com/async/#in-a-hurry" target="_blank">`async` and `await` in the docs</a>
+
+.
+
+</details>
+
+### Run it
+
+Run the server with:
+
+```bash
+uvicorn main:app --reload
+```
+<details markdown="1">
+<summary>About the command <code>uvicorn main:app --reload</code>...</summary>
+
+The command `uvicorn main:app` refers to:
+
+* `main`: the file `main.py` (the Python "module").
+* `app`: the object created inside of `main.py` with the line `app = FastAPI()`.
+* `--reload`: make the server restart after code changes. Only do this for development.
+</details>
+
+### Check it
+
+Open your browser at <a href="http://127.0.0.1:8000/items/5?q=somequery" target="_blank">http://127.0.0.1:8000/items/5?q=somequery</a>.
+
+You will see the JSON response as:
+
+```JSON
+{"item_id": 5, "q": "somequery"}
 ```
 
-See : https://github.com/kripken/sql.js/blob/master/test/test_node_file.js
+You already created an API that:
 
-### Use as web worker
-If you don't want to run CPU-intensive SQL queries in your main application thread, you can use the *more limited* WebWorker API.
+* Receives HTTP requests in the _paths_ `/` and `/items/{item_id}`.
+* Both _paths_ take `GET` <em>operations</em> (also known as HTTP _methods_).
+* The _path_ `/items/{item_id}` has a _path parameter_ `item_id` that should be an `int`.
+* The _path_ `/items/{item_id}` has an optional `str` _query parameter_ `q`.
 
-You will need to download [dist/worker.sql-wasm.js](dist/worker.sql-wasm.js) [dist/worker.sql-wasm.wasm](dist/worker.sql-wasm.wasm).
+### Interactive API docs
 
-Example:
-```html
-<script>
-  var worker = new Worker("/dist/worker.sql-wasm.js");
-  worker.onmessage = () => {
-    console.log("Database opened");
-    worker.onmessage = event => {
-      console.log(event.data); // The result of the query
-    };
+Now go to <a href="http://127.0.0.1:8000/docs" target="_blank">http://127.0.0.1:8000/docs</a>.
 
-    worker.postMessage({
-      id: 2,
-      action: 'exec',
-      sql: 'SELECT * FROM test'
-    });
-  };
+You will see the automatic interactive API documentation (provided by <a href="https://github.com/swagger-api/swagger-ui" target="_blank">Swagger UI</a>):
 
-  worker.onerror = e => console.log("Worker error: ", e);
-  worker.postMessage({
-    id:1,
-    action:'open',
-    buffer:buf, /*Optional. An ArrayBuffer representing an SQLite Database file*/
-  });
-</script>
+![Swagger UI](https://fastapi.tiangolo.com/img/index/index-01-swagger-ui-simple.png)
+
+
+### Alternative API docs
+
+And now, go to <a href="http://127.0.0.1:8000/redoc" target="_blank">http://127.0.0.1:8000/redoc</a>.
+
+You will see the alternative automatic documentation (provided by <a href="https://github.com/Rebilly/ReDoc" target="_blank">ReDoc</a>):
+
+![ReDoc](https://fastapi.tiangolo.com/img/index/index-02-redoc-simple.png)
+
+## Example upgrade
+
+Now modify the file `main.py` to receive a body from a `PUT` request.
+
+Declare the body using standard Python types, thanks to Pydantic.
+
+
+```Python hl_lines="2 7 8 9 10 24" from fastapi import FastAPI from pydantic import BaseModel
+
+app = FastAPI()
+
+
+class Item(BaseModel): name: str price: float is_offer: bool = None
+
+
+@app.get("/") def read_root(): return {"Hello": "World"}
+
+
+@app.get("/items/{item_id}") def read_item(item_id: int, q: str = None): return {"item_id": item_id, "q": q}
+
+
+@app.put("/items/{item_id}") def update_item(item_id: int, item: Item): return {"item_name": item.name, "item_id": item_id}
 ```
 
-See [examples/GUI/gui.js](examples/GUI/gui.js) for a full working example.
+The server should reload automatically (because you added `--reload` to the `uvicorn` command above).
 
-## Flavors/versions Targets/Downloads
+### Interactive API docs upgrade
 
-This library includes both WebAssembly and asm.js versions of Sqlite. (WebAssembly is the newer, preferred way to compile to JavaScript, and has superceded asm.js. It produces smaller, faster code.) Asm.js versions are included for compatibility.
+Now go to <a href="http://127.0.0.1:8000/docs" target="_blank">http://127.0.0.1:8000/docs</a>.
 
-## Upgrading from 0.x to 1.x
+* The interactive API documentation will be automatically updated, including the new body:
 
-Version 1.0 of sql.js must be loaded asynchronously, whereas asm.js was able to be loaded synchronously.
+![Swagger UI](https://fastapi.tiangolo.com/img/index/index-03-swagger-02.png)
 
-So in the past, you would:
-```html
-<script src='js/sql.js'></script>
-<script>
-  var db = new SQL.Database();
-  //...
-</script>
+* Click on the button "Try it out", it allows you to fill the parameters and directly interact with the API:
+
+![Swagger UI interaction](https://fastapi.tiangolo.com/img/index/index-04-swagger-03.png)
+
+* Then click on the "Execute" button, the user interface will communicate with your API, send the parameters, get the results and show them on the screen:
+
+![Swagger UI interaction](https://fastapi.tiangolo.com/img/index/index-05-swagger-04.png)
+
+
+### Alternative API docs upgrade
+
+And now, go to <a href="http://127.0.0.1:8000/redoc" target="_blank">http://127.0.0.1:8000/redoc</a>.
+
+* The alternative documentation will also reflect the new query parameter and body:
+
+![ReDoc](https://fastapi.tiangolo.com/img/index/index-06-redoc-02.png)
+
+
+### Recap
+
+In summary, you declare **once** the types of parameters, body, etc. as function parameters. 
+
+You do that with standard modern Python types.
+
+You don't have to learn a new syntax, the methods or classes of a specific library, etc.
+
+Just standard **Python 3.6+**.
+
+For example, for an `int`:
+
+```Python
+item_id: int
 ```
-or:
-```javascript
-var SQL = require('sql.js');
-var db = new SQL.Database();
-//...
+
+or for a more complex `Item` model:
+
+```Python
+item: Item
 ```
 
-Version 1.x:
-```html
-<script src='dist/sql-wasm.js'></script>
-<script>
-  initSqlJs({ locateFile: filename => `/dist/${filename}` }).then(function(SQL){
-    var db = new SQL.Database();
-    //...
-  });
-</script>
+...and with that single declaration you get:
+
+* Editor support, including:
+    * Completion.
+    * Type checks.
+* Validation of data:
+    * Automatic and clear errors when the data is invalid.
+    * Validation even for deeply nested JSON objects.
+* Conversion of input data: coming from the network to Python data and types. Reading from:
+    * JSON.
+    * Path parameters.
+    * Query parameters.
+    * Cookies.
+    * Headers.
+    * Forms.
+    * Files.
+* Conversion of output data: converting from Python data and types to network data (as JSON):
+    * Convert Python types (`str`, `int`, `float`, `bool`, `list`, etc).
+    * `datetime` objects.
+    * `UUID` objects.
+    * Database models.
+    * ...and many more.
+* Automatic interactive API documentation, including 2 alternative user interfaces:
+    * Swagger UI.
+    * ReDoc.
+
+---
+
+Coming back to the previous code example, **FastAPI** will:
+
+* Validate that there is an `item_id` in the path for `GET` and `PUT` requests.
+* Validate that the `item_id` is of type `int` for `GET` and `PUT` requests.
+    * If it is not, the client will see a useful, clear error.
+* Check if there is an optional query parameter named `q` (as in `http://127.0.0.1:8000/items/foo?q=somequery`) for `GET` requests.
+    * As the `q` parameter is declared with `= None`, it is optional.
+    * Without the `None` it would be required (as is the body in the case with `PUT`).
+* For `PUT` requests to `/items/{item_id}`, Read the body as JSON:
+    * Check that it has a required attribute `name` that should be a `str`.
+    * Check that is has a required attribute `price` that has to be a `float`.
+    * Check that it has an optional attribute `is_offer`, that should be a `bool`, if present.
+    * All this would also work for deeply nested JSON objects.
+* Convert from and to JSON automatically.
+* Document everything with OpenAPI, that can be used by:
+    * Interactive documentation systems.
+    * Automatic client code generation systems, for many languages.
+* Provide 2 interactive documentation web interfaces directly.
+
+
+---
+
+We just scratched the surface, but you already get the idea of how it all works.
+
+Try changing the line with:
+
+```Python
+    return {"item_name": item.name, "item_id": item_id}
 ```
-or:
-```javascript
-var initSqlJs = require('sql-wasm.js');
-initSqlJs().then(function(SQL){
-  var db = new SQL.Database();
-  //...
-});
+
+...from:
+
+```Python
+        ... "item_name": item.name ...
 ```
 
-`NOTHING` is now a reserved word in SQLite, whereas previously it was not. This could cause errors like `Error: near "nothing": syntax error`
+...to:
 
-### Downloading/Using:
-Although asm.js files were distributed as a single Javascript file, WebAssembly libraries are most efficiently distributed as a pair of files, the `.js`  loader and the `.wasm` file, like [dist/sql-wasm.js]([dist/sql-wasm.js]) and [dist/sql-wasm.wasm]([dist/sql-wasm.wasm]). The `.js` file is responsible for wrapping/loading the `.wasm` file.
+```Python
+        ... "item_price": item.price ...
+```
+
+...and see how your editor will auto-complete the attributes and know their types:
+
+![editor support](https://fastapi.tiangolo.com/img/vscode-completion.png)
 
 
+For a more complete example including more features, see the <a href="https://fastapi.tiangolo.com/tutorial/intro/">Tutorial - User Guide</a>.
+
+**Spoiler alert**: the tutorial - user guide includes:
+
+* Declaration of **parameters** from other different places as: **headers**, **cookies**, **form fields** and **files**.
+* How to set **validation constraints** as `maximum_length` or `regex`.
+* A very powerful and easy to use **Dependency Injection** system.
+* Security and authentication, including support for **OAuth2** with **JWT tokens** and **HTTP Basic** auth.
+* More advanced (but equally easy) techniques for declaring **deeply nested JSON models** (thanks to Pydantic).
+* Many extra features (thanks to Starlette) as:
+    * **WebSockets**
+    * **GraphQL**
+    * extremely easy tests based on `requests` and `pytest`
+    * **CORS**
+    * **Cookie Sessions**
+    * ...and more.
 
 
-## Versions of sql.js included in `dist/`
- - `sql-wasm.js` : The Web Assembly version of Sql.js. Minified and suitable for production. Use this. If you use this, you will need to include/ship `sql-wasm.wasm` as well.
- - `sql-wasm-debug.js` : The Web Assembly, Debug version of Sql.js. Larger, with assertions turned on. Useful for local development. You will need to include/ship `sql-wasm-debug.wasm` if you use this.
- - `sql-asm.js` : The older asm.js version of Sql.js. Slower and larger. Provided for compatibility reasons.
- - `sql-asm-memory-growth.js` : Asm.js doesn't allow for memory to grow by default, because it is slower and de-optimizes. If you are using sql-asm.js and you see this error (`Cannot enlarge memory arrays`), use this file.
- - `sql-asm-debug.js` : The _Debug_ asm.js version of Sql.js. Use this for local development.
- - `worker.*` - Web Worker versions of the above libraries. More limited API. See [examples/GUI/gui.js](examples/GUI/gui.js) for a good example of this.
+## Performance
 
-## Compiling
+Independent TechEmpower benchmarks show **FastAPI** applications running under Uvicorn as <a href="https://www.techempower.com/benchmarks/#section=test&runid=7464e520-0dc2-473d-bd34-dbdfd7e85911&hw=ph&test=query&l=zijzen-7" target="_blank">one of the fastest Python frameworks available</a>, only below Starlette and Uvicorn themselves (used internally by FastAPI). (*)
 
-- Install the EMSDK, [as described here](https://kripken.github.io/emscripten-site/docs/getting_started/downloads.html)
-- Run `npm run rebuild`
+To understand more about it, see the section <a href="https://fastapi.tiangolo.com/benchmarks/" target="_blank">Benchmarks</a>.
+
+## Optional Dependencies
+
+Used by Pydantic:
+
+* <a href="https://github.com/esnme/ultrajson" target="_blank"><code>ujson</code></a> - for faster JSON "parsing".
+* <a href="https://github.com/JoshData/python-email-validator" target="_blank"><code>email_validator</code></a> - for email validation.
+
+
+Used by Starlette:
+
+* <a href="http://docs.python-requests.org" target="_blank"><code>requests</code></a> - Required if you want to use the `TestClient`.
+* <a href="https://github.com/Tinche/aiofiles" target="_blank"><code>aiofiles</code></a> - Required if you want to use `FileResponse` or `StaticFiles`.
+* <a href="http://jinja.pocoo.org" target="_blank"><code>jinja2</code></a> - Required if you want to use the default template configuration.
+* <a href="https://andrew-d.github.io/python-multipart/" target="_blank"><code>python-multipart</code></a> - Required if you want to support form "parsing", with `request.form()`.
+* <a href="https://pythonhosted.org/itsdangerous/" target="_blank"><code>itsdangerous</code></a> - Required for `SessionMiddleware` support.
+* <a href="https://pyyaml.org/wiki/PyYAMLDocumentation" target="_blank"><code>pyyaml</code></a> - Required for `SchemaGenerator` support.
+* <a href="https://graphene-python.org/" target="_blank"><code>graphene</code></a> - Required for `GraphQLApp` support.
+* <a href="https://github.com/esnme/ultrajson" target="_blank"><code>ujson</code></a> - Required if you want to use `UJSONResponse`.
+
+Used by FastAPI / Starlette:
+
+* <a href="http://www.uvicorn.org" target="_blank"><code>uvicorn</code></a> - for the server that loads and serves your application.
+
+You can install all of these with `pip3 install fastapi[all]`.
+
+## License
+
+This project is licensed under the terms of the MIT license.
