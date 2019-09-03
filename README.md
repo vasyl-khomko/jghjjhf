@@ -1,524 +1,363 @@
-Angular UI Tree
-======================
+# angulartics
+[![NPM version](https://img.shields.io/npm/v/angulartics.svg)](https://npmjs.org/package/angulartics) [![NPM downloads](https://img.shields.io/npm/dm/angulartics.svg)](https://npmjs.org/package/angulartics) [![Bower version](https://img.shields.io/bower/v/angulartics.svg)](http://bower.io/search/?q=angulartics) [![Dependencies status](https://img.shields.io/david/angulartics/angulartics.svg)](https://david-dm.org/angulartics/angulartics) [![devDependency Status](https://david-dm.org/angulartics/angulartics/dev-status.svg)](https://david-dm.org/angulartics/angulartics#info=devDependencies) [![MIT license](http://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Gitter Chat](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/angulartics) [![CDNJS](https://img.shields.io/cdnjs/v/angulartics.svg)](https://cdnjs.com/libraries/angulartics)
 
-[![Build Status](https://travis-ci.org/angular-ui-tree/angular-ui-tree.svg?branch=master)](https://travis-ci.org/angular-ui-tree/angular-ui-tree) [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/angular-ui-tree/angular-ui-tree?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+Vendor-agnostic analytics for AngularJS applications. [angulartics.github.io](http://angulartics.github.io "Go to the website")
 
-Angular UI Tree is an AngularJS UI component that can sort nested lists, provides drag & drop support and doesn't depend on jQuery. If you are a user who uses `angular-nestedSortable`, this is [How to migrate From v1.x to v2.0](https://github.com/JimLiu/angular-ui-tree/wiki/Migrate-From-v1.x-to-v2.0).
+## Please Read!
 
-### Considering Contributing?
+This is **Angulartics**, not _**[Angularytics](http://github.com/mgonto/angularytics)**_. There's been some complains about the unfortunate similarity in the names of both projects (this is actually a [funny story](#FunnyStory)), so [we hear you guys](https://daveceddia.com/angular/angularytics-vs-angulartics/) and are making this clarification here. Just make sure **Angulartics** is the library you actually want to use, and if you work in a team, make sure this is the library they are using!
 
-Read our contributing guidelines and become a contributing member of Angular UI Tree!
+## Install
 
-[CONTRIBUTING](https://github.com/angular-ui-tree/angular-ui-tree/blob/master/CONTRIBUTING.md)
+### npm
 
-
-## Features
-
-- Uses the native AngularJS scope for data binding
-- Sorted and move items through the entire tree
-- Prevent elements from accepting child nodes
-
-## Supported browsers
-
-The Angular UI Tree is tested with the following browsers:
-
-- Chrome (stable)
-- Firefox
-- IE 8, 9 and 10
-
-For IE8 support, make sure you do the following:
-
-- include an [ES5 shim](https://github.com/es-shims/es5-shim)
-- make your [AngularJS application compatible with Internet Explorer](http://docs.angularjs.org/guide/ie)
-- use [jQuery 1.x](http://jquery.com/browser-support/)
-
-## Demo
-Watch the Tree component in action on the [demo page](http://angular-ui-tree.github.io/angular-ui-tree/).
-
-## Requirements
-
-- Angularjs
-
-## Usage
-
-### Download
-- Using [bower](http://bower.io/) to install it. `bower install angular-ui-tree`
-- [Download](https://github.com/angular-ui-tree/angular-ui-tree/archive/master.zip) from github.
-
-### Load CSS
-Load the css file: `angular-ui-tree.min.css` in your application:
-```html
-<link rel="stylesheet" href="bower_components/angular-ui-tree/dist/angular-ui-tree.min.css">
+```shell
+npm install angulartics
 ```
 
+### Bower
 
-### Load Script
-Load the script file: `angular-ui-tree.js` or `angular-ui-tree.min.js` in your application:
-
-```html
-<script type="text/javascript" src="bower_components/angular-ui-tree/dist/angular-ui-tree.js"></script>
+To install angulartics core module:
+```shell
+bower install angulartics
 ```
 
-### Code
-Add the sortable module as a dependency to your application module:
-
-```js
-var myAppModule = angular.module('MyApp', ['ui.tree'])
-```
-
-Injecting `ui.tree`, `ui-tree-nodes`, `ui-tree-node`, `ui-tree-handle` to your html.
-
-#### HTML View or Templates
-```html
-<div ui-tree>
-  <ol ui-tree-nodes="" ng-model="list">
-    <li ng-repeat="item in list" ui-tree-node>
-      <div ui-tree-handle>
-        {{item.title}}
-      </div>
-      <ol ui-tree-nodes="" ng-model="item.items">
-        <li ng-repeat="subItem in item.items" ui-tree-node>
-          <div ui-tree-handle>
-            {{subItem.title}}
-          </div>
-        </li>
-      </ol>
-    </li>
-  </ol>
-</div>
-```
-**Developing Notes:**
-- Adding `ui-tree` to your root element of the tree.
-- Adding `ui-tree-nodes` to the elements which contain the nodes. `ng-model` is required, and it should be an array, so that the directive knows which model to bind and update.
-- Adding `ui-tree-node` to your node element, it always follows the `ng-repeat` attribute.
-- Adding `ui-tree-handle` to the element used to drag the object.
-- All `ui-tree`, `ui-tree-nodes`, `ng-model`, `ui-tree-node` are necessary. And they can be nested.
-- If you don't add a `ui-tree-handle` for a node, the entire node can be dragged.
-
-**Styling Notes:**
-- While an element is being dragged, it is temporarily removed from the DOM and injected just before closing `</body>` tag. When dropped, it returns to it's original place in the DOM's hierarchy.
-- The dragged element `ui-tree-node`, together with its parent `ui-tree-nodes`, are the only ones being injected. hence any styling that relies on a 'higher' parent, will not apply.
-- To target the dragged element use the class `angular-ui-tree-drag`, which is added to the `ui-tree-nodes` element.
-- While a node is being dragged, a new empty node is added into the tree to act as a placeholder. this node will have the class 'angular-ui-tree-placeholder'.
-
-#### Unlimited nesting HTML View or Templates Example
-
-```html
-<!-- Nested node template -->
-<script type="text/ng-template" id="nodes_renderer.html">
-  <div ui-tree-handle>
-    {{node.title}}
-  </div>
-  <ol ui-tree-nodes="" ng-model="node.nodes">
-    <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'">
-    </li>
-  </ol>
-</script>
-<div ui-tree>
-  <ol ui-tree-nodes="" ng-model="data" id="tree-root">
-    <li ng-repeat="node in data" ui-tree-node ng-include="'nodes_renderer.html'"></li>
-  </ol>
-</div>
-```
-
-## Structure of angular-ui-tree
-
-    ui-tree                             --> Root of tree
-      ui-tree-nodes                     --> Container of nodes
-        ui-tree-node                    --> One of the node of a tree
-          ui-tree-handle                --> Handle
-          ui-tree-nodes                 --> Container of child-nodes
-            ui-tree-node                --> Child node
-              ui-tree-handle            --> Handle
-            ui-tree-node                --> Child node
-        ui-tree-node                    --> Another node
-          ui-tree-handle                --> Handle
-
-## Migrate From v1.x to v2.0
-[Migrate From v1.x to v2.0](https://github.com/angular-ui-tree/angular-ui-tree/wiki/Migrate-From-v1.x-to-v2.0)
-
-## API
-
-### ui-tree
-`ui-tree` is the root scope for a tree
-
-#### Attributes
-##### data-nodrop-enabled
-Prevent dropping of nodes into this tree. This applies to both nodes dragged within this tree and nodes from a connected tree. Adding this attribute to the `ui-tree` effectively makes the tree a drag source only. To prevent a particular node from accepting children, add the attribute to the `ui-tree-nodes` element instead (see below). See the [demo page](http://angular-ui-tree.github.io/angular-ui-tree/#/nodrop) for examples.
-- `false` (default): turn off
-- `true`: turn on no drop
-
-##### data-dropzone-enabled
-Turn on a dropzone that is always visible, even when tree is not empty.
-- `false` (default): turn off
-- `true`: turn on dropzone
-
-##### data-clone-enabled
-Turn on cloning of nodes. This will clone the source node to the destination when dragging between 2 trees.
-- `false` (default): turn off clone
-- `true`: turn on clone
-
-##### data-drag-enabled
-Turn on dragging and dropping of nodes.
-- `true` (default): allow drag and drop
-- `false`: turn off drag and drop
-
-##### data-max-depth
-Number of levels a nodes can be nested (default 0). 0 means no limit. **Note** If you write your own [$callbacks.accept](#accept) method, you have to check `data-max-depth` by yourself.
-
-##### data-drag-delay
-Number of milliseconds a click must be held to start a drag. (default 0)
-
-##### data-empty-placeholder-enabled
-If a tree is empty, there will be an empty placeholder which is used to drop node from other trees by default.
-- `true` (default): display an empty placeholder if the tree is empty
-- `false`: do not display an empty placeholder
-
-##### Example
-- turn on/off drag and drop.
-- Limit depth to 5
-- 500 milliseconds delay
-
-```html
-<div ui-tree data-drag-enabled="tree.enabled" data-max-depth="5" data-drag-delay="500">
-
-</div>
-```
-
-#### Events
-`angular-ui-tree:collapse-all` Collapse all it's child nodes.
+### NuGet
 
-`angular-ui-tree:expand-all` Expand all it's child nodes.
-
-#### Methods of scope
-##### $callbacks (type: Object)
-`$callbacks` is a very important property for `angular-ui-tree`. When some special events trigger, the functions in `$callbacks` are called. The callbacks can be passed through the directive.
+> **Note: we are dropping support for NuGet.
 
-Example:
-```js
-myAppModule.controller('MyController', function($scope) {
-  $scope.treeOptions = {
-    accept: function(sourceNodeScope, destNodesScope, destIndex) {
-      return true;
-    },
-  };
-});
-```
-```html
-<div ui-tree="treeOptions">
-  <ol ui-tree-nodes ng-model="nodes">
-    <li ng-repeat="node in nodes" ui-tree-node>{{node.title}}</li>
-  </ol>
-</div>
-```
+## Full path tracking (for pages without a router)
+Introduced in 0.15.19 - support websites that do not use Angular `routes` or `states` on every page and still want to track full paths.  The modifications lead to the following behavior:
 
-#### Methods in $callbacks
-##### <a name="accept"></a>accept(sourceNodeScope, destNodesScope, destIndex)
-Check if the current dragging node can be dropped in the `ui-tree-nodes`.
+ - **Viewing page `http://host.com/routes#/route` will be tracked as `/routes#/route`.** The original version would only track the page as `/route`
+ - **Viewing page `http://host.com/noroutes` will be tracked as `/noroutes`.**  This is useful for pages that do not contain Angular code besides initializing the base module.
+ - **Viewing page `http://host.com/routes2` that loads a default route and changes the path to `http://host.com/routes2#/` will be tracked as `/routes2#/`.** This will only fire one pageview, whereas earlier versions would have fired two.
 
-**Parameters:**
-- `sourceNodeScope`: The scope of source node which is dragging.
-- `destNodesScope`: The scope of `ui-tree-nodes` which you want to drop in.
-- `destIndex`: The position you want to drop in.
+To enable this behavior, add the following to your configuration:
 
-**Return** If the nodes accept the current dragging node.
-- `true` Allow it to drop.
-- `false` Not allow.
-
-##### <a name="beforeDrag"></a>beforeDrag(sourceNodeScope)
-Check if the current selected node can be dragged.
+        ...
+        var yourApp = angular.module('YourApp', ['angulartics', 'angulartics.google.analytics'])
+            .config(function ($analyticsProvider) {
+                $analyticsProvider.firstPageview(true); /* Records pages that don't use $state or $route */
+                $analyticsProvider.withAutoBase(true);  /* Records full path */
+        });
 
-**Parameters:**
-- `sourceNodeScope`: The scope of source node which is selected.
+You can also use `$analyticsProvider.withBase(true)` instead of `$analyticsProvider.withAutoBase(true)` if you are using a `<base>` HTML tag.
 
-**Return** If current node is draggable.
-- `true` Allow it to drag.
-- `false` Not allow.
+## Minimal setup
 
-##### <a name="removed"></a>removed(node)
-If a node is removed, the `removed` callback will be called.
+### for Google Analytics
 
-**Parameters:**
- - `node`: The node that was removed
+See [angulartics-google-analytics](https://github.com/angulartics/angulartics-google-analytics/blob/master/README.md) documentation.
 
-##### <a name="dropped"></a>dropped(event)
-If a node moves it's position after dropped, the `nodeDropped` callback will be called.
+### for Google Tag Manager (new interface)
 
-**Parameters:** - <a name="eventParam"></a>`event`: Event arguments, it's an object.
-  * `source`: Source object
-    + `nodeScope`: The scope of source node which was dragged.
-    + `nodesScope`: The scope of the parent nodes of source node  when it began to drag.
-    + `index`: The position when it began to drag.
-    + `cloneModel`: Given data-clone-enabled is true, holds the model of the cloned node that is to be inserted, this can be edited before drop without affecting the source node.
-  * `dest`: Destination object
-    + `nodesScope`: The scope of `ui-tree-nodes` which you just dropped in.
-    + `index`: The position you dropped in.
-  * `elements`: The dragging relative elements.
-    + `placeholder`: The placeholder element.
-    + `dragging`: The dragging element.
-  * `pos`: Position object.
+    angular.module('myApp', ['angulartics', 'angulartics.google.tagmanager'])
 
-To change the node being dropped before
-##### <a name="dragStart"></a>dragStart(event)
-The `dragStart` function is called when the user starts to drag the node. **Parameters:** Same as [Parameters](#eventParam) of dropped.
+Add the full tracking code from Google Tag Manager to the beginning of your body tag.
 
-##### dragMove(event)
-The `dragMove` function is called when the user moves the node.
+Setup listeners in Google Tag Manager
 
-**Parameters:** Same as [Parameters](#eventParam) of dropped.
+#### 6 Variables
 
-##### dragStop(event)
-The `dragStop` function is called when the user stop dragging the node.
+Naming and case must match.
 
-**Parameters:** Same as [Parameters](#eventParam) of dropped.
+1. **angulartics page path** Type: **Data Layer Variable** Data Layer Variable Name: **content-name**
+2. **angulartics event category** Type: **Data Layer Variable** Data Layer Variable Name: **target**
+3. **angulartics event action** Type: **Data Layer Variable** Data Layer Variable Name: **action**
+4. **angulartics event label** Type: **Data Layer Variable** Data Layer Variable Name: **target-properties**
+5. **angulartics event value** Macro Type: **Data Layer Variable** Data Layer Variable Name: **value**
+6. **angulartics event interaction type** Type: **Data Layer Variable** Data Layer Variable Name: **interaction-type**
 
-##### beforeDrop(event)
-The `beforeDrop` function is called before the dragging node is dropped. If you implement this callback, the return value determines whether the drop event is allowed to proceed.
+#### 2 Triggers
 
-**Parameters:** Same as [Parameters](#eventParam) of dropped.
-
-**Callback Return Values**
+Name and case must match
 
-- **Resolved Promise** or **truthy**: Allow the node to be dropped
+1. **Angulartics events** Event: **Custom Event** Fire on: **interaction**
+2. **Angulartics pageviews** Event: **Custom Event** Fire on: **content-view**
 
-- **Rejected Promise** or **false**: Disallow the node drop and return the dragged node to its original position
+#### 2 Tags
 
-##### toggle(collapsed, sourceNodeScope)
-The `toggle` function is called after the node is toggled
+1. **Angulartics Events** Product: **Google Analytics** Type: **Universal Analytics** Tracking ID: **YourGoogleAnalyticsID** Track Type: **Event** Category: **{{angulartics event category}}** Action: **{{angulartics event action}}** Label: **{{angulartics event label}}** Value: **{{angulartics event value}}** Non-Interaction Hit: **{{angulartics event interaction type}}** Fire On: **Angulartics events**
+2. **Angulartics Pageviews** Product: **Google Analytics** Type: **Universal Analytics** Tracking ID: **YourGoogleAnalyticsID** Track Type: **Page View** More settings > Field to Set > name: **page**, value: **{{angulartics page path}}** Fire On: **Angulartics pageviews**
 
-**Parameters:**
-- `collapsed`: Boolean value with state of the node.
-- `sourceNodeScope`: The scope of source node which is toggled.
+### for Google Tag Manager (old interface)
 
-### ui-tree-nodes
-`ui-tree-nodes` is the container of nodes. Every `ui-tree-node` should have a `ui-tree-nodes` as it's container, a `ui-tree-nodes` can have multiple child nodes.
+    angular.module('myApp', ['angulartics', 'angulartics.google.tagmanager'])
 
-#### Attributes
-##### data-nodrop-enabled <a name="nodes_attrs_nodrop"></a>Prevent nodes from being dropped into this node container. This prevents nodes from being dropped directly into the container with the attribute but not into children that contain additional containers. See the [demo page](http://angular-ui-tree.github.io/angular-ui-tree/#/nodrop) for examples.
+Add the full tracking code from Google Tag Manager to the beginning of your body tag.
 
-##### data-max-depth <a name="nodes_attrs_maxDepth"></a>Number of levels a nodes can be nested (default 0). 0 means no limit. It can override the `data-max-depth` in `ui-tree`. **Note** If you write your own [$callbacks.accept](#accept) method, you have to check `data-nodrop-enabled` and `data-max-depth` by yourself.
+Setup listeners in Google Tag Manager
 
-Example: turn off drop.
-```html
-<ol ui-tree-nodes ng-model="nodes" data-nodrop-enabled="true">
-  <li ng-repeat="node in nodes" ui-tree-node>{{node.title}}</li>
-</ol>
-```
+#### 6 Macros
 
-#### Properties of scope
-##### $element (type: AngularElement)
-The html element which bind with the `ui-tree-nodes` scope.
+Naming and case must match.
 
-##### $modelValue (type: Object)
-The data which bind with the scope.
+1. **angulartics page path** Type: **Data Layer Variable** Data Layer Variable Name: **content-name**
+2. **angulartics event category** Type: **Data Layer Variable** Data Layer Variable Name: **target**
+3. **angulartics event action** Type: **Data Layer Variable** Data Layer Variable Name: **action**
+4. **angulartics event label** Type: **Data Layer Variable** Data Layer Variable Name: **target-properties**
+5. **angulartics event value** Macro Type: **Data Layer Variable** Data Layer Variable Name: **value**
+6. **angulartics event interaction type** Type: **Data Layer Variable** Data Layer Variable Name: **interaction-type**
 
-##### $nodes (type: Array)
-All it's child nodes. The type of child node is scope of `ui-tree-node`.
+#### 2 Rules
 
-##### $nodeScope (type: Scope of ui-tree-node)
-The scope of node which current `ui-tree-nodes` belongs to. For example:
+Name and case must match
 
-    ui-tree-nodes                       --> nodes 1
-      ui-tree-node                      --> node 1.1
-        ui-tree-nodes                   --> nodes 1.1
-          ui-tree-node                  --> node 1.1.1
-          ui-tree-node                  --> node 1.1.2
-      ui-tree-node                      --> node 1.2
+1. **Angulartics events** Condition: **{{event}} equals interaction**
+2. **Angulartics pageviews** Condition: **{{event}} equals content-view**
 
-The property `$nodeScope of` `nodes 1.1` is `node 1.1`. The property `$nodes` of `nodes 1.1` is [`node 1.1.1`, `node 1.1.2`]
+#### 2 Tags
 
-##### maxDepth
-Number of levels a node can be nested. It bases on the attribute [data-max-depth](#nodes_attrs_maxDepth).
+1. **Angulartics Events** Product: **Google Analytics** Type: **Universal Analytics** Tracking ID: **YourGoogleAnalyticsID** Track Type: **Event** Category: **{{angulartics event category}}** Action: **{{angulartics event action}}** Label: **{{angulartics event label}}** Value: **{{angulartics event value}}** Non-Interaction Hit: **{{angulartics event interaction type}}** Firing Rules: **Angulartics events**
+2. **Angulartics Pageviews** Product: **Google Analytics** Type: **Universal Analytics** Tracking ID: **YourGoogleAnalyticsID** Track Type: **Page View** More settings > Basic Configuration > Document Path: **{{angulartics page path}}** Firing Rules: **Angulartics pageviews**
 
-##### nodropEnabled
-Turn off drop on nodes. It bases on the attribute [data-nodrop-enabled](#nodes_attrs_nodrop).
+### for Piwik ##
 
-#### Methods of scope
-##### depth()
-Get the depth.
+See [angulartics-piwik](https://github.com/angulartics/angulartics-piwik) for more details.
 
-##### outOfDepth(sourceNode)
-Check if depth limit has reached
+### for other providers
 
-##### isParent(nodeScope)
-Check if the nodes is the parent of the target node. **Parameters:**
-- `nodeScope`: The target node which is used to check with the current nodes.
+[Browse the website for detailed instructions.](http://angulartics.github.io)
 
+## Supported providers
 
-### ui-tree-node
-A node of a tree. Every `ui-tree-node` should have a `ui-tree-nodes` as it's container.
+* [Adobe Analytics](https://github.com/angulartics/angulartics-adobe-analytics)
+* [Chartbeat](https://github.com/angulartics/angulartics-chartbeat)
+* [Clicky](https://github.com/angulartics/angulartics-clicky)
+* \[Facebook Pixel\] (https://github.com/mooyoul/angulartics-facebook-pixel)
+* [Flurry](https://github.com/angulartics/angulartics-flurry)
+* [Google Analytics](https://github.com/angulartics/angulartics-google-analytics)
+* Google Tag Manager
+* GoSquared
+* [HubSpot](https://github.com/angulartics/angulartics-hubspot)
+* [IBM Digital Analytics](https://github.com/cwill747/angulartics-coremetrics)
+* [Kissmetrics](https://github.com/angulartics/angulartics-kissmetrics)
+* [Localytics](https://github.com/angulartics/angulartics-localytics)
+* Loggly
+* Marketo
+* [Mixpanel](https://github.com/angulartics/angulartics-mixpanel)
+* Piwik
+* [Scout](https://github.com/Trolleymusic/angulartics-scout)
+* Scroll tracking
+* [Segment](https://github.com/angulartics/angulartics-segment)
+* Splunk
+* Woopra
 
-#### Attributes
-##### data-nodrag (type: boolean)
-Turn off drag of node. Example: turn off drag.
-```html
-<ol ui-tree-nodes ng-model="nodes">
-  <li ng-repeat="node in nodes" ui-tree-node data-nodrag>{{node.title}}</li>
-</ol>
-```
+If there's no Angulartics plugin for your analytics vendor of choice, please feel free to write yours and PR' it! Here's how to do it.
 
-##### data-collapsed (type: boolean)
-Collapse the node.
+## Creating your own vendor plugin
 
-##### data-expand-on-hover (type: boolean, number)
-Causes the node to expand (if it contains child nodes and was collapsed) when dragging a node over it. This lets users drag and drop items into a nested tree in a single drag operation, instead of having to expand all the nodes to the destination first. The target node will immediately expand when `true` is provided. When a number (in milliseconds) is specified, the target node will expand after the specified amount of milliseconds.
+> Make sure you follow the [Plugin contribution guidelines](https://github.com/angulartics/angulartics/wiki/Plugin-contribution-rules). You can also use [any of the existing plugins](https://github.com/angulartics) as a starter template.
 
-##### data-scroll-container (type: string)
-Causes drag-scrolling to happen within a customisable container, as opposed to the default document body. Accepts any selector string that document.querySelector accepts. Example:
-```html
-<div ui-tree style="height: 300px; overflow:scroll;" class="wrapper">
-    <ul ui-tree-nodes style="height: 600px;">
-        <li ui-tree-node ng-repeat="item in items" data-scroll-container=".wrapper">
-    </ul>
-</div>
-```
+It's very easy to write your own plugin. First, create your module and inject `$analyticsProvider`:
 
-#### Properties of scope
-##### $element (type: AngularElement)
-The html element which bind with the `ui-tree-nodes` scope.
+    angular.module('angulartics.myplugin', ['angulartics'])
+      .config(['$analyticsProvider', function ($analyticsProvider) {
 
-##### $modelValue (type: Object)
-The data which bind with the scope.
+Please follow the style `angulartics.{vendorname}`.
 
-##### collapsed (type: boolean)
-If the node is collapsed
+Next, you register either the page track function, event track function, or both. You do it by calling the `registerPageTrack` and `registerEventTrack` methods. Let's take a look at page tracking first:
 
-- `true`: Current node is collapsed;
-- `false`: Current node is expanded.
+    $analyticsProvider.registerPageTrack(function (path) {
+        // your implementation here
+    }
 
-##### $parentNodeScope (type: Scope of ui-tree-node)
-The scope of parent node.
+By calling `registerPageTrack`, you tell Angulartics to invoke your function on `$routeChangeSuccess` or `$stateChangeSuccess`. Angulartics will send the new path as an argument.
 
-##### $childNodesScope (type: Scope of ui-tree-nodes)
-The scope of it's `ui-tree-nodes`.
+    $analyticsProvider.registerEventTrack(function (action, properties) {
+        // your implementation here
 
-##### $parentNodesScope (type: Scope of ui-tree-nodes)
-The scope of it's parent `ui-tree-nodes`.
+This is very similar to page tracking. Angulartics will invoke your function every time the event (`analytics-on` attribute) is fired, passing the action (`analytics-event` attribute) and an object composed of any `analytics-*` attributes you put in the element.
 
-For example:
+If the analytics provider is created async, you can wrap you code with:
 
-    ui-tree-nodes                       --> nodes 1
-      ui-tree-node                      --> node 1.1
-        ui-tree-nodes                   --> nodes 1.1
-          ui-tree-node                  --> node 1.1.1
-          ui-tree-node                  --> node 1.1.2
-      ui-tree-node                      --> node 1.2
+    angulartics.waitForVendorApi("var", 1000, function(window.var) {
+      ...
+    });
 
-- `node 1.1.1`.`$parentNodeScope` is `node 1.1`.
-- `node 1.1`.`$childNodesScope` is `nodes 1.1`.
-- `node 1.1`.`$parentNodesScope` is `nodes 1`.
+which will polls every 1000ms for `window.var`, and fire `function(window.var)` once `window.var` is not `undefined`. Calls made by `$analytics` will be buffered until `function(window.var)` fires.
 
-#### Methods of scope
-##### collapse()
-Collapse current node.
+You can also poll for `window.var.subvar` with:
 
-##### expand()
-Expand current node.
+    angulartics.waitForVendorApi("var", 1000, "subvar", function(window.var) {
+      ...
+    });
 
-##### toggle()
-Toggle current node.
+Check out the bundled plugins as reference. If you still have any questions, feel free to email me or post an issue at GitHub!
 
-##### remove()
-Remove current node.
+## Playing around
 
-##### depth()
-Get the depth of the node.
+### Opt-out settings
 
-##### maxSubDepth()
-Get the max depth of all the child nodes. If there is no child nodes, return 0.
+When working on a global product there are many countries who by default require the opt-out functionality of all analytics and tracking. These opt out settings are meant to aid with that. The developer mode simply cripples the library where as this actually disables the tracking so it can be turned on and off.
 
-##### isSibling(targetNodeScope)
-Check if the current node is sibling with the target node. **Parameters:**
-- `targetNodeScope`: The target node which is used to check with the current node.
-
-##### isChild(targetNodeScope)
-Check if the current node is a child of the target node. **Parameters:**
-- `targetNodeScope`: The target node which is used to check with the current node.
-
-
-### ui-tree-handle
-Use the `ui-tree-handle` to specify an element used to drag the object. If you don't add a `ui-tree-handle` for a node, the entire node can be dragged.
-
-## Runtime Configuration
-Use the `treeConfig` service to configure the tree defaults at runtime. With this you can customize the classes applied to various tree elements (`treeClass`, `emptyTreeClass`, `hiddenClass`, `nodesClass`, `handleClass`, `placeholderClass`, `dragClass`).
-
-In addition, you can modify whether or not nodes are collapsed by default (`defaultCollapsed`: default false).
-
-You can also modify whether or not dragging a node over a parent node will insert the node as a child (`appendChildOnHover`: default true).
-
-For example:
-
-```js
-module.config(function(treeConfig) {
-  treeConfig.defaultCollapsed = true; // collapse nodes by default
-  treeConfig.appendChildOnHover = true; // append dragged nodes as children by default
-});
-```
-
-## NgModules Link
-
-[Give us a like on ngmodules](http://ngmodules.org/modules/angular-ui-tree)
-
-## Development environment setup
-#### Prerequisites
-
-* [Node Package Manager](https://npmjs.org/) (NPM)
-* [Git](http://git-scm.com/)
-
-#### Dependencies
-
-* [Gulp](http://gulpjs.com/) (task automation)
-* [Bower](http://bower.io/) (package management)
-
-#### Installation
-Run the commands below in the project root directory.
-
-##### 1. Install Gulp and Bower
-
-    $ sudo npm install -g gulp bower
-
-##### 2. Install project dependencies
-
-    $ npm install
-    $ ./node_modules/protractor/bin/webdriver-manager update
-    $ bower install
-
-## Useful commands
-
-#### Running a Local Development Web Server
-To debug code and run end-to-end tests, it is often useful to have a local HTTP server. For this purpose, we have made available a local web server based on Node.js.
-
-To start the web server, run:
-
-    $ gulp serve
-
-To access the local server, enter the following URL into your web browser:
-
-    http://localhost:9000
-
-By default, it serves the contents of the `examples` directory.
-
-
-#### Building angular-ui-tree
-To build angular-ui-tree, you use the following command.
-
-    $ gulp build
-
-This will generate non-minified and minified JavaScript files in the `dist` directory.
-
-#### Run tests
-You can run the unit test using a separate task.
-
-    $ gulp test
-
-The E2E-tests can be executed using
-
-    $ gulp test:e2e
+    // $analytics.setOptOut(boolean Optout);
+    // To opt out
+    $analytics.setOptOut(true);
     
-    > Note: make sure you have the example website running on port `9000` (using the `$ gulp serve` command)
+    // To opt in
+    $analytics.setOptOut(false);
+    
+    // To get opt out state
+    $analytics.getOptOut(); // Returns true or false
 
-*Windows: If your e2e tests are failing, run the command prompt as an administrator. ([See symlink issue](https://github.com/ben-eb/gulp-symlink/issues/33))*
 
-#### Deploy examples
+### Disabling virtual pageview tracking
 
-    $ gulp deploy
+If you want to keep pageview tracking for its traditional meaning (whole page visits only), set virtualPageviews to false:
+
+    module.config(function ($analyticsProvider) {
+        $analyticsProvider.virtualPageviews(false);
+
+### Disabling pageview tracking for specific routes
+
+If you want to disable pageview tracking for specific routes, you can define a list of excluded routes (using strings or regular expressions):
+
+    module.config(function ($analyticsProvider) {
+            $analyticsProvider.excludeRoutes(['/abc','/def']);
+
+Urls and routes that contain any of the strings or match any of the regular expressions will not trigger the pageview tracking.
+
+### Disabling tracking of specific query string keys
+
+If you want to disable tracking for specific query string keys, you can define a list of both whitelisted and blacklisted keys (using strings or regular expressions):
+
+    module.config(function ($analyticsProvider) {
+            $analyticsProvider.queryKeysWhitelist([/^utm_.*/]);
+            $analyticsProvider.queryKeysBlacklist(['email',/^user/]);
+
+Any query string key/value pairs will be filtered out of the URL sent to the tracking authority.
+
+Blacklisting overrides Whitelisting.
+
+### Disabling tracking on $routeChangeSuccess
+
+If you want to disable pageview tracking for the $routeChangeSuccess event, set trackRoutes to false:
+
+    module.config(function ($analyticsProvider) {
+      $analyticsProvider.trackRoutes(false);
+
+### Disabling tracking on $stateChangeSuccess
+
+If you want to disable pageview tracking for the $stateChangeSuccess event, set trackStates to false:
+
+    module.config(function ($analyticsProvider) {
+      $analyticsProvider.trackStates(false);
+
+### Programmatic tracking
+
+Use the `$analytics` service to emit pageview and event tracking:
+
+    module.controller('SampleCtrl', function($analytics) {
+        // emit pageview beacon with path /my/url
+        $analytics.pageTrack('/my/url');
+    
+        // emit event track (without properties)
+        $analytics.eventTrack('eventName');
+    
+        // emit event track (with category and label properties for GA)
+        $analytics.eventTrack('eventName', {
+          category: 'category', label: 'label'
+        });
+
+### Declarative tracking
+
+Use `analytics-on` and `analytics-event` attributes for enabling event tracking on a specific HTML element:
+
+    <a href="file.pdf"
+        analytics-on="click"
+        analytics-if="myScope.shouldTrack"
+        analytics-event="Download">Download</a>
+
+`analytics-on` lets you specify the DOM event that triggers the event tracking; `analytics-event` is the event name to be sent.
+
+`analytics-if` is a conditional check. If the attribute value evaluates to a falsey, the event will NOT be fired. Useful for user tracking opt-out, etc.
+
+Additional properties (for example, category as required by GA) may be specified by adding `analytics-*` attributes:
+
+    <a href="file.pdf"
+        analytics-on="click"
+        analytics-event="Download"
+        analytics-category="Content Actions">Download</a>
+
+or setting `analytics-properties`:
+
+    <a href="file.pdf"
+        analytics-on="click"
+        analytics-event="Download"
+        analytics-properties="{ category: 'Content Actions' }">Download</a>
+
+### Scroll tracking
+
+You can use:
+
+    <div analytics-on="scrollby">
+
+which will track an event when the element is scrolled to the top of the viewport. This relies on [jQuery Waypoints](http://imakewebthings.com/jquery-waypoints/) which must be loaded:
+
+    <script src="waypoints/waypoints.min.js"></script>
+    <script src="angulartics/dist/angulartics-scroll.min.js"></script>
+
+The following module must be enabled as well:
+
+    angular.module('myApp', [..., 'angulartics.scroll'])
+
+You can pass [extra options](http://imakewebthings.com/waypoints/api/waypoint/) to Waypoints with `scrollby-OPTION`. For example, to track an event when the element is in the middle on the viewport:
+
+    <div analytics-on="scrollby" scrollby-offset="50%">
+
+Waypoints is fired with the following options:
+  - `continuous: false`, when jumping (for example with a URL anchor) passed several tracked elements, only the last one will fire an event
+  - `triggerOnce: true`, the tracking event is only fired once for a given page
+
+### User tracking
+
+You can assign user-related properties which will be sent along each page or event tracking thanks to:
+
+    $analytics.setAlias(alias)
+    $analytics.setUsername(username)
+    $analytics.setUserProperties(properties)
+    $analytics.setSuperProperties(properties)
+
+Like `$analytics.pageTrack()` and `$analytics.eventTrack()`, the effect depends on the analytics provider (i.e. `$analytics.register*()`). Not all of them implement those methods.
+
+The Google Analytics module lets you call `$analytics.setUsername(username)` or set up `$analyticsProvider.settings.ga.userId = 'username'`.
+
+### Exception tracking
+
+You can enable automatic exception tracking which decorates angular's `$exceptionHandler` and reports the exception to the analytics provider:
+
+    $analyticsProvider.trackExceptions(true)
+
+Currently only the Google Analytics provider supports tracking exceptions, and it does so by reporting it as an event.
+
+### Developer mode
+
+You can disable tracking with:
+
+    $analyticsProvider.developerMode(true);
+
+You can also debug Angulartics by adding the following module:
+
+    angular.module('myApp', [..., 'angulartics.debug'])
+
+which will call `console.log('Page|Event tracking: ', ...)` accordingly.
+
+## What else?
+
+See more docs and samples at [http://angulartics.github.io](http://angulartics.github.io "http://angulartics.github.io").
+
+## <a name="FunnyStory"></a>Funny Story
+
+Back in 2003 [@mgonto](http://github.com/mgonto) and I were excited with Angular, doing a bunch of stuff. We had met each other at the [Nardoz](http://github.com/nardoz) group and even crossed paths working for the same company. It turns out, both of us came up with the idea of building a module for analytics **at the same time, without knowing about it**. We even created our respective repos with just seconds of difference. Check that out yourselves by using the GitHub api and inspecting [the creation date for this repo](https://api.github.com/repos/angulartics/angulartics) (at that time, this repo was under my username [@luisfarzati](http://github.com/luisfarzati), this is the original so it has the original creation date) and then [Angularytics](https://api.github.com/repos/mgonto/angularytics)' creation date. Even our initial commits were about the same time.
+
+To be honest, initially I thought he was just blatantly copycating the idea but then when I checked out the repo data, truth was his repo timestamp was even earlier than mine. So, technically, I copycated his idea. Of course I did not, that's the funny and weirdest thing of the story. Or perhaps, even weirder, is that we both chose almost the same exact name, only that @mgonto went with an additional Y.
+
+We discussed about renaming one of our projects, we almost decided to play a Rock, Paper, Scissors, Lizard, Spock game to decide who keeps the original name, but both of us really liked our names. So we kept it that way.
+
+Isn't the open source world crazy?
+
+## License
+
+[MIT](LICENSE)
