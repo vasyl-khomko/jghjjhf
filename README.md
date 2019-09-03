@@ -1,13 +1,13 @@
-# Angular-filter &nbsp; [![NPM version][npm-image]][npm-url] [![Build status][travis-image]][travis-url] [![Test coverage][coveralls-image]][coveralls-url] [![License][license-image]][license-url]
+# Angular-filter &nbsp; [![NPM version](https://img.shields.io/npm/v/angular-filter.svg?style=flat-square)](https://npmjs.org/package/angular-filter) [![Build status](https://img.shields.io/travis/a8m/angular-filter.svg?style=flat-square)](https://travis-ci.org/a8m/angular-filter) [![Test coverage](https://img.shields.io/coveralls/a8m/angular-filter.svg?style=flat-square)](https://coveralls.io/r/a8m/angular-filter) [![License](http://img.shields.io/npm/l/angular-filter.svg?style=flat-square)](LICENSE)
 Bunch of useful filters for AngularJS *(with no external dependencies!)*
 
 <h3 align="center">
-<img src="https://angular.io/assets/images/logos/angular/angular.svg" width="50" alt="angular pipes"><br/>
+<img src="https://angular.io/assets/images/logos/angular/angular.svg" width="50" alt="angular pipes"><br />
  Angular 2 version is now available: <a href="https://github.com/a8m/ng-pipes">ng-pipes</a>
  </h3>
 
 ## Table of contents:
-- [![Gitter][gitter-image]][gitter-url]
+- [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/a8m/angular-filter?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 - [Get Started](#get-started)
 - [Common Questions](https://github.com/a8m/angular-filter/wiki/Common-Questions)
 - [Changelog](#changelog)
@@ -170,10 +170,7 @@ result:
 ```
 
 ### unique
-Remove duplicates from an array/object.<br/>
-If a string is provided, it will filter out duplicates using the provided expression.<br/>
-**Usage:** ```collection | unique: 'property' ```<br/>
-**aliases:** uniq
+Видаліть дублікати з масиву / об’єкта.<br /> Якщо надається рядок, вона відфільтрує дублікати, використовуючи наданий вираз.<br /> **Використання:** `колекція | унікальний: 'властивість'`<br /> **псевдоніми:** uniq
 ```js
 function MainController ($scope) {
   $scope.orders = [
@@ -190,9 +187,7 @@ Ex: Filter by customer.id
 <th>Customer list:</th>
 <tr ng-repeat="order in orders | unique: 'customer.id'" >
    <td> {{ order.customer.name }} , {{ order.customer.id }} </td>
-</tr>
-
-<!-- result:
+</tr><!-- result:
 All customers list:
 John 10
 William 20
@@ -200,9 +195,7 @@ Clive 30
 
 ```
 ### filterBy
-Filter a collection by a specific property.<br/>
-**Usage:** ```collection | filterBy: [prop, nested.prop, etc..]: search: strict[optional]```<br/>
-**Note:** You can even use compound properties (e.g: ```|filterBy: [property + property]: model```)<br/>
+Filter a collection by a specific property.<br /> **Usage:** `collection | filterBy: [prop, nested.prop, etc..]: search: strict[optional]`<br /> **Note:** You can even use compound properties (e.g: `|filterBy: [property + property]: model`)<br />
 
 ```js
 $scope.users = [
@@ -214,8 +207,7 @@ $scope.users = [
 ```
 Return users whose id is 1
 ```html
-<!--search only by id -->
-<th ng-repeat="user in users | filterBy: ['id']: 1">
+<!--search only by id --><th ng-repeat="user in users | filterBy: ['id']: 1">
   {{ user.id }} : {{ user.first_name }} {{ user.last_name }}
 </th>
 <!--result:
@@ -247,9 +239,7 @@ Return users whose full name is
 -->
 ```
 ### first
-Gets the first element(s) of a collection.<br/>
-If an expression is provided, it will only return elements whose expression is truthy.<br/>
-***Usage:*** See below <br/>
+Gets the first element(s) of a collection.<br /> If an expression is provided, it will only return elements whose expression is truthy.<br /> ***Usage:*** See below <br />
 
 ```js
 $scope.users = [
@@ -293,15 +283,12 @@ Return the first two users with even id
 <!-- collection | first: n: expression -->
 <th ng-repeat="user in users | first: 2: '!(id%2)'">
   {{ user.name }}
-</th>
-<!--result:
+</th><!--result:
 Mike
 Rob
 ```
 ### last
-Gets the last element or last n elements of a collection,<br/>
-if expression is provided, is returns as long the expression return truthy<br/>
-***Usage:*** See below <br/>
+Gets the last element or last n elements of a collection,<br /> if expression is provided, is returns as long the expression return truthy<br /> ***Usage:*** See below <br />
 ```js
 $scope.users = [
   { id: 1, name: { first: 'foo', last: 'bar' } },
@@ -316,8 +303,7 @@ $scope.users = [
 { id: 4, name: { first: 'lol', last: 'bar' } }
 ```
 ```html
-<!-- collection | last: expression -->
-{{ users | last: 'name.last === \'bar\'' }}
+<!-- collection | last: expression -->{{ users | last: 'name.last === \'bar\'' }}
 <!--result:
 [ { id: 4, name: { first: 'lol', last: 'bar' } } ]
 ```
@@ -334,15 +320,12 @@ lol
 <!-- collection | last: n: expression -->
 <th ng-repeat="user in users | last: 2: '!(id%2)'">
   {{ user.name }}
-</th>
-<!--result:
+</th><!--result:
 baz
 lol
 ```
 ### flatten
-Flattens a nested array (the nesting can be to any depth).<br/>
-If you pass shallow, the array will only be flattened a single level<br/>
-**Usage:** ```collection | flatten: shallow[optional]```
+Flattens a nested array (the nesting can be to any depth).<br /> If you pass shallow, the array will only be flattened a single level<br /> **Usage:** `collection | flatten: shallow[optional]`
 ```js
 $scope.weirdArray = [[], 1, 2, 3, [4, 5, 6, [7, 8, 9, [10, 11, [12, [[[[[13], [[[[14, 15]]]]]]]]]]]]];
 ```
@@ -355,10 +338,9 @@ $scope.weirdArray = [[], 1, 2, 3, [4, 5, 6, [7, 8, 9, [10, 11, [12, [[[[[13], [[
 ```
 
 ### join
-Joins the contents of a collection into a string.<br/>
-By default, it will join elements with a *single space*, but you can provide your own delimiter.
+Joins the contents of a collection into a string.<br /> By default, it will join elements with a *single space*, but you can provide your own delimiter.
 
-**Usage:** ```collection | join:', '```
+**Usage:** `collection | join:', '`
 
 Example:
 
@@ -368,15 +350,11 @@ $scope.names = ['John', 'Sebastian', 'Will', 'James'];
 
 ```html
 <p>{{ names | join:', ' }}</p>
-<!-- Will print "John, Sebastian, Will, James" -->
-
-```
+<!-- Will print "John, Sebastian, Will, James" -->```
 
 
 ### fuzzy
-fuzzy string searching(approximate string matching). [Read more](http://en.wikipedia.org/wiki/Approximate_string_matching)<br/>
-**note:** use fuzzyBy to filter by one property to improve performance<br/>
-**Usage:** ```collection | fuzzy: search: caseSensitive[optional]```
+fuzzy string searching(approximate string matching). [Read more](http://en.wikipedia.org/wiki/Approximate_string_matching)<br /> **note:** use fuzzyBy to filter by one property to improve performance<br /> **Usage:** `collection | fuzzy: search: caseSensitive[optional]`
 ```js
 $scope.books = [
   { title: 'The DaVinci Code', author: 'F. Scott Fitzgerald' },
@@ -397,8 +375,7 @@ $scope.books = [
 </li>
 ```
 ### fuzzyBy
-fuzzy string searching(approximate string matching) by property(nested to). [Read more](http://en.wikipedia.org/wiki/Approximate_string_matching)<br/>
-**Usage:** ```collection | fuzzyBy: 'property': search: caseSensitive[optional]```
+fuzzy string searching(approximate string matching) by property(nested to). [Read more](http://en.wikipedia.org/wiki/Approximate_string_matching)<br /> **Usage:** `collection | fuzzyBy: 'property': search: caseSensitive[optional]`
 ```js
 $scope.books = [
   { title: 'The DaVinci Code' },
@@ -419,9 +396,7 @@ $scope.books = [
 </li>
 ```
 ### groupBy
-Create an object composed of keys generated from the result of running each element of a collection,<br/>
-each key is an array of the elements.<br/>
-**Usage:** ```(key, value) in collection | groupBy: 'property'``` or ```... | groupBy: 'nested.property'```
+Create an object composed of keys generated from the result of running each element of a collection,<br /> each key is an array of the elements.<br /> **Usage:** `(key, value) in collection | groupBy: 'property'` or `... | groupBy: 'nested.property'`
 ```js
 $scope.players = [
   {name: 'Gene', team: 'alpha'},
@@ -441,8 +416,7 @@ $scope.players = [
       </li>
     </ul>
   </li>
-</ul>
-<!-- result:
+</ul><!-- result:
   Group name: alpha
     * player: Gene
   Group name: beta
@@ -453,9 +427,7 @@ $scope.players = [
     * player: Scruath
 ```
 ### countBy
-Create an object composed of keys generated from the result of running each element of a collection,<br/>
-each key is the count of objects in each group<br/>
-**Usage:** ```(key, value) in collection | countBy: 'property'``` or ```... | countBy: 'nested.property'```
+Create an object composed of keys generated from the result of running each element of a collection,<br /> each key is the count of objects in each group<br /> **Usage:** `(key, value) in collection | countBy: 'property'` or `... | countBy: 'nested.property'`
 ```js
 $scope.players = [
   {name: 'Gene', team: 'alpha'},
@@ -475,8 +447,7 @@ $scope.players = [
   Group name: gamma, length: 2
 ```
 ### chunkBy
-Collect data into fixed-length chunks or blocks
-**Usage:** ```(key, value) in collection | chunkBy: 'n': fill-value(optional)```
+Collect data into fixed-length chunks or blocks **Usage:** `(key, value) in collection | chunkBy: 'n': fill-value(optional)`
 ```js
 $scope.array = [1, 2, 3, 4, 5, 6];
 ```
@@ -488,19 +459,16 @@ $scope.array = [1, 2, 3, 4, 5, 6];
   Block: [1, 2]
   Block: [3, 4]
   Block: [5, 6]
--->
-<-- Example with fill value -->
+--><-- Example with fill value -->
 <li ng-repeat="block in array | chunkBy: 4: 0" >
   Block: {{ block }}
-</li>
-<!-- result:
+</li><!-- result:
   Block: [1, 2, 3, 4]
   Block: [5, 6, 0, 0]
 ```
 
 ### defaults
-`defaultsFilter` allows to specify a default fallback value for properties that resolve to undefined.<br/>
-**Usage:** `col in collection | defaults: fallback`
+`defaultsFilter` allows to specify a default fallback value for properties that resolve to undefined.<br /> **Usage:** `col in collection | defaults: fallback`
 ```js
 $scope.orders = [
       { id:1, destination: { zip: 21908 }, name: 'Ariel M' },
@@ -525,22 +493,17 @@ $scope.fallback = {
 * id: 3, name: Customer name not available, shipping address: 45841
 * id: 4, name: Danno L, shipping address: 78612
 ```
-**Note:** `defaultsFilter` change the source object.<br/>
-**Why?** if we don't change the source object, it actually means we're gonna return a **new** object (copy operation) on **each digest cycle**.<br/>
-And it will cause adverse memory and performance implications.<br/>
-**How to avoid it?** see below
+**Note:** `defaultsFilter` change the source object.<br /> **Why?** if we don't change the source object, it actually means we're gonna return a **new** object (copy operation) on **each digest cycle**.<br /> And it will cause adverse memory and performance implications.<br /> **How to avoid it?** see below
 ```js
 //We copy it once, and it's really cheaper
 $scope.ordersWithFallback = angular.copy($scope.orders);
 ```
 ```html
 <li ng-repeat="order in ordersWithFallback | defaults: fallback">
-    <!-- ..... -->
-</li>
+    <!-- ..... --></li>
 ```
 ### where
-comparison for each element in a collection to the given properties object,<br/>
-returning an array of all elements that have equivalent property values.
+comparison for each element in a collection to the given properties object,<br /> returning an array of all elements that have equivalent property values.
 ```js
   $scope.collection = [
     { id: 1, name: 'foo' },
@@ -565,9 +528,7 @@ returning an array of all elements that have equivalent property values.
   -->
 ```
 ### omit
-return collection without the omitted objects(by expression).<br/>
-usage: ```collection | omit: expression```<br/>
-**example 1:**
+return collection without the omitted objects(by expression).<br /> usage: `collection | omit: expression`<br /> **example 1:**
 ```js
 $scope.mod2 = function(elm) {
   return !(elm % 2);
@@ -576,8 +537,7 @@ $scope.mod2 = function(elm) {
 ```html
 <tr ng-repeat="num in [1,2,3,4,5,6] | omit: mod2">
   {{ num }},
-</tr>
-<!--result
+</tr><!--result
 1, 3, 5
 ```
 **example 2:**
@@ -596,9 +556,7 @@ $scope.collection = [
 id: 1, name: foo
 ```
 ### pick
-return collection composed of the picked objects(by expression).<br/>
-usage: ```collection | pick: expression```<br/>
-**example 1:**
+return collection composed of the picked objects(by expression).<br /> usage: `collection | pick: expression`<br /> **example 1:**
 ```js
 $scope.mod2 = function(elm) {
   return !(elm % 2);
@@ -646,8 +604,7 @@ $scope.collection = [
   { "name": "bar" }
 ```
 ### removeWith
-comparison for each element in a collection to the given properties object,<br/>
-returning an array without all elements that have equivalent property values.
+comparison for each element in a collection to the given properties object,<br /> returning an array without all elements that have equivalent property values.
 ```js
   $scope.collection = [
     { id: 1, name: 'foo' },
@@ -661,19 +618,14 @@ returning an array without all elements that have equivalent property values.
 </tr>
 <!-- result:
   baz
--->
-
-<tr ng-repeat="obj in collection | removeWith:{ id: 1, name: 'foo' }">
+--><tr ng-repeat="obj in collection | removeWith:{ id: 1, name: 'foo' }">
   {{ obj.name }}
-</tr>
-<!-- result:
+</tr><!-- result:
   bar
   baz
 ```
 ### searchField
-if you want to use the filter in angular and want to filter for multiple values<br/>
-so searchField filter return new collection with property called searchField<br/>
-**support nested properties with dot notation i.e:** ``` collection | searchField: 'prop': 'nested.prop' ```
+if you want to use the filter in angular and want to filter for multiple values<br /> so searchField filter return new collection with property called searchField<br /> **support nested properties with dot notation i.e:** `collection | searchField: 'prop': 'nested.prop'`
 ```js
 $scope.users = [
   { first_name: 'Sharon', last_name: 'Melendez' },
@@ -686,11 +638,9 @@ $scope.users = [
 <th ng-repeat="user in users | searchField: 'first_name': 'last_name' | filter: search">
   {{ user.first_name }} {{ user.last_name }}
 </th>
-<!-- so now you can search by full name -->
-```
+<!-- so now you can search by full name -->```
 ### after
-get a collection(array or object) and specified count, and returns all of the items
-in the collection after the specified count.
+get a collection(array or object) and specified count, and returns all of the items in the collection after the specified count.
 ```js
 $scope.collection = [
     { name: 'foo' },
@@ -710,8 +660,7 @@ $scope.collection = [
 
 ```
 ### afterWhere
-get a collection and properties object, and returns all of the items,
-in the collection after the first that found with the given properties, including it.
+get a collection and properties object, and returns all of the items, in the collection after the first that found with the given properties, including it.
 ```js
 $scope.orders = [
   { id: 1, customer: { name: 'foo' }, date: 'Tue Jul 15 2014' },
@@ -733,8 +682,7 @@ $scope.orders = [
 ```
 
 ### before
-get a collection(array or object) and specified count, and returns all of the items
-in the collection before the specified count.
+get a collection(array or object) and specified count, and returns all of the items in the collection before the specified count.
 ```js
 $scope.collection = [
     { name: 'foo' },
@@ -755,8 +703,7 @@ $scope.collection = [
 ```
 
 ### beforeWhere
-get a collection and properties object, and returns all of the items,
-in the collection before the first that found with the given properties, including it.
+get a collection and properties object, and returns all of the items, in the collection before the first that found with the given properties, including it.
 ```js
 $scope.orders = [
   { id: 1, customer: { name: 'foo' }, date: 'Tue Jul 15 2014' },
@@ -811,10 +758,7 @@ get collection or string and return if it empty[Boolean]
 </tr>
 ```
 ### contains
-Checks if given expression(or value) is present in one or more object in the collection<br/>
-**Usage:** ```collection | contains: 'expression'```<br/>
-**Aliases:** some<br/>
-example 1:
+Checks if given expression(or value) is present in one or more object in the collection<br /> **Usage:** `collection | contains: 'expression'`<br /> **Aliases:** some<br /> example 1:
 ```js
 $scope.array = [1,2,3,4];
 ```
@@ -830,13 +774,10 @@ $scope.collection = [
 ];
 ```
 ```html
-<th ng-show="{{ collection | some: '!(user.id % 2) && user.name.indexOf(\'b\') === 0' }}">...</th>
-<!--result: true
+<th ng-show="{{ collection | some: '!(user.id % 2) && user.name.indexOf(\'b\') === 0' }}">...</th><!--result: true
 ```
 ### every
-Checks if given expression(or value) return truthy value for all members of a collection<br/>
-**Usage:** ```collection | every: 'expression'```<br/>
-example 1:
+Checks if given expression(or value) return truthy value for all members of a collection<br /> **Usage:** `collection | every: 'expression'`<br /> example 1:
 ```js
 $scope.array = [1,1,1,1];
 ```
@@ -858,8 +799,7 @@ $scope.collection = [
 ```
 
 ### xor
-Exclusive or between two collections<br/>
-**Usage:** ```collection1 | xor: collection2: expression[optional]```<br/>
+Exclusive or between two collections<br /> **Usage:** `collection1 | xor: collection2: expression[optional]`<br />
 
 Example1:
 ```html
@@ -887,26 +827,20 @@ $scope.users2 = [
 </th>
 <!--result:
 1 2 3 4 5
--->
-<th ng-repeat="user in users1 | xor: users2: 'details.last_name'">
+--><th ng-repeat="user in users1 | xor: users2: 'details.last_name'">
   {{ user.id }}, {{ user.details.first_name }} {{ user.details.last_name }}
-</th>
-<!--result:
+</th><!--result:
 2, foo bag
 ```
 ### toArray
-Convert objects into stable arrays. <br/>
-**Usage:** ```object | toArray: addKey[optional]```<br/>
-if addKey set to true, the filter also attaches a new property $key to the value containing the original key that was used in the object we are iterating over to reference the property
+Convert objects into stable arrays. <br /> **Usage:** `object | toArray: addKey[optional]`<br /> if addKey set to true, the filter also attaches a new property $key to the value containing the original key that was used in the object we are iterating over to reference the property
 ```html
 <th ng-repeat="elm in object | toArray | orderBy: 'property'">
   {{ elm.name }}
 </th>
 ```
 ### map
-Returns a new collection of the results of each expression execution. <br/>
-**Usage:** ```collection | map: expression``` <br/>
-Example1:
+Returns a new collection of the results of each expression execution. <br /> **Usage:** `collection | map: expression` <br /> Example1:
 ```js
 $scope.divide = function(elm) {
   return elm/2
@@ -938,15 +872,12 @@ Bar
 Baz
 ```
 ### range
-Return a new collection from a given length, start, increment, and callback<br/>
-By default start is 0, increment is 1, and callback is null.
-**Usage:** ```collection | range: length:start:increment:callback```<br/>
+Return a new collection from a given length, start, increment, and callback<br /> By default start is 0, increment is 1, and callback is null. **Usage:** `collection | range: length:start:increment:callback`<br />
 ```html
 [<span ng-repeat="i in [] | range: 3">{{i}},</span>]
 <!--result:
 [0,1,2,]
--->
-```
+-->```
 ```html
 [<span ng-repeat="i in [] | range: 10:10">{{i}},</span>]
 <!--result:
@@ -1032,18 +963,15 @@ result:
 -->
 ```
 ### startsWith
-return whether string starts with the starts parameter.<br/>
-usage: ```string | startsWith: 'start': case-sensitive[optional]```<br/>
+return whether string starts with the starts parameter.<br /> usage: `string | startsWith: 'start': case-sensitive[optional]`<br />
 ```html
  {{ 'Lorem ipsum' | startsWith: 'lorem' }}
- {{ 'Lorem Ipsum' | startsWith: 'lorem': true }}
- <!--result:
+ {{ 'Lorem Ipsum' | startsWith: 'lorem': true }}<!--result:
   true
   false
 ```
 ### endsWith
-return whether string ends with the ends parameter.<br/>
-usage: ```string | endsWith: 'ends': case-sensitive[optional]```<br/>
+return whether string ends with the ends parameter.<br /> usage: `string | endsWith: 'ends': case-sensitive[optional]`<br />
 ```html
  {{ 'image.JPG' | endsWith: '.jpg' }}
  {{ 'image.JPG' | endsWith: '.jpg': true }}
@@ -1052,8 +980,7 @@ usage: ```string | endsWith: 'ends': case-sensitive[optional]```<br/>
   false
 ```
 ### stripTags
-strip out html tags from string<br/>
-**Important: this filter jobs it's not to replace ng-bind-html directive, it's only for tiny plain text
+strip out html tags from string<br /> **Important: this filter jobs it's not to replace ng-bind-html directive, it's only for tiny plain text
 
 ```js
 $scope.text = '<p class="paragraph">Lorem Ipsum is simply dummy text of the printing...</p>';
@@ -1062,8 +989,7 @@ $scope.text = '<p class="paragraph">Lorem Ipsum is simply dummy text of the prin
 <p>{{ text | stripTags }}</p>
 <!--result:
 Lorem Ipsum is simply dummy text of the printing...
--->
-```
+-->```
 ### stringular
 get string with {n} and replace match with enumeration values
 
@@ -1076,13 +1002,12 @@ get string with {n} and replace match with enumeration values
 <p>lorem ipsum dolor sit amet</p>
 -->
 
-<p>{{ 'lorem {0} dolor sit amet' | stringular }}<p>
-<!--result:
+<p>{{ 'lorem {0} dolor sit amet' | stringular }}<p><!--result:
 <p>lorem {0} dolor sit amet</p>
 ```
 
 ### phoneUS
-Format a string or a number into a us-style phone number  
+Format a string or a number into a us-style phone number
 ```html
 <p>{{ 1234567890 | phoneUS }}</p>
 
@@ -1091,28 +1016,23 @@ Format a string or a number into a us-style phone number
 ```
 
 ### truncate
-truncates a string given a specified length, providing a custom string to denote an omission.<br/>
-usage: ``` | truncate: [length]: [suffix-optional]: [preserve-optinal]```<br/>
+truncates a string given a specified length, providing a custom string to denote an omission.<br /> usage: `| truncate: [length]: [suffix-optional]: [preserve-optinal]`<br />
 ```js
 $scope.text = 'lorem ipsum dolor sit amet';
 ```
 ```html
-<!--should not cut words in the middle if preserve is true-->
-<p>{{ text | truncate: 7: '...': true }}</p>
+<!--should not cut words in the middle if preserve is true--><p>{{ text | truncate: 7: '...': true }}</p>
 
 <p>{{ text | truncate: 13: '...' }}</p>
 
 <!--should not touch string that shorter than the provided length -->
-<p>{{ text | truncate: 50: '...' }}</p>
-
-<!--result:
+<p>{{ text | truncate: 50: '...' }}</p><!--result:
 lorem ipsum...
 lorem ipsum d...
 lorem ipsum dolor sit amet
 ```
 ### split
-truncates a string given a specified length, providing a custom string to denote an omission.<br/>
-usage: ``` | split: [delimiter]: [skip-optional]```<br/>
+truncates a string given a specified length, providing a custom string to denote an omission.<br /> usage: `| split: [delimiter]: [skip-optional]`<br />
 ```js
 $scope.text = 'lorem ipsum dolor sit amet';
 ```
@@ -1137,8 +1057,7 @@ $scope.text = 'lorem ipsum dolor sit amet';
 tema tis rolod muspi merol
 ```
 ### wrap
-Wrap a string with another string<br/>
-usage: ```string | wrap: string: string[optional]```
+Wrap a string with another string<br /> usage: `string | wrap: string: string[optional]`
 ```html
 <p>{{ 'foo' | wrap: '/' }}</p>
 <p>{{ 'foo' | wrap: '{{': '}}' }}</p>
@@ -1147,8 +1066,7 @@ usage: ```string | wrap: string: string[optional]```
 {{foo}}
 ```
 ### trim
-Strip whitespace (or other characters) from the beginning and end of a string<br/>
-usage: ```string | trim: chars[optional]```
+Strip whitespace (or other characters) from the beginning and end of a string<br /> usage: `string | trim: chars[optional]`
 ```html
 <p>{{ '    foo   ' | trim }}</p>
 <p>{{ 'foobarfoo' | trim: 'foo' }}
@@ -1157,32 +1075,28 @@ foo
 bar
 ```
 ### ltrim
-Strip whitespace (or other characters) from the beginning of a string<br/>
-usage: ```string | ltrim: chars[optional]```
+Strip whitespace (or other characters) from the beginning of a string<br /> usage: `string | ltrim: chars[optional]`
 ```html
 <p>{{ 'barfoobar' | ltrim: 'bar' }}
 <!--result:
 foobar
 ```
 ### rtrim
-Strip whitespace (or other characters) from the end of a string<br/>
-usage: ```string | rtrim: chars[optional]```
+Strip whitespace (or other characters) from the end of a string<br /> usage: `string | rtrim: chars[optional]`
 ```html
 <p>{{ 'barfoobar' | rtrim: 'bar' }}
 <!--result:
 barfoo
 ```
 ### repeat
-Repeats a string n times<br/>
-**Usage:** ```string | repeat: n: separator[optional]```
+Repeats a string n times<br /> **Usage:** `string | repeat: n: separator[optional]`
 ```html
 <p>{{ 'foo' | repeat: 3: '-' }}</p>
 <!--repeat:
 foo-foo-foo
 ```
 ### test
-Test if a string match a pattern<br/>
-**Usage:** ```string | test: pattern: flag[optional]```
+Test if a string match a pattern<br /> **Usage:** `string | test: pattern: flag[optional]`
 ```html
 <p>{{ '15/12/2003' | test: '^[0-9]{2}[/]{1}[0-9]{2}[/]{1}[0-9]{4}$': 'i' }}</p>
 <p>{{ '0123456' | test: '\\D': 'i' }}</p>
@@ -1191,8 +1105,7 @@ true
 true
 ```
 ### match
-Return an array of matched element in a string<br/>
-**Usage:** ```string | match: pattern: flag[optional]```
+Return an array of matched element in a string<br /> **Usage:** `string | match: pattern: flag[optional]`
 ```html
 <p>{{ '15/12/2003' | match: '\\d+': 'g' }}</p>
 <!--result:
@@ -1202,9 +1115,7 @@ Return an array of matched element in a string<br/>
 ## Math
 
 ### max
-max find and return the largest number in a given array.
-if an `expression` is provided, will return max value by expression.
-**Usage:** ```array | max: expression[optional]```
+max find and return the largest number in a given array. if an `expression` is provided, will return max value by expression. **Usage:** `array | max: expression[optional]`
 ```js
 $scope.users = [
   { user: { score: 988790 } },
@@ -1223,9 +1134,7 @@ result:
 ```
 
 ### min
-min find and return the lowest number in a given array.
-if an `expression` is provided, will return min value by expression.
-**Usage:** ```array | min: expression[optional]```
+min find and return the lowest number in a given array. if an `expression` is provided, will return min value by expression. **Usage:** `array | min: expression[optional]`
 ```js
 $scope.users = [
   { user: { score: 988790 } },
@@ -1242,8 +1151,7 @@ result:
 * { user: { score: 123414 } }
 ```
 ### abs
-Returns the absolute value of a number
-**Usage:** ```number | string```
+Returns the absolute value of a number **Usage:** `number | string`
 ```html
 <div ng-repeat="val in [-2.2, 1.3, '-3.4', '4.5']">The absolute value of {{val}} is {{val | abs}}</div>
 <!--
@@ -1254,8 +1162,7 @@ result:
 * The absolute value of '4.5' is 4.5
 ```
 ### percent
-Percentage between two numbers<br/>
-**Usage:** ``` number | percent: total: round[optional]```, round by default false.
+Percentage between two numbers<br /> **Usage:** `number | percent: total: round[optional]`, round by default false.
 ```html
 <p>{{ 23 | percent: 500 }}</p>
 <p>{{ 23 | percent: 500: true }}</p>
@@ -1264,8 +1171,7 @@ Percentage between two numbers<br/>
 4
 ```
 ### radix
-Converting decimal numbers to different bases(radix)<br/>
-**Usage:** ```number | radix: base```
+Converting decimal numbers to different bases(radix)<br /> **Usage:** `number | radix: base`
 ```html
 <p>{{ 8 | radix: 2 }}</p>
 <p>{{ 32586 | radix: 16 }}</p>
@@ -1274,8 +1180,7 @@ Converting decimal numbers to different bases(radix)<br/>
 7F4A
 ```
 ### sum
-Sum up all values within an array<br/>
-**Usage:** ```array | sum: initial-value[optional]```
+Sum up all values within an array<br /> **Usage:** `array | sum: initial-value[optional]`
 ```html
 {{ [2,3,5] | sum }}
 {{ [2,3,5] | sum: 10 }}
@@ -1284,8 +1189,7 @@ Sum up all values within an array<br/>
 20
 ```
 ### degrees
-Converts radians into degrees<br/>
-**Usage:** ```radians | degrees: round-to-decimal```,
+Converts radians into degrees<br /> **Usage:** `radians | degrees: round-to-decimal`,
 ```html
 <p>{{ 0.785398 | degrees: 0 }}</p>
 <p>{{ -1.57 | degrees: 3 }}</p>
@@ -1294,8 +1198,7 @@ Converts radians into degrees<br/>
 -89.954
 ```
 ### radians
-Converts degrees into radians<br/>
-**Usage:** ```degrees | radians: round-to-decimal```,
+Converts degrees into radians<br /> **Usage:** `degrees | radians: round-to-decimal`,
 ```html
 <p>{{ 45 | radians: 2 }}</p>
 <p>{{ 180 | radians: 5 }}</p>
@@ -1304,8 +1207,7 @@ Converts degrees into radians<br/>
 3.14159
 ```
 ### shortFmt
-Converts numbers into formatted display<br/>
-**Usage:** ```number | shortFmt: round-to-decimal```,
+Converts numbers into formatted display<br /> **Usage:** `number | shortFmt: round-to-decimal`,
 ```html
 <p>{{ 45000 | shortFmt: 0 }}</p>
 <p>{{ 18234822 | shortFmt: 1 }}</p>
@@ -1314,8 +1216,7 @@ Converts numbers into formatted display<br/>
 18.2 m
 ```
 ### byteFmt
-Converts bytes into formatted display<br/>
-**Usage:** ```number | byteFmt: round-to-decimal```,
+Converts bytes into formatted display<br /> **Usage:** `number | byteFmt: round-to-decimal`,
 ```html
 <p>{{ 1998 | byteFmt: 2 }}</p>
 <p>{{ 1339234901 | byteFmt: 5 }}</p>
@@ -1324,8 +1225,7 @@ Converts bytes into formatted display<br/>
 1.24726 GB
 ```
 ### kbFmt
-Converts kilobytes into formatted display<br/>
-**Usage:** ```number | kbFmt: round-to-decimal```,
+Converts kilobytes into formatted display<br /> **Usage:** `number | kbFmt: round-to-decimal`,
 ```html
 <p>{{ 1024 | kbFmt: 0 }}</p>
 <p>{{ 1049901 | kbFmt: 5 }}</p>
@@ -1335,14 +1235,13 @@ Converts kilobytes into formatted display<br/>
 
 ```
 ## Boolean
->Used for boolean expression in chaining filters
+> Used for boolean expression in chaining filters
 
 ### isGreaterThan
 **aliases:** `>`
 ```html
 <div ng-show="{{ array | map | sum | isGreaterThan: num }}"></div>
-<!--or: -->
-<div ng-show="{{ array | map | sum | >: num }}"></div>
+<!--or: --><div ng-show="{{ array | map | sum | >: num }}"></div>
 ```
 
 ### isGreaterThanOrEqualTo
@@ -1431,9 +1330,7 @@ Converts kilobytes into formatted display<br/>
 * improve docs, tests
 
 ### 0.4.7
-* add [condition filters](#Boolean) set.
-<br/>
-<br/>
+* add [condition filters](#Boolean) set. <br /> <br />
 
 ## TODO
 - Add project website on branch gh-pages, see **[Github-help](https://help.github.com/articles/creating-project-pages-manually)**
@@ -1442,7 +1339,7 @@ Converts kilobytes into formatted display<br/>
 * If you planning add some feature please **create issue before**.
 * Don't forget about tests.
 
-Clone the project: <br/>
+Clone the project: <br />
 ```bash
 $ git clone
 $ npm install
@@ -1452,14 +1349,3 @@ Run the tests:
 ```bash
 $ grunt test
 ```
-
-[npm-image]: https://img.shields.io/npm/v/angular-filter.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/angular-filter
-[travis-image]: https://img.shields.io/travis/a8m/angular-filter.svg?style=flat-square
-[travis-url]: https://travis-ci.org/a8m/angular-filter
-[coveralls-image]: https://img.shields.io/coveralls/a8m/angular-filter.svg?style=flat-square
-[coveralls-url]: https://coveralls.io/r/a8m/angular-filter
-[license-image]: http://img.shields.io/npm/l/angular-filter.svg?style=flat-square
-[license-url]: LICENSE
-[gitter-image]: https://badges.gitter.im/Join%20Chat.svg
-[gitter-url]: https://gitter.im/a8m/angular-filter?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
