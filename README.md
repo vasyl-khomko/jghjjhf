@@ -1,393 +1,1465 @@
-<p align="center">
-  <a href="https://fastapi.tiangolo.com"><img src="https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png" alt="FastAPI"></a>
+# Angular-filter &nbsp; [![NPM version][npm-image]][npm-url] [![Build status][travis-image]][travis-url] [![Test coverage][coveralls-image]][coveralls-url] [![License][license-image]][license-url]
+Bunch of useful filters for AngularJS *(with no external dependencies!)*
+
+<h3 align="center">
+<img src="https://angular.io/assets/images/logos/angular/angular.svg" width="50" alt="angular pipes"><br/>
+ Angular 2 version is now available: <a href="https://github.com/a8m/ng-pipes">ng-pipes</a>
+ </h3>
+
+## Table of contents:
+- [![Gitter][gitter-image]][gitter-url]
+- [Get Started](#get-started)
+- [Common Questions](https://github.com/a8m/angular-filter/wiki/Common-Questions)
+- [Changelog](#changelog)
+- [Contributing](#contributing)
+- [TODO](#todo)
+- [Collection](#collection)
+  - [after](#after)
+  - [afterWhere](#afterwhere)
+  - [before](#before)
+  - [beforeWhere](#beforewhere)
+  - [concat](#concat)
+  - [contains](#contains)
+  - [countBy](#countby)
+  - [chunkBy](#chunkby)
+  - [defaults](#defaults)
+  - [every](#every)
+  - [filterBy](#filterby)
+  - [first](#first)
+  - [flatten](#flatten)
+  - [fuzzy](#fuzzy)
+  - [fuzzyBy](#fuzzyby)
+  - [groupBy](#groupby)
+  - [isEmpty](#isempty)
+  - [join](#join)
+  - [last](#last)
+  - [map](#map)
+  - [omit](#omit)
+  - [pick](#pick)
+  - [pluck](#pluck)
+  - [range](#range)
+  - [reverse](#reverse)
+  - [remove](#remove)
+  - [removeWith](#removewith)
+  - [searchField](#searchfield)
+  - [some](#contains)
+  - [toArray](#toarray)
+  - [unique](#unique)
+  - [where](#where)
+  - [xor](#xor)
+- [String](#string)
+  - [endsWith](#endswith)
+  - [latinize](#latinize)
+  - [repeat](#repeat)
+  - [reverse](#reverse-1)
+  - [slugify](#slugify)
+  - [split](#split)
+  - [startsWith](#startswith)
+  - [stripTags](#striptags)
+  - [stringular](#stringular)
+  - [match](#match)
+  - [phoneUS](#phoneus)
+  - [test](#test)
+  - [trim](#trim)
+  - [ltrim](#ltrim)
+  - [rtrim](#rtrim)
+  - [truncate](#truncate)
+  - [ucfirst](#ucfirst)
+  - [uriEncode](#uriencode)
+  - [uriComponentEncode](#uricomponentencode)
+  - [wrap](#wrap)
+- [Math](#math)
+  - [min](#min)
+  - [max](#max)
+  - [abs](#abs)
+  - [percent](#percent)
+  - [radix](#radix)
+  - [sum](#sum)
+  - [degrees](#degrees)
+  - [radians](#radians)
+  - [shortFmt](#shortfmt)
+  - [byteFmt](#bytefmt)
+  - [kbFmt](#kbfmt)
+- [Boolean](#boolean)
+  - [isNull](#isnull)
+  - [isDefined](#isdefined)
+  - [isUndefined](#isundefined)
+  - [isString](#isstring)
+  - [isNumber](#isnumber)
+  - [isObject](#isobject)
+  - [isArray](#isarray)
+  - [isFunction](#isfunction)
+  - [isEqual](#isequal)
+  - [isGreaterThan](#isgreaterthan) `>`
+  - [isGreaterThanOrEqualTo](#isgreaterthanorequalto) `>=`
+  - [isLessThan](#islessthan) `<`
+  - [isLessThanOrEqualTo](#islessthanorequalto) `<=`
+  - [isEqualTo](#isequalto) `==`
+  - [isNotEqualTo](#isnotequalto) `!=`
+  - [isIdenticalTo](#isidenticalto) `===`
+  - [isNotIdenticalTo](#isnotidenticalto) `!==`
+
+## Get Started
+**(1)** You can install angular-filter using 4 different methods:
+  - clone & [build](#Contributing) this repository
+  - via **[Bower](http://bower.io/)**: by running `$ bower install angular-filter` from your terminal
+  - via **[npm](https://www.npmjs.org/)**: by running `$ npm install angular-filter` from your terminal
+  - via cdnjs http://www.cdnjs.com/libraries/angular-filter
+
+**(2)** Include `angular-filter.js` (or `angular-filter.min.js`) in your `index.html`, after including Angular itself.
+
+**(3)** Add `'angular.filter'` to your main module's list of dependencies.
+
+When you're done, your setup should look similar to the following:
+
+```html
+<!doctype html>
+<html ng-app="myApp">
+<head>
+
+</head>
+<body>
+    ...
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.0/angular.min.js"></script>
+    <script src="bower_components/angular-filter/dist/angular-filter.min.js"></script>
+    ...
+    <script>
+        var myApp = angular.module('myApp', ['angular.filter']);
+
+    </script>
+    ...
+</body>
+</html>
+```
+
+## Collection
+
+### concat
+
+Concatenates an array/object into another one.
+
+
+```js
+function MainController ($scope) {
+  $scope.array = [ {a: 1}, {a: 2} ];
+  $scope.object = {
+    0: {a: 3},
+    1: {a: 4}
+  };
+}
+```
+
+```html
+<li ng-repeat="elm in array | concat:object">
+  {{ elm.a }}
+</li>
+
+<!--
+result:
+1 2 3 4
+-->
+
+<li ng-repeat="elm in object | concat:array">
+  {{ elm.a }}
+</li>
+
+<!--
+result:
+3 4 1 2
+-->
+```
+
+### unique
+Remove duplicates from an array/object.<br/>
+If a string is provided, it will filter out duplicates using the provided expression.<br/>
+**Usage:** ```collection | unique: 'property' ```<br/>
+**aliases:** uniq
+```js
+function MainController ($scope) {
+  $scope.orders = [
+    { id:1, customer: { name: 'John', id: 10 } },
+    { id:2, customer: { name: 'William', id: 20 } },
+    { id:3, customer: { name: 'John', id: 10 } },
+    { id:4, customer: { name: 'William', id: 20 } },
+    { id:5, customer: { name: 'Clive', id: 30 } }
+  ];
+}
+```
+Ex: Filter by customer.id
+```html
+<th>Customer list:</th>
+<tr ng-repeat="order in orders | unique: 'customer.id'" >
+   <td> {{ order.customer.name }} , {{ order.customer.id }} </td>
+</tr>
+
+<!-- result:
+All customers list:
+John 10
+William 20
+Clive 30
+
+```
+### filterBy
+Filter a collection by a specific property.<br/>
+**Usage:** ```collection | filterBy: [prop, nested.prop, etc..]: search: strict[optional]```<br/>
+**Note:** You can even use compound properties (e.g: ```|filterBy: [property + property]: model```)<br/>
+
+```js
+$scope.users = [
+  { id: 1, user: { first_name: 'Rob', last_name: 'John',  mobile: 4444 } },
+  { id: 2, user: { first_name: 'John', last_name: 'Wayne',  mobile: 3333 } },
+  { id: 3, user: { first_name: 'Rob', last_name: 'Johansson',  mobile: 2222 } },
+  { id: 4, user: { first_name: 'Mike', last_name: 'Terry',  mobile: 1111 } }
+];
+```
+Return users whose id is 1
+```html
+<!--search only by id -->
+<th ng-repeat="user in users | filterBy: ['id']: 1">
+  {{ user.id }} : {{ user.first_name }} {{ user.last_name }}
+</th>
+<!--result:
+  1: Rob John
+-->
+
+```
+Return users whose first name or last name is 'John' (uses nested properties).
+```html
+<!--search by first_name and last_name -->
+<th ng-repeat="user in users | filterBy: ['user.first_name', 'user.last_name']: 'John'">
+  {{ user.first_name }} {{ user.last_name }}
+</th>
+<!--result:
+  1: Rob John
+  2: John Wayne
+-->
+
+```
+Return users whose full name is
+```html
+<!--search by full name -->
+<th ng-repeat="user in users | filterBy: ['user.first_name + user.last_name']: 'Rob Joh'">
+  {{ user.id }}: {{ user.first_name }} {{ user.last_name }}
+</th>
+<!--result:
+  1: Rob John
+  3: Rob Johannson
+-->
+```
+### first
+Gets the first element(s) of a collection.<br/>
+If an expression is provided, it will only return elements whose expression is truthy.<br/>
+***Usage:*** See below <br/>
+
+```js
+$scope.users = [
+  { id: 1, name: { first: 'John', last: 'Wayne' } },
+  { id: 2, name: { first: 'Mike', last: 'Johannson' } },
+  { id: 3, name: { first: 'William', last: 'Kyle' } },
+  { id: 4, name: { first: 'Rob', last: 'Thomas' } }
+];
+```
+Returns the first user.
+```html
+{{ users | first }}
+<!--result:
+{ id: 1, name: { first: 'John', last: 'Wayne' } }
+-->
+
+```
+Returns the first user whose first name is 'Rob' and last name is 'Thomas'
+```html
+<!-- collection | first: expression -->
+{{ users | first: 'name.first === \'Rob\' && name.last === \'Thomas\'' }}
+<!--result:
+[ { id: 4, name: { first: 'Rob', last: 'Thomas' } } ]
+-->
+
+```
+Return the first two users
+```html
+<!-- collection | first: n -->
+<th ng-repeat="user in users | first: 2">
+  {{ user.name.first }}
+</th>
+<!--result:
+John
+Mike
+-->
+
+```
+Return the first two users with even id
+```html
+<!-- collection | first: n: expression -->
+<th ng-repeat="user in users | first: 2: '!(id%2)'">
+  {{ user.name }}
+</th>
+<!--result:
+Mike
+Rob
+```
+### last
+Gets the last element or last n elements of a collection,<br/>
+if expression is provided, is returns as long the expression return truthy<br/>
+***Usage:*** See below <br/>
+```js
+$scope.users = [
+  { id: 1, name: { first: 'foo', last: 'bar' } },
+  { id: 2, name: { first: 'baz', last: 'bar' } },
+  { id: 3, name: { first: 'bar', last: 'bar' } },
+  { id: 4, name: { first: 'lol', last: 'bar' } }
+];
+```
+```html
+{{ users | last }}
+<!--result:
+{ id: 4, name: { first: 'lol', last: 'bar' } }
+```
+```html
+<!-- collection | last: expression -->
+{{ users | last: 'name.last === \'bar\'' }}
+<!--result:
+[ { id: 4, name: { first: 'lol', last: 'bar' } } ]
+```
+```html
+<!-- collection | last: n -->
+<th ng-repeat="user in users | last: 2">
+  {{ user.name }}
+</th>
+<!--result:
+bar
+lol
+```
+```html
+<!-- collection | last: n: expression -->
+<th ng-repeat="user in users | last: 2: '!(id%2)'">
+  {{ user.name }}
+</th>
+<!--result:
+baz
+lol
+```
+### flatten
+Flattens a nested array (the nesting can be to any depth).<br/>
+If you pass shallow, the array will only be flattened a single level<br/>
+**Usage:** ```collection | flatten: shallow[optional]```
+```js
+$scope.weirdArray = [[], 1, 2, 3, [4, 5, 6, [7, 8, 9, [10, 11, [12, [[[[[13], [[[[14, 15]]]]]]]]]]]]];
+```
+```html
+<th ng-repeat="elm in wierdArray | flatten">
+ {{ elm }},
+</th>
+<!--result:
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+```
+
+### join
+Joins the contents of a collection into a string.<br/>
+By default, it will join elements with a *single space*, but you can provide your own delimiter.
+
+**Usage:** ```collection | join:', '```
+
+Example:
+
+```js
+$scope.names = ['John', 'Sebastian', 'Will', 'James'];
+```
+
+```html
+<p>{{ names | join:', ' }}</p>
+<!-- Will print "John, Sebastian, Will, James" -->
+
+```
+
+
+### fuzzy
+fuzzy string searching(approximate string matching). [Read more](http://en.wikipedia.org/wiki/Approximate_string_matching)<br/>
+**note:** use fuzzyBy to filter by one property to improve performance<br/>
+**Usage:** ```collection | fuzzy: search: caseSensitive[optional]```
+```js
+$scope.books = [
+  { title: 'The DaVinci Code', author: 'F. Scott Fitzgerald' },
+  { title: 'The Great Gatsby', author: 'Dan Browns' },
+  { title: 'Angels & Demons',  author: 'Dan Louis' },
+  { title: 'The Lost Symbol',  author: 'David Maine' },
+  { title: 'Old Man\'s War',   author: 'Rob Grant' }
+];
+```
+```html
+<input type="text" ng-model="search" placeholder="search book" />
+<li ng-repeat="book in books | fuzzy: search">
+  {{ book.title }}
+</li>
+<!--case sensitive-->
+<li ng-repeat="book in books | fuzzy: search: true">
+  {{ book.title }}
+</li>
+```
+### fuzzyBy
+fuzzy string searching(approximate string matching) by property(nested to). [Read more](http://en.wikipedia.org/wiki/Approximate_string_matching)<br/>
+**Usage:** ```collection | fuzzyBy: 'property': search: caseSensitive[optional]```
+```js
+$scope.books = [
+  { title: 'The DaVinci Code' },
+  { title: 'The Great Gatsby' },
+  { title: 'Angels & Demons'  },
+  { title: 'The Lost Symbol'  },
+  { title: 'Old Man\'s War'   }
+];
+```
+```html
+<input type="text" ng-model="search" placeholder="search by title" />
+<li ng-repeat="book in books | fuzzyBy: 'title': search">
+  {{ book.title }}
+</li>
+<!--case sensitive-->
+<li ng-repeat="book in books | fuzzyBy: 'title': search: true">
+  {{ book.title }}
+</li>
+```
+### groupBy
+Create an object composed of keys generated from the result of running each element of a collection,<br/>
+each key is an array of the elements.<br/>
+**Usage:** ```(key, value) in collection | groupBy: 'property'``` or ```... | groupBy: 'nested.property'```
+```js
+$scope.players = [
+  {name: 'Gene', team: 'alpha'},
+  {name: 'George', team: 'beta'},
+  {name: 'Steve', team: 'gamma'},
+  {name: 'Paula', team: 'beta'},
+  {name: 'Scruath', team: 'gamma'}
+];
+```
+```html
+<ul>
+  <li ng-repeat="(key, value) in players | groupBy: 'team'">
+    Group name: {{ key }}
+    <ul>
+      <li ng-repeat="player in value">
+        player: {{ player.name }}
+      </li>
+    </ul>
+  </li>
+</ul>
+<!-- result:
+  Group name: alpha
+    * player: Gene
+  Group name: beta
+    * player: George
+    * player: Paula
+  Group name: gamma
+    * player: Steve
+    * player: Scruath
+```
+### countBy
+Create an object composed of keys generated from the result of running each element of a collection,<br/>
+each key is the count of objects in each group<br/>
+**Usage:** ```(key, value) in collection | countBy: 'property'``` or ```... | countBy: 'nested.property'```
+```js
+$scope.players = [
+  {name: 'Gene', team: 'alpha'},
+  {name: 'George', team: 'beta'},
+  {name: 'Steve', team: 'gamma'},
+  {name: 'Paula', team: 'beta'},
+  {name: 'Scruath', team: 'gamma'}
+];
+```
+```html
+<li ng-repeat="(key, value) in players | countBy: 'team'" >
+  Group name: {{ key }}, length: {{ value }}
+</li>
+<!-- result:
+  Group name: alpha, length: 1
+  Group name: beta, length: 2
+  Group name: gamma, length: 2
+```
+### chunkBy
+Collect data into fixed-length chunks or blocks
+**Usage:** ```(key, value) in collection | chunkBy: 'n': fill-value(optional)```
+```js
+$scope.array = [1, 2, 3, 4, 5, 6];
+```
+```html
+<li ng-repeat="block in array | chunkBy: 2" >
+  Block: {{ block }}
+</li>
+<!-- result:
+  Block: [1, 2]
+  Block: [3, 4]
+  Block: [5, 6]
+-->
+<-- Example with fill value -->
+<li ng-repeat="block in array | chunkBy: 4: 0" >
+  Block: {{ block }}
+</li>
+<!-- result:
+  Block: [1, 2, 3, 4]
+  Block: [5, 6, 0, 0]
+```
+
+### defaults
+`defaultsFilter` allows to specify a default fallback value for properties that resolve to undefined.<br/>
+**Usage:** `col in collection | defaults: fallback`
+```js
+$scope.orders = [
+      { id:1, destination: { zip: 21908 }, name: 'Ariel M' },
+      { id:2, name: 'John F' },
+      { id:3, destination: { zip: 45841 } },
+      { id:4, destination: { zip: 78612 }, name: 'Danno L' },
+  ];
+$scope.fallback = {
+      name: 'Customer name not available',
+      destination: { zip: 'Pickup' }
+  };
+```
+```html
+<li ng-repeat="order in orders | defaults: fallback">
+    <b>id:</b> {{ order.id }},
+    <b>name:</b> {{ order.name }},
+    <b>shipping address:</b> {{ order.destination.zip }}
+</li>
+<!--Results:
+* id: 1, name: Ariel M, shipping address: 21908
+* id: 2, name: John F, shipping address: Pickup
+* id: 3, name: Customer name not available, shipping address: 45841
+* id: 4, name: Danno L, shipping address: 78612
+```
+**Note:** `defaultsFilter` change the source object.<br/>
+**Why?** if we don't change the source object, it actually means we're gonna return a **new** object (copy operation) on **each digest cycle**.<br/>
+And it will cause adverse memory and performance implications.<br/>
+**How to avoid it?** see below
+```js
+//We copy it once, and it's really cheaper
+$scope.ordersWithFallback = angular.copy($scope.orders);
+```
+```html
+<li ng-repeat="order in ordersWithFallback | defaults: fallback">
+    <!-- ..... -->
+</li>
+```
+### where
+comparison for each element in a collection to the given properties object,<br/>
+returning an array of all elements that have equivalent property values.
+```js
+  $scope.collection = [
+    { id: 1, name: 'foo' },
+    { id: 1, name: 'bar' },
+    { id: 2, name: 'baz' }
+  ]
+```
+```html
+<tr ng-repeat="obj in collection | where:{id: 1}">
+  {{ obj.name }}
+</tr>
+<!-- result:
+  foo
+  bar
+-->
+
+<tr ng-repeat="obj in collection | where:{id: 1, name: 'foo'}">
+  {{ obj.name }}
+</tr>
+<!-- result:
+  foo
+  -->
+```
+### omit
+return collection without the omitted objects(by expression).<br/>
+usage: ```collection | omit: expression```<br/>
+**example 1:**
+```js
+$scope.mod2 = function(elm) {
+  return !(elm % 2);
+}
+```
+```html
+<tr ng-repeat="num in [1,2,3,4,5,6] | omit: mod2">
+  {{ num }},
+</tr>
+<!--result
+1, 3, 5
+```
+**example 2:**
+```js
+$scope.collection = [
+  { id: 1, user: { name: 'foo' } },
+  { id: 2, user: { name: 'bar' } },
+  { id: 3, user: { name: 'baz' } }
+]
+```
+```html
+<tr ng-repeat="obj in collection | omit:'id > 1 && user.name.indexOf(\'b\') !== -1'">
+  id: {{ obj.id }}, name: {{ obj.user.name }}
+</tr>
+<!--result:
+id: 1, name: foo
+```
+### pick
+return collection composed of the picked objects(by expression).<br/>
+usage: ```collection | pick: expression```<br/>
+**example 1:**
+```js
+$scope.mod2 = function(elm) {
+  return !(elm % 2);
+}
+```
+```html
+<tr ng-repeat="num in [1,2,3,4,5,6] | pick: mod2">
+  {{ num }},
+</tr>
+<!--result
+2, 4, 6
+```
+**example 2:**
+```js
+$scope.collection = [
+  { id: 1, user: { name: 'foo' } },
+  { id: 2, user: { name: 'bar' } },
+  { id: 3, user: { name: 'baz' } }
+]
+```
+```html
+<tr ng-repeat="obj in collection | pick:'id > 1 && user.name.indexOf(\'b\') !== -1'">
+  id: {{ obj.id }}, name: {{ obj.user.name }}
+</tr>
+<!--result:
+id: 2, name: bar
+id:3, name: baz
+```
+
+### remove
+Returns a new collection of removed elements.
+```js
+$scope.foo = { name: 'foo' };
+$scope.collection = [
+  { name: 'bar' },
+  $scope.foo,
+  null, 1
+];
+```
+```html
+<tr ng-repeat="obj in collection | remove: foo: null: 1">
+  {{ obj }}
+</tr>
+<!-- result:
+  { "name": "bar" }
+```
+### removeWith
+comparison for each element in a collection to the given properties object,<br/>
+returning an array without all elements that have equivalent property values.
+```js
+  $scope.collection = [
+    { id: 1, name: 'foo' },
+    { id: 1, name: 'bar' },
+    { id: 2, name: 'baz' }
+  ]
+```
+```html
+<tr ng-repeat="obj in collection | removeWith:{ id: 1 }">
+  {{ obj.name }}
+</tr>
+<!-- result:
+  baz
+-->
+
+<tr ng-repeat="obj in collection | removeWith:{ id: 1, name: 'foo' }">
+  {{ obj.name }}
+</tr>
+<!-- result:
+  bar
+  baz
+```
+### searchField
+if you want to use the filter in angular and want to filter for multiple values<br/>
+so searchField filter return new collection with property called searchField<br/>
+**support nested properties with dot notation i.e:** ``` collection | searchField: 'prop': 'nested.prop' ```
+```js
+$scope.users = [
+  { first_name: 'Sharon', last_name: 'Melendez' },
+  { first_name: 'Edmundo', last_name: 'Hepler' },
+  { first_name: 'Marsha', last_name: 'Letourneau' }
+];
+```
+```html
+<input ng-model="search" placeholder="search by full name"/>
+<th ng-repeat="user in users | searchField: 'first_name': 'last_name' | filter: search">
+  {{ user.first_name }} {{ user.last_name }}
+</th>
+<!-- so now you can search by full name -->
+```
+### after
+get a collection(array or object) and specified count, and returns all of the items
+in the collection after the specified count.
+```js
+$scope.collection = [
+    { name: 'foo' },
+    { name: 'bar' },
+    { name: 'baz' },
+    { name: 'zap' },
+  ];
+```
+```html
+<tr ng-repeat="col in collection | after:2">
+  {{ col.name }}
+</tr>
+<!--result:
+  baz
+  zap
+-->
+
+```
+### afterWhere
+get a collection and properties object, and returns all of the items,
+in the collection after the first that found with the given properties, including it.
+```js
+$scope.orders = [
+  { id: 1, customer: { name: 'foo' }, date: 'Tue Jul 15 2014' },
+  { id: 2, customer: { name: 'foo' }, date: 'Tue Jul 16 2014' },
+  { id: 3, customer: { name: 'foo' }, date: 'Tue Jul 17 2014' },
+  { id: 4, customer: { name: 'foo' }, date: 'Tue Jul 18 2014' },
+  { id: 5, customer: { name: 'foo' }, date: 'Tue Jul 19 2014' }
+];
+```
+```html
+<tr ng-repeat="order in orders | afterWhere:{ date: 'Tue Jul 17 2014' }">
+  order: {{ order.id }}, {{ order.date }}
+</tr>
+<!--result:
+  order: 3, Tue Jul 17 2014
+  order: 4, Tue Jul 18 2014
+  order: 5, Tue Jul 19 2014
+-->
+```
+
+### before
+get a collection(array or object) and specified count, and returns all of the items
+in the collection before the specified count.
+```js
+$scope.collection = [
+    { name: 'foo' },
+    { name: 'bar' },
+    { name: 'baz' },
+    { name: 'zap' },
+  ];
+```
+```html
+<tr ng-repeat="col in collection | before:3">
+  {{ col.name }}
+</tr>
+<!--result:
+  foo
+  bar
+-->
+
+```
+
+### beforeWhere
+get a collection and properties object, and returns all of the items,
+in the collection before the first that found with the given properties, including it.
+```js
+$scope.orders = [
+  { id: 1, customer: { name: 'foo' }, date: 'Tue Jul 15 2014' },
+  { id: 2, customer: { name: 'foo' }, date: 'Tue Jul 16 2014' },
+  { id: 3, customer: { name: 'foo' }, date: 'Tue Jul 17 2014' },
+  { id: 4, customer: { name: 'foo' }, date: 'Tue Jul 18 2014' },
+  { id: 5, customer: { name: 'foo' }, date: 'Tue Jul 19 2014' }
+];
+```
+```html
+<tr ng-repeat="order in orders | beforeWhere:{ date: 'Tue Jul 17 2014' }">
+  order: {{ order.id }}, {{ order.date }}
+</tr>
+<!--result:
+  order: 1, Tue Jul 15 2014
+  order: 2, Tue Jul 16 2014
+  order: 3, Tue Jul 17 2014
+-->
+```
+
+### reverse
+Reverse the order of the elements in a collection
+
+```js
+$scope.users = [
+  { id: 1, name: 'bazzy' },
+  { id: 2, name: 'dazzy' },
+  { id: 3, name: 'lazzy' }
+];
+```
+```html
+<tr ng-repeat="user in users | reverse">
+  user: {{ user.id }}, {{ user.name }}
+</tr>
+<!--result:
+  user: 3, lazzy
+  user: 2, dazzy,
+  user: 1, bazzy
+-->
+```
+
+### isEmpty
+get collection or string and return if it empty[Boolean]
+
+```html
+<tr ng-repeat="order in orders" ng-hide="orders | isEmpty">
+<!-- ..... -->
+</tr>
+<!--some replacer msg-->
+<tr ng-show="orders | isEmpty">
+  no content to show
+</tr>
+```
+### contains
+Checks if given expression(or value) is present in one or more object in the collection<br/>
+**Usage:** ```collection | contains: 'expression'```<br/>
+**Aliases:** some<br/>
+example 1:
+```js
+$scope.array = [1,2,3,4];
+```
+```html
+<th ng-show="{{ array | contains: 2 }}">...</th>
+```
+example 2:
+```js
+$scope.collection = [
+  { user: { id: 1, name: 'foo' } },
+  { user: { id: 2, name: 'bar' } },
+  { user: { id: 3, name: 'baz' } }
+];
+```
+```html
+<th ng-show="{{ collection | some: '!(user.id % 2) && user.name.indexOf(\'b\') === 0' }}">...</th>
+<!--result: true
+```
+### every
+Checks if given expression(or value) return truthy value for all members of a collection<br/>
+**Usage:** ```collection | every: 'expression'```<br/>
+example 1:
+```js
+$scope.array = [1,1,1,1];
+```
+```html
+<th ng-show="{{ array | every: 1 }}">...</th>
+<!--result: true
+```
+example 2:
+```js
+$scope.collection = [
+  { user: { id: 4, name: 'foo' } },
+  { user: { id: 6, name: 'bar' } },
+  { user: { id: 8, name: 'baz' } }
+];
+```
+```html
+<th ng-show="{{ collection | every: '!(user.id % 2)' }}">...</th>
+<!--result: true
+```
+
+### xor
+Exclusive or between two collections<br/>
+**Usage:** ```collection1 | xor: collection2: expression[optional]```<br/>
+
+Example1:
+```html
+<p ng-repeat="elm in [1,2,3,4] | xor: [2,3,5]">
+{{ elm }}
 </p>
-<p align="center">
-    <em>FastAPI framework, high performance, easy to learn, fast to code, ready for production</em>
-</p>
-<p align="center">
-<a href="https://travis-ci.org/tiangolo/fastapi" target="_blank">
-    <img src="https://travis-ci.org/tiangolo/fastapi.svg?branch=master" alt="Build Status">
-</a>
-<a href="https://codecov.io/gh/tiangolo/fastapi" target="_blank">
-    <img src="https://codecov.io/gh/tiangolo/fastapi/branch/master/graph/badge.svg" alt="Coverage">
-</a>
-<a href="https://pypi.org/project/fastapi" target="_blank">
-    <img src="https://badge.fury.io/py/fastapi.svg" alt="Package version">
-</a>
-<a href="https://gitter.im/tiangolo/fastapi?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge" target="_blank">
-    <img src="https://badges.gitter.im/tiangolo/fastapi.svg" alt="Join the chat at https://gitter.im/tiangolo/fastapi">
-</a>
-</p>
+<!--result:
+1 4 5
+```
+Example2:
+```js
+$scope.users1 = [
+  { id: 0, details: { first_name: 'foo', last_name: 'bar' } },
+  { id: 1, details: { first_name: 'foo', last_name: 'baz' } },
+  { id: 2, details: { first_name: 'foo', last_name: 'bag' } }
+];
+$scope.users2 = [
+  { id: 3, details: { first_name: 'foo', last_name: 'bar' } },
+  { id: 4, details: { first_name: 'foo', last_name: 'baz' } }
+];
+```
+```html
+<th ng-repeat="user in users1 | xor: users2">
+  {{ user.id }}
+</th>
+<!--result:
+1 2 3 4 5
+-->
+<th ng-repeat="user in users1 | xor: users2: 'details.last_name'">
+  {{ user.id }}, {{ user.details.first_name }} {{ user.details.last_name }}
+</th>
+<!--result:
+2, foo bag
+```
+### toArray
+Convert objects into stable arrays. <br/>
+**Usage:** ```object | toArray: addKey[optional]```<br/>
+if addKey set to true, the filter also attaches a new property $key to the value containing the original key that was used in the object we are iterating over to reference the property
+```html
+<th ng-repeat="elm in object | toArray | orderBy: 'property'">
+  {{ elm.name }}
+</th>
+```
+### map
+Returns a new collection of the results of each expression execution. <br/>
+**Usage:** ```collection | map: expression``` <br/>
+Example1:
+```js
+$scope.divide = function(elm) {
+  return elm/2
+}
+```
+```html
+<th ng-repeat="i in [1, 2, 3, 4, 5] | map: divide">
+  {{ i }}
+</th>
+<!--result:
+0.5, 1, 1.5, 2, 2.5
+```
+### pluck
+Used map
+```js
+$scope.users = [
+  { id:1, user: { name: 'Foo' } },
+  { id:1, user: { name: 'Bar' } },
+  { id:1, user: { name: 'Baz' } }
+];
+```
+```html
+<th ng-repeat="name in users | map: 'user.name' ">
+  {{ name }}
+</th>
+<!--result:
+Foo
+Bar
+Baz
+```
+### range
+Return a new collection from a given length, start, increment, and callback<br/>
+By default start is 0, increment is 1, and callback is null.
+**Usage:** ```collection | range: length:start:increment:callback```<br/>
+```html
+[<span ng-repeat="i in [] | range: 3">{{i}},</span>]
+<!--result:
+[0,1,2,]
+-->
+```
+```html
+[<span ng-repeat="i in [] | range: 10:10">{{i}},</span>]
+<!--result:
+[10,11,12,13,14,15,16,17,18,19,]
+-->
+```
+```html
+[<span ng-repeat="i in [] | range: 10:5:2">{{ i }},</span>]
+<!--result:
+[5, 7, 9, 11, 13, 15, 17, 19, 21, 23]
+-->
+```
+```html
+[<span ng-repeat="i in [] | range: 11:4:2">{{ i }},</span>]
+<!--result:
+[4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24]
+-->
+```
+```js
+$scope.double = function(i) {
+  return i * 2;
+}
+```
+```html
+[<span ng-repeat="i in [] | range: 11:4:2:double">{{ i }},</span>]
+<!--result:
+[8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48]
+-->
+```
 
----
+## String
 
-**Documentation**: <a href="https://fastapi.tiangolo.com" target="_blank">https://fastapi.tiangolo.com</a>
+### ucfirst
 
-**Source Code**: <a href="https://github.com/tiangolo/fastapi" target="_blank">https://github.com/tiangolo/fastapi</a>
+ucfirstFilter get string as parameter and return it capitalized
 
----
+```html
+<p> {{ 'foo bar baz' | ucfirst }}</p>
 
-FastAPI is a modern, fast (high-performance), web framework for building APIs with Python 3.6+ based on standard Python type hints.
+<!--
+result:
+Foo Bar Baz
+-->
+```
 
-The key features are:
+### uriEncode
+get string as parameter and return encoded uri
 
-* **Fast**: Very high performance, on par with **NodeJS** and **Go** (thanks to Starlette and Pydantic). [One of the fastest Python frameworks available](#performance).
+```html
+<a ng-href="http://domain.com/fetch/{{ data.name | uriEncode }}">Link</a>
+```
 
-* **Fast to code**: Increase the speed to develop features by about 200% to 300% *.
-* **Fewer bugs**: Reduce about 40% of human (developer) induced errors. *
-* **Intuitive**: Great editor support. <abbr title="also known as auto-complete, autocompletion, IntelliSense">Completion</abbr> everywhere. Less time debugging.
-* **Easy**: Designed to be easy to use and learn. Less time reading docs.
-* **Short**: Minimize code duplication. Multiple features from each parameter declaration. Fewer bugs.
-* **Robust**: Get production-ready code. With automatic interactive documentation.
-* **Standards-based**: Based on (and fully compatible with) the open standards for APIs: <a href="https://github.com/OAI/OpenAPI-Specification" target="_blank">OpenAPI</a> (previously known as Swagger) and <a href="http://json-schema.org/" target="_blank">JSON Schema</a>.
+### uriComponentEncode
+get string as parameter and return encoded uri component
 
-<small>* estimation based on tests on an internal development team, building production applications.</small>
+```html
+<a ng-href="http://domain.com/fetch/{{ 'Some&strange=chars' | uriComponentEncode }}">Link</a>
+```
 
-## Opinions
+### slugify
+Transform text into a URL slug. Replaces whitespaces, with dash("-"), or given argument
 
-"*[...] I'm using **FastAPI** a ton these days. [...] I'm actually planning to use it for all of my team's **ML services at Microsoft**. Some of them are getting integrated into the core **Windows** product and some **Office** products.*"
+```html
+<a ng-href="http://domain.com/fetch/{{ 'Some string with spaces' | slugify }}">Link</a>
+<!--replace with given argument-->
+<a ng-href="http://domain.com/fetch/{{ 'Some string with spaces' | slugify:'=' }}">Link</a>
+<!--
+result:
+<a ng-href="http://domain.com/fetch/some-string-with-spaces">Link</a>
 
-<div style="text-align: right; margin-right: 10%;">Kabir Khan - <strong>Microsoft</strong> <a href="https://github.com/tiangolo/fastapi/pull/26" target="_blank"><small>(ref)</small></a></div>
+<a ng-href="http://domain.com/fetch/some=string=with=spaces">Link</a>
+-->
+```
 
----
+### latinize
+Remove accents/diacritics from a string
 
-"*I’m over the moon excited about **FastAPI**. It’s so fun!*"
+```html
+ {{ 'Sòme strÏng with Âccénts' | latinize }}
+<!--
+result:
+  Some strIng with Accents
+-->
+```
+### startsWith
+return whether string starts with the starts parameter.<br/>
+usage: ```string | startsWith: 'start': case-sensitive[optional]```<br/>
+```html
+ {{ 'Lorem ipsum' | startsWith: 'lorem' }}
+ {{ 'Lorem Ipsum' | startsWith: 'lorem': true }}
+ <!--result:
+  true
+  false
+```
+### endsWith
+return whether string ends with the ends parameter.<br/>
+usage: ```string | endsWith: 'ends': case-sensitive[optional]```<br/>
+```html
+ {{ 'image.JPG' | endsWith: '.jpg' }}
+ {{ 'image.JPG' | endsWith: '.jpg': true }}
+ <!--result:
+  true
+  false
+```
+### stripTags
+strip out html tags from string<br/>
+**Important: this filter jobs it's not to replace ng-bind-html directive, it's only for tiny plain text
 
-<div style="text-align: right; margin-right: 10%;">Brian Okken - <strong><a href="https://pythonbytes.fm/episodes/show/123/time-to-right-the-py-wrongs?time_in_sec=855" target="_blank">Python Bytes</a> podcast host</strong> <a href="https://twitter.com/brianokken/status/1112220079972728832" target="_blank"><small>(ref)</small></a></div>
+```js
+$scope.text = '<p class="paragraph">Lorem Ipsum is simply dummy text of the printing...</p>';
+```
+```html
+<p>{{ text | stripTags }}</p>
+<!--result:
+Lorem Ipsum is simply dummy text of the printing...
+-->
+```
+### stringular
+get string with {n} and replace match with enumeration values
 
----
+```html
+<p>{{ 'lorem {0} dolor {1} amet' | stringular:'ipsum':'sit' }}</p>
+<p>{{ '{3} {0} dolor {1} amet' | stringular:'ipsum':'sit':null:'lorem' }}</p>
 
-"*Honestly, what you've built looks super solid and polished. In many ways, it's what I wanted **Hug** to be - it's really inspiring to see someone build that.*"
+<!-- result:
+<p>lorem ipsum dolor sit amet</p>
+<p>lorem ipsum dolor sit amet</p>
+-->
 
-<div style="text-align: right; margin-right: 10%;">Timothy Crosley - <strong><a href="http://www.hug.rest/" target="_blank">Hug</a> creator</strong> <a href="https://news.ycombinator.com/item?id=19455465" target="_blank"><small>(ref)</small></a></div>
+<p>{{ 'lorem {0} dolor sit amet' | stringular }}<p>
+<!--result:
+<p>lorem {0} dolor sit amet</p>
+```
 
----
+### phoneUS
+Format a string or a number into a us-style phone number  
+```html
+<p>{{ 1234567890 | phoneUS }}</p>
 
-"*If you're looking to learn one **modern framework** for building REST APIs, check out **FastAPI** [...] It's fast, easy to use and easy to learn [...]*"
+<!--result:
+<p>(123) 456-7890</p>
+```
 
-"*We've switched over to **FastAPI** for our **APIs** [...] I think you'll like it [...]*"
+### truncate
+truncates a string given a specified length, providing a custom string to denote an omission.<br/>
+usage: ``` | truncate: [length]: [suffix-optional]: [preserve-optinal]```<br/>
+```js
+$scope.text = 'lorem ipsum dolor sit amet';
+```
+```html
+<!--should not cut words in the middle if preserve is true-->
+<p>{{ text | truncate: 7: '...': true }}</p>
 
-<div style="text-align: right; margin-right: 10%;">Ines Montani - Matthew Honnibal - <strong><a href="https://explosion.ai" target="_blank">Explosion AI</a> founders - <a href="https://spacy.io" target="_blank">spaCy</a> creators</strong> <a href="https://twitter.com/_inesmontani/status/1144173225322143744" target="_blank"><small>(ref)</small></a> - <a href="https://twitter.com/honnibal/status/1144031421859655680" target="_blank"><small>(ref)</small></a></div>
+<p>{{ text | truncate: 13: '...' }}</p>
 
----
+<!--should not touch string that shorter than the provided length -->
+<p>{{ text | truncate: 50: '...' }}</p>
 
-"*We adopted the **FastAPI** library to spawn a **REST** server that can be queried to obtain **predictions**. [for Ludwig]*"
+<!--result:
+lorem ipsum...
+lorem ipsum d...
+lorem ipsum dolor sit amet
+```
+### split
+truncates a string given a specified length, providing a custom string to denote an omission.<br/>
+usage: ``` | split: [delimiter]: [skip-optional]```<br/>
+```js
+$scope.text = 'lorem ipsum dolor sit amet';
+```
+```html
 
-<div style="text-align: right; margin-right: 10%;">Piero Molino, Yaroslav Dudin, and Sai Sumanth Miryala - <strong>Uber</strong> <a href="https://eng.uber.com/ludwig-v0-2/" target="_blank"><small>(ref)</small></a></div>
+<p>{{ text | split: ' ' }}</p>
 
----
+<p>{{ text | split: ' ': 2}}</p>
 
-## Requirements
+<!--result:
+['lorem', 'ipsum', 'dolor', 'sit', 'amet']
+['lorem ipsum dolor', 'sit', 'amet']
+```
+### reverse
+Reverses a string
+```js
+$scope.text = 'lorem ipsum dolor sit amet';
+```
+```html
+<p>{{ text | reverse }}</p>
+<!--result:
+tema tis rolod muspi merol
+```
+### wrap
+Wrap a string with another string<br/>
+usage: ```string | wrap: string: string[optional]```
+```html
+<p>{{ 'foo' | wrap: '/' }}</p>
+<p>{{ 'foo' | wrap: '{{': '}}' }}</p>
+<!--result:
+/foo/
+{{foo}}
+```
+### trim
+Strip whitespace (or other characters) from the beginning and end of a string<br/>
+usage: ```string | trim: chars[optional]```
+```html
+<p>{{ '    foo   ' | trim }}</p>
+<p>{{ 'foobarfoo' | trim: 'foo' }}
+<!--result:
+foo
+bar
+```
+### ltrim
+Strip whitespace (or other characters) from the beginning of a string<br/>
+usage: ```string | ltrim: chars[optional]```
+```html
+<p>{{ 'barfoobar' | ltrim: 'bar' }}
+<!--result:
+foobar
+```
+### rtrim
+Strip whitespace (or other characters) from the end of a string<br/>
+usage: ```string | rtrim: chars[optional]```
+```html
+<p>{{ 'barfoobar' | rtrim: 'bar' }}
+<!--result:
+barfoo
+```
+### repeat
+Repeats a string n times<br/>
+**Usage:** ```string | repeat: n: separator[optional]```
+```html
+<p>{{ 'foo' | repeat: 3: '-' }}</p>
+<!--repeat:
+foo-foo-foo
+```
+### test
+Test if a string match a pattern<br/>
+**Usage:** ```string | test: pattern: flag[optional]```
+```html
+<p>{{ '15/12/2003' | test: '^[0-9]{2}[/]{1}[0-9]{2}[/]{1}[0-9]{4}$': 'i' }}</p>
+<p>{{ '0123456' | test: '\\D': 'i' }}</p>
+<!--result:
+true
+true
+```
+### match
+Return an array of matched element in a string<br/>
+**Usage:** ```string | match: pattern: flag[optional]```
+```html
+<p>{{ '15/12/2003' | match: '\\d+': 'g' }}</p>
+<!--result:
+['15', '12', '2003']
+```
 
-Python 3.6+
+## Math
 
-FastAPI stands on the shoulders of giants:
+### max
+max find and return the largest number in a given array.
+if an `expression` is provided, will return max value by expression.
+**Usage:** ```array | max: expression[optional]```
+```js
+$scope.users = [
+  { user: { score: 988790 } },
+  { user: { score: 123414 } },
+  { user: { rank : 988999 } },
+  { user: { score: 987621 } }
+];
+```
+```html
+<p> {{ [1,2,3,4,7,8,9] | max }}</p>
+<p> {{ users | max: 'user.score || user.rank' }}</p>
+<!--
+result:
+* 9
+* { user: { rank : 988999 } }
+```
 
-* <a href="https://www.starlette.io/" target="_blank">Starlette</a> for the web parts. * <a href="https://pydantic-docs.helpmanual.io/" target="_blank">Pydantic</a> for the data parts.
+### min
+min find and return the lowest number in a given array.
+if an `expression` is provided, will return min value by expression.
+**Usage:** ```array | min: expression[optional]```
+```js
+$scope.users = [
+  { user: { score: 988790 } },
+  { user: { score: 123414 } },
+  { user: { score: 987621 } }
+];
+```
+```html
+<p> {{ [1,2,3,4,7,8,9] | min }}</p>
+<p> {{ users | min: 'user.score' }}</p>
+<!--
+result:
+* 1
+* { user: { score: 123414 } }
+```
+### abs
+Returns the absolute value of a number
+**Usage:** ```number | string```
+```html
+<div ng-repeat="val in [-2.2, 1.3, '-3.4', '4.5']">The absolute value of {{val}} is {{val | abs}}</div>
+<!--
+result:
+* The absolute value of -1.2 is 1.2
+* The absolute value of 2.3 is 2.3
+* The absolute value of -3.4 is 3.4
+* The absolute value of '4.5' is 4.5
+```
+### percent
+Percentage between two numbers<br/>
+**Usage:** ``` number | percent: total: round[optional]```, round by default false.
+```html
+<p>{{ 23 | percent: 500 }}</p>
+<p>{{ 23 | percent: 500: true }}</p>
+<!--result:
+4.6
+4
+```
+### radix
+Converting decimal numbers to different bases(radix)<br/>
+**Usage:** ```number | radix: base```
+```html
+<p>{{ 8 | radix: 2 }}</p>
+<p>{{ 32586 | radix: 16 }}</p>
+<!--result:
+1000
+7F4A
+```
+### sum
+Sum up all values within an array<br/>
+**Usage:** ```array | sum: initial-value[optional]```
+```html
+{{ [2,3,5] | sum }}
+{{ [2,3,5] | sum: 10 }}
+<!--result
+10
+20
+```
+### degrees
+Converts radians into degrees<br/>
+**Usage:** ```radians | degrees: round-to-decimal```,
+```html
+<p>{{ 0.785398 | degrees: 0 }}</p>
+<p>{{ -1.57 | degrees: 3 }}</p>
+<!--result
+45
+-89.954
+```
+### radians
+Converts degrees into radians<br/>
+**Usage:** ```degrees | radians: round-to-decimal```,
+```html
+<p>{{ 45 | radians: 2 }}</p>
+<p>{{ 180 | radians: 5 }}</p>
+<!--result
+0.79
+3.14159
+```
+### shortFmt
+Converts numbers into formatted display<br/>
+**Usage:** ```number | shortFmt: round-to-decimal```,
+```html
+<p>{{ 45000 | shortFmt: 0 }}</p>
+<p>{{ 18234822 | shortFmt: 1 }}</p>
+<!--result
+45 k
+18.2 m
+```
+### byteFmt
+Converts bytes into formatted display<br/>
+**Usage:** ```number | byteFmt: round-to-decimal```,
+```html
+<p>{{ 1998 | byteFmt: 2 }}</p>
+<p>{{ 1339234901 | byteFmt: 5 }}</p>
+<!--result
+1.95 KB
+1.24726 GB
+```
+### kbFmt
+Converts kilobytes into formatted display<br/>
+**Usage:** ```number | kbFmt: round-to-decimal```,
+```html
+<p>{{ 1024 | kbFmt: 0 }}</p>
+<p>{{ 1049901 | kbFmt: 5 }}</p>
+<!--result
+1 MB
+1.00126 GB
 
+```
+## Boolean
+>Used for boolean expression in chaining filters
 
-## Installation
+### isGreaterThan
+**aliases:** `>`
+```html
+<div ng-show="{{ array | map | sum | isGreaterThan: num }}"></div>
+<!--or: -->
+<div ng-show="{{ array | map | sum | >: num }}"></div>
+```
 
+### isGreaterThanOrEqualTo
+**aliases:** `>=`
+```html
+<div ng-show="{{ array | map | sum | isGreaterThanOrEqualTo: num }}"></div>
+<!--or: -->
+<div ng-show="{{ array | map | sum | >=: num }}"></div>
+```
+
+### isLessThan
+**aliases:** `<`
+```html
+<div ng-show="{{ array | map | sum | isLessThan: num }}"></div>
+<!--or: -->
+<div ng-show="{{ array | map | sum | <: num }}"></div>
+```
+
+### isLessThanOrEqualTo
+**aliases:** `<=`
+```html
+<div ng-show="{{ array | map | sum | isLessThanOrEqualTo: num }}"></div>
+<!--or: -->
+<div ng-show="{{ array | map | sum | <=: num }}"></div>
+```
+
+### isEqualTo
+**aliases:** `==`
+```html
+<div ng-show="{{ array | map | sum | isEqualTo: num }}"></div>
+<!--or: -->
+<div ng-show="{{ array | map | sum | ==: num }}"></div>
+```
+
+### isNotEqualTo
+**aliases:** `!=`
+```html
+<div ng-show="{{ array | map | sum | isNotEqualTo: num }}"></div>
+<!--or: -->
+<div ng-show="{{ array | map | sum | !=: num }}"></div>
+```
+
+### isIdenticalTo
+**aliases:** `===`
+```html
+<div ng-show="{{ array | map | sum | isIdenticalTo: num }}"></div>
+<!--or: -->
+<div ng-show="{{ array | map | sum | ===: num }}"></div>
+```
+
+### isNotIdenticalTo
+**aliases:** `!==`
+```html
+<div ng-show="{{ array | map | sum | isNotIdenticalTo: num }}"></div>
+<!--or: -->
+<div ng-show="{{ array | map | sum | !==: num }}"></div>
+```
+## Changelog
+### 0.5.7
+* fix issue #119
+
+### 0.5.6
+* fix issue #145
+
+### 0.5.5
+* add `range` and `chunk-by` filters
+* fix issue #139
+
+### 0.5.4
+* add `match` and `test` filters
+
+### 0.5.3
+* add `latinize` filter
+
+### 0.5.1
+* `min` and `max` can get a property as an argument.
+* improve `slugify` filter.
+* refactor `filterWatcher`(memoize), now it works like a charm.
+* refactor `groupBy` now it can get be chain with other filters
+
+### 0.4.9
+* fix issue #38 with [reverseFilter](#reverse)
+
+### 0.4.8
+* add [defaultsFilter](#defaults)
+* improve docs, tests
+
+### 0.4.7
+* add [condition filters](#Boolean) set.
+<br/>
+<br/>
+
+## TODO
+- Add project website on branch gh-pages, see **[Github-help](https://help.github.com/articles/creating-project-pages-manually)**
+
+## Contributing
+* If you planning add some feature please **create issue before**.
+* Don't forget about tests.
+
+Clone the project: <br/>
 ```bash
-$ pip install fastapi
+$ git clone
+$ npm install
+$ bower install
 ```
-
-You will also need an ASGI server, for production such as <a href="http://www.uvicorn.org" target="_blank">Uvicorn</a> or <a href="https://gitlab.com/pgjones/hypercorn" target="_blank">Hypercorn</a>.
-
+Run the tests:
 ```bash
-$ pip install uvicorn
+$ grunt test
 ```
 
-## Example
-
-### Create it
-
-* Create a file `main.py` with:
-
-```Python
-from fastapi import FastAPI
-
-app = FastAPI()
-
-
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: str = None):
-    return {"item_id": item_id, "q": q}
-```
-<details markdown="1">
-<summary>Or use <code>async def</code>...</summary>
-
-If your code uses `async` / `await`, use `async def`:
-```Python hl_lines="7 12" from fastapi import FastAPI
-app = FastAPI()
-@app.get("/") async def read_root(): return {"Hello": "World"}
-@app.get("/items/{item_id}") async def read_item(item_id: int, q: str = None): return {"item_id": item_id, "q": q}
-```
-
-**Note**:
-
-If you don't know, check the _"In a hurry?"_ section about 
-
-<a href="https://fastapi.tiangolo.com/async/#in-a-hurry" target="_blank">`async` and `await` in the docs</a>
-
-.
-
-</details>
-
-### Run it
-
-Run the server with:
-
-```bash
-uvicorn main:app --reload
-```
-<details markdown="1">
-<summary>About the command <code>uvicorn main:app --reload</code>...</summary>
-
-The command `uvicorn main:app` refers to:
-
-* `main`: the file `main.py` (the Python "module").
-* `app`: the object created inside of `main.py` with the line `app = FastAPI()`.
-* `--reload`: make the server restart after code changes. Only do this for development.
-</details>
-
-### Check it
-
-Open your browser at <a href="http://127.0.0.1:8000/items/5?q=somequery" target="_blank">http://127.0.0.1:8000/items/5?q=somequery</a>.
-
-You will see the JSON response as:
-
-```JSON
-{"item_id": 5, "q": "somequery"}
-```
-
-You already created an API that:
-
-* Receives HTTP requests in the _paths_ `/` and `/items/{item_id}`.
-* Both _paths_ take `GET` <em>operations</em> (also known as HTTP _methods_).
-* The _path_ `/items/{item_id}` has a _path parameter_ `item_id` that should be an `int`.
-* The _path_ `/items/{item_id}` has an optional `str` _query parameter_ `q`.
-
-### Interactive API docs
-
-Now go to <a href="http://127.0.0.1:8000/docs" target="_blank">http://127.0.0.1:8000/docs</a>.
-
-You will see the automatic interactive API documentation (provided by <a href="https://github.com/swagger-api/swagger-ui" target="_blank">Swagger UI</a>):
-
-![Swagger UI](https://fastapi.tiangolo.com/img/index/index-01-swagger-ui-simple.png)
-
-
-### Alternative API docs
-
-And now, go to <a href="http://127.0.0.1:8000/redoc" target="_blank">http://127.0.0.1:8000/redoc</a>.
-
-You will see the alternative automatic documentation (provided by <a href="https://github.com/Rebilly/ReDoc" target="_blank">ReDoc</a>):
-
-![ReDoc](https://fastapi.tiangolo.com/img/index/index-02-redoc-simple.png)
-
-## Example upgrade
-
-Now modify the file `main.py` to receive a body from a `PUT` request.
-
-Declare the body using standard Python types, thanks to Pydantic.
-
-
-```Python hl_lines="2 7 8 9 10 24" from fastapi import FastAPI from pydantic import BaseModel
-
-app = FastAPI()
-
-
-class Item(BaseModel): name: str price: float is_offer: bool = None
-
-
-@app.get("/") def read_root(): return {"Hello": "World"}
-
-
-@app.get("/items/{item_id}") def read_item(item_id: int, q: str = None): return {"item_id": item_id, "q": q}
-
-
-@app.put("/items/{item_id}") def update_item(item_id: int, item: Item): return {"item_name": item.name, "item_id": item_id}
-```
-
-The server should reload automatically (because you added `--reload` to the `uvicorn` command above).
-
-### Interactive API docs upgrade
-
-Now go to <a href="http://127.0.0.1:8000/docs" target="_blank">http://127.0.0.1:8000/docs</a>.
-
-* The interactive API documentation will be automatically updated, including the new body:
-
-![Swagger UI](https://fastapi.tiangolo.com/img/index/index-03-swagger-02.png)
-
-* Click on the button "Try it out", it allows you to fill the parameters and directly interact with the API:
-
-![Swagger UI interaction](https://fastapi.tiangolo.com/img/index/index-04-swagger-03.png)
-
-* Then click on the "Execute" button, the user interface will communicate with your API, send the parameters, get the results and show them on the screen:
-
-![Swagger UI interaction](https://fastapi.tiangolo.com/img/index/index-05-swagger-04.png)
-
-
-### Alternative API docs upgrade
-
-And now, go to <a href="http://127.0.0.1:8000/redoc" target="_blank">http://127.0.0.1:8000/redoc</a>.
-
-* The alternative documentation will also reflect the new query parameter and body:
-
-![ReDoc](https://fastapi.tiangolo.com/img/index/index-06-redoc-02.png)
-
-
-### Recap
-
-In summary, you declare **once** the types of parameters, body, etc. as function parameters. 
-
-You do that with standard modern Python types.
-
-You don't have to learn a new syntax, the methods or classes of a specific library, etc.
-
-Just standard **Python 3.6+**.
-
-For example, for an `int`:
-
-```Python
-item_id: int
-```
-
-or for a more complex `Item` model:
-
-```Python
-item: Item
-```
-
-...and with that single declaration you get:
-
-* Editor support, including:
-    * Completion.
-    * Type checks.
-* Validation of data:
-    * Automatic and clear errors when the data is invalid.
-    * Validation even for deeply nested JSON objects.
-* Conversion of input data: coming from the network to Python data and types. Reading from:
-    * JSON.
-    * Path parameters.
-    * Query parameters.
-    * Cookies.
-    * Headers.
-    * Forms.
-    * Files.
-* Conversion of output data: converting from Python data and types to network data (as JSON):
-    * Convert Python types (`str`, `int`, `float`, `bool`, `list`, etc).
-    * `datetime` objects.
-    * `UUID` objects.
-    * Database models.
-    * ...and many more.
-* Automatic interactive API documentation, including 2 alternative user interfaces:
-    * Swagger UI.
-    * ReDoc.
-
----
-
-Coming back to the previous code example, **FastAPI** will:
-
-* Validate that there is an `item_id` in the path for `GET` and `PUT` requests.
-* Validate that the `item_id` is of type `int` for `GET` and `PUT` requests.
-    * If it is not, the client will see a useful, clear error.
-* Check if there is an optional query parameter named `q` (as in `http://127.0.0.1:8000/items/foo?q=somequery`) for `GET` requests.
-    * As the `q` parameter is declared with `= None`, it is optional.
-    * Without the `None` it would be required (as is the body in the case with `PUT`).
-* For `PUT` requests to `/items/{item_id}`, Read the body as JSON:
-    * Check that it has a required attribute `name` that should be a `str`.
-    * Check that is has a required attribute `price` that has to be a `float`.
-    * Check that it has an optional attribute `is_offer`, that should be a `bool`, if present.
-    * All this would also work for deeply nested JSON objects.
-* Convert from and to JSON automatically.
-* Document everything with OpenAPI, that can be used by:
-    * Interactive documentation systems.
-    * Automatic client code generation systems, for many languages.
-* Provide 2 interactive documentation web interfaces directly.
-
-
----
-
-We just scratched the surface, but you already get the idea of how it all works.
-
-Try changing the line with:
-
-```Python
-    return {"item_name": item.name, "item_id": item_id}
-```
-
-...from:
-
-```Python
-        ... "item_name": item.name ...
-```
-
-...to:
-
-```Python
-        ... "item_price": item.price ...
-```
-
-...and see how your editor will auto-complete the attributes and know their types:
-
-![editor support](https://fastapi.tiangolo.com/img/vscode-completion.png)
-
-
-For a more complete example including more features, see the <a href="https://fastapi.tiangolo.com/tutorial/intro/">Tutorial - User Guide</a>.
-
-**Spoiler alert**: the tutorial - user guide includes:
-
-* Declaration of **parameters** from other different places as: **headers**, **cookies**, **form fields** and **files**.
-* How to set **validation constraints** as `maximum_length` or `regex`.
-* A very powerful and easy to use **Dependency Injection** system.
-* Security and authentication, including support for **OAuth2** with **JWT tokens** and **HTTP Basic** auth.
-* More advanced (but equally easy) techniques for declaring **deeply nested JSON models** (thanks to Pydantic).
-* Many extra features (thanks to Starlette) as:
-    * **WebSockets**
-    * **GraphQL**
-    * extremely easy tests based on `requests` and `pytest`
-    * **CORS**
-    * **Cookie Sessions**
-    * ...and more.
-
-
-## Performance
-
-Independent TechEmpower benchmarks show **FastAPI** applications running under Uvicorn as <a href="https://www.techempower.com/benchmarks/#section=test&runid=7464e520-0dc2-473d-bd34-dbdfd7e85911&hw=ph&test=query&l=zijzen-7" target="_blank">one of the fastest Python frameworks available</a>, only below Starlette and Uvicorn themselves (used internally by FastAPI). (*)
-
-To understand more about it, see the section <a href="https://fastapi.tiangolo.com/benchmarks/" target="_blank">Benchmarks</a>.
-
-## Optional Dependencies
-
-Used by Pydantic:
-
-* <a href="https://github.com/esnme/ultrajson" target="_blank"><code>ujson</code></a> - for faster JSON "parsing".
-* <a href="https://github.com/JoshData/python-email-validator" target="_blank"><code>email_validator</code></a> - for email validation.
-
-
-Used by Starlette:
-
-* <a href="http://docs.python-requests.org" target="_blank"><code>requests</code></a> - Required if you want to use the `TestClient`.
-* <a href="https://github.com/Tinche/aiofiles" target="_blank"><code>aiofiles</code></a> - Required if you want to use `FileResponse` or `StaticFiles`.
-* <a href="http://jinja.pocoo.org" target="_blank"><code>jinja2</code></a> - Required if you want to use the default template configuration.
-* <a href="https://andrew-d.github.io/python-multipart/" target="_blank"><code>python-multipart</code></a> - Required if you want to support form "parsing", with `request.form()`.
-* <a href="https://pythonhosted.org/itsdangerous/" target="_blank"><code>itsdangerous</code></a> - Required for `SessionMiddleware` support.
-* <a href="https://pyyaml.org/wiki/PyYAMLDocumentation" target="_blank"><code>pyyaml</code></a> - Required for `SchemaGenerator` support.
-* <a href="https://graphene-python.org/" target="_blank"><code>graphene</code></a> - Required for `GraphQLApp` support.
-* <a href="https://github.com/esnme/ultrajson" target="_blank"><code>ujson</code></a> - Required if you want to use `UJSONResponse`.
-
-Used by FastAPI / Starlette:
-
-* <a href="http://www.uvicorn.org" target="_blank"><code>uvicorn</code></a> - for the server that loads and serves your application.
-
-You can install all of these with `pip3 install fastapi[all]`.
-
-## License
-
-This project is licensed under the terms of the MIT license.
+[npm-image]: https://img.shields.io/npm/v/angular-filter.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/angular-filter
+[travis-image]: https://img.shields.io/travis/a8m/angular-filter.svg?style=flat-square
+[travis-url]: https://travis-ci.org/a8m/angular-filter
+[coveralls-image]: https://img.shields.io/coveralls/a8m/angular-filter.svg?style=flat-square
+[coveralls-url]: https://coveralls.io/r/a8m/angular-filter
+[license-image]: http://img.shields.io/npm/l/angular-filter.svg?style=flat-square
+[license-url]: LICENSE
+[gitter-image]: https://badges.gitter.im/Join%20Chat.svg
+[gitter-url]: https://gitter.im/a8m/angular-filter?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
