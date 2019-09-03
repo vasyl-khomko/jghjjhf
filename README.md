@@ -1,363 +1,1132 @@
-# angulartics
-[![NPM version](https://img.shields.io/npm/v/angulartics.svg)](https://npmjs.org/package/angulartics) [![NPM downloads](https://img.shields.io/npm/dm/angulartics.svg)](https://npmjs.org/package/angulartics) [![Bower version](https://img.shields.io/bower/v/angulartics.svg)](http://bower.io/search/?q=angulartics) [![Dependencies status](https://img.shields.io/david/angulartics/angulartics.svg)](https://david-dm.org/angulartics/angulartics) [![devDependency Status](https://david-dm.org/angulartics/angulartics/dev-status.svg)](https://david-dm.org/angulartics/angulartics#info=devDependencies) [![MIT license](http://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Gitter Chat](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/angulartics) [![CDNJS](https://img.shields.io/cdnjs/v/angulartics.svg)](https://cdnjs.com/libraries/angulartics)
+# AngularJS in Patterns
 
-Vendor-agnostic analytics for AngularJS applications. [angulartics.github.io](http://angulartics.github.io "Go to the website")
+<!--toc-->
 
-## Please Read!
+## Table of Contents
 
-This is **Angulartics**, not _**[Angularytics](http://github.com/mgonto/angularytics)**_. There's been some complains about the unfortunate similarity in the names of both projects (this is actually a [funny story](#FunnyStory)), so [we hear you guys](https://daveceddia.com/angular/angularytics-vs-angulartics/) and are making this clarification here. Just make sure **Angulartics** is the library you actually want to use, and if you work in a team, make sure this is the library they are using!
+* [Translations](#translations)
+* [Abstract](#abstract)
+* [Introduction](#introduction)
+* [AngularJS overview](#angular-1-overview)
+  * [Partials](#partials)
+  * [Controllers](#controllers)
+  * [Scope](#scope)
+  * [Directives](#directives)
+  * [Filters](#filters)
+  * [Services](#services)
+* [AngularJS Patterns](#angular-1-patterns)
+  * [Services](#services-1)
+    * [Singleton](#singleton)
+    * [Factory Method](#factory-method)
+    * [Decorator](#decorator)
+    * [Facade](#facade)
+    * [Proxy](#proxy)
+    * [Active Record](#active-record)
+    * [Intercepting Filters](#intercepting-filters)
+  * [Directives](#directives-1)
+    * [Composite](#composite)
+    * [Interpreter](#interpreter)
+    * [Template View](#template-view)
+  * [Scope](#scope-1)
+    * [Observer](#observer)
+    * [Chain of Responsibilities](#chain-of-responsibilities)
+    * [Command](#command)
+  * [Controller](#controller-1)
+    * [Page Controller](#page-controller)
+  * [Others](#others)
+    * [Module Pattern](#module-pattern)
+    * [Data Mapper](#data-mapper)
+    * [Observer Pattern as an External Service](#observer-pattern-as-an-external-service)
+* [References](#references)
 
-## Install
+<!--endtoc-->
 
-### npm
+## Translations
 
-```shell
-npm install angulartics
+- [Japanese Translation](https://github.com/mgechev/angular-in-patterns/blob/master/i18n/README-ja-jp.md) by [morizotter](https://twitter.com/morizotter)
+- [Russian Translation 1](http://habrahabr.ru/post/250149/)
+- [Russian Translation 2](https://github.com/mgechev/angular-in-patterns/blob/master/i18n/README-ru-ru.md) by [l.s.kramarov](https://github.com/lskramarov)
+- [French Translation](https://github.com/mgechev/angular-in-patterns/blob/master/i18n/README-fr-fr.md) by [manekinekko](https://github.com/manekinekko)
+- [Chinese Translation](https://github.com/mgechev/angular-in-patterns/blob/master/i18n/README-zh-cn.md) by [carlosliu](https://github.com/carlosliu)
+
+## Abstract
+
+One of the best ways to learn something new is to see how the things you already know are used in it. This document does not intend to make its readers familiar with the design or architectural patterns; it suggests basic understanding of the concepts of the OOP, design patterns and architectural patterns. The goal of this paper is to describe how different software design and architectural patterns are applied in AngularJS or any AngularJS single-page application.
+
+## Introduction
+
+The document begins with brief overview of the AngularJS framework. The overview explains the main AngularJS components - directives, filters, controllers, services, scope. The second section lists and describes different design and architectural patterns, which are implemented inside the framework. The patterns are grouped by the AngularJS component they are used in. If some patterns are used inside multiple components it will be explicitly mentioned.
+
+The last section contains a few architectural patterns, which are commonly used inside most of the single-page applications built with AngularJS.
+
+## AngularJS overview
+
+AngularJS is a JavaScript framework developed by Google. It intends to provide a solid base for the development of CRUD Single-Page Applications (SPA). SPA is a web application, which once loaded, does not require full page reload when the user performs any actions with it. This means that all application resources (data, templates, scripts, styles) should be loaded with the initial request or better - the information and resources should be loaded on demand. Since most of the CRUD applications has common characteristics and requirements, AngularJS intends to provide the optimal set of them out-of-the-box. A few important features of AngularJS are:
+
+- two-way data binding
+- dependency injection
+- separation of concerns
+- testability
+- abstraction
+
+The separation of concerns is achieved by dividing each AngularJS application into separate components, such as:
+
+- partials
+- controllers
+- directives
+- services
+- filters
+
+These components can be grouped inside different modules, which helps to achieve a higher level of abstraction and handle complexity. Each of the components encapsulates a specific piece of the application's logic.
+
+### Partials
+
+The partials are HTML strings. They may contain AngularJS expressions inside the elements or their attributes. One of the distinctions between AngularJS and the others frameworks is the fact that AngularJS' templates are not in an intermediate format, which needs to be turned into HTML (which is the case with mustache.js and handlebars, for example).
+
+Initially each SPA loads `index.html` file. In the case of AngularJS this file contains a set of standard and custom HTML attributes, elements and comments, which configure and bootstrap the application. Each sub-sequenced user action requires only load of another partial or change of the state of the application, for example through the data binding provided by the framework.
+
+**Sample partial**
+
+```HTML
+<html ng-app>
+ <!-- Body tag augmented with ngController directive  -->
+ <body ng-controller="MyController">
+   <input ng-model="foo" value="bar">
+   <!-- Button tag with ng-click directive, and
+          string expression 'buttonText'
+          wrapped in "{{ }}" markup -->
+   <button ng-click="changeFoo()">{{buttonText}}</button>
+   <script src="angular.js"></script>
+ </body>
+</html>
 ```
 
-### Bower
+With AngularJS expressions partials define what kind of actions should be performed for handling different user interactions. In the example above the value of the attribute `ng-click` states that the method `changeFoo` of the current *scope* will be invoked.
 
-To install angulartics core module:
-```shell
-bower install angulartics
+### Controllers
+
+The AngularJS controllers are JavaScript functions, which help handling the user interactions with the web application (for example mouse events, keyboard events, etc.), by attaching methods to the *scope*. All required external, for the controllers, components are provided through the Dependency Injection mechanism of AngularJS. The controllers are also responsible for providing the *model* to the partials by attaching data to the *scope*. We can think of this data as *view model*.
+
+```JavaScript
+function MyController($scope) {
+  $scope.buttonText = 'Click me to change foo!';
+  $scope.foo = 42;
+
+  $scope.changeFoo = function () {
+    $scope.foo += 1;
+    alert('Foo changed');
+  };
+}
 ```
 
-### NuGet
+For example, if we wire the sample controller above with the partial provided in the previous section the user will be able to interact with the application in few different ways.
 
-> **Note: we are dropping support for NuGet.
+1. Change the value of `foo` by typing in the input box. This will immediately reflect the value of `foo` because of the two-way data binding.
+2. Change the value of `foo` by clicking the button, which will be labeled `Click me to change foo!`.
 
-## Full path tracking (for pages without a router)
-Introduced in 0.15.19 - support websites that do not use Angular `routes` or `states` on every page and still want to track full paths.  The modifications lead to the following behavior:
+All the custom elements, attributes, comments or classes could be recognized as AngularJS *directives* if they are previously defined as ones.
 
- - **Viewing page `http://host.com/routes#/route` will be tracked as `/routes#/route`.** The original version would only track the page as `/route`
- - **Viewing page `http://host.com/noroutes` will be tracked as `/noroutes`.**  This is useful for pages that do not contain Angular code besides initializing the base module.
- - **Viewing page `http://host.com/routes2` that loads a default route and changes the path to `http://host.com/routes2#/` will be tracked as `/routes2#/`.** This will only fire one pageview, whereas earlier versions would have fired two.
+### Scope
 
-To enable this behavior, add the following to your configuration:
+In AngularJS scope is a JavaScript object, which is exposed to the partials. The scope could contain different properties - primitives, objects or methods. All methods attached to the scope could be invoked by evaluation of AngularJS expression inside the partials associated with the given scope or direct call of the method by any component, which keeps reference to the scope. By using appropriate *directives*, the data attached to the scope could be binded to the view in such a way that each change in the partial will reflect a scope property and each change of a scope property will reflect the partial.
 
-        ...
-        var yourApp = angular.module('YourApp', ['angulartics', 'angulartics.google.analytics'])
-            .config(function ($analyticsProvider) {
-                $analyticsProvider.firstPageview(true); /* Records pages that don't use $state or $route */
-                $analyticsProvider.withAutoBase(true);  /* Records full path */
-        });
+Another important characteristics of the scopes of any AngularJS application is that they are connected into a prototypical chain (except scopes, which are explicitly stated as *isolated*). This way any child scope will be able to invoke methods of its parents since they are properties of its direct or indirect prototype.
 
-You can also use `$analyticsProvider.withBase(true)` instead of `$analyticsProvider.withAutoBase(true)` if you are using a `<base>` HTML tag.
+Scope inheritance is illustrated in the following example:
 
-## Minimal setup
+```HTML
+<div ng-controller="BaseCtrl">
+  <div id="child" ng-controller="ChildCtrl">
+    <button id="parent-method" ng-click="foo()">Parent method</button>
+    <button ng-click="bar()">Child method</button>
+  </div>
+</div>
+```
 
-### for Google Analytics
+```JavaScript
+function BaseCtrl($scope) {
+  $scope.foo = function () {
+    alert('Base foo');
+  };
+}
 
-See [angulartics-google-analytics](https://github.com/angulartics/angulartics-google-analytics/blob/master/README.md) documentation.
+function ChildCtrl($scope) {
+  $scope.bar = function () {
+    alert('Child bar');
+  };
+}
+```
 
-### for Google Tag Manager (new interface)
+With `div#child` is associated `ChildCtrl` but since the scope injected inside `ChildCtrl` inherits prototypically from its parent scope (i.e. the one injected inside `BaseCtrl`) the method `foo` is accessible by `button#parent-method`.
 
-    angular.module('myApp', ['angulartics', 'angulartics.google.tagmanager'])
+### Directives
 
-Add the full tracking code from Google Tag Manager to the beginning of your body tag.
+In AngularJS the directives are the place where all DOM manipulations should be placed. As a rule of thumb, when you have DOM manipulations in your controller you should create a new directive or consider refactoring of already existing one, which could handle the required DOM manipulations. Each directive has a name and logic associated with it. In the simplest case the directive contains only name and definition of *postLink* function, which encapsulates all the logic required for the directive. In more complex cases the directive could contain a lot of properties such as:
 
-Setup listeners in Google Tag Manager
+- template
+- compile function
+- link function
+- etc...
 
-#### 6 Variables
+By citing the name of the directives they can be used inside the declarative partials.
 
-Naming and case must match.
+Example:
 
-1. **angulartics page path** Type: **Data Layer Variable** Data Layer Variable Name: **content-name**
-2. **angulartics event category** Type: **Data Layer Variable** Data Layer Variable Name: **target**
-3. **angulartics event action** Type: **Data Layer Variable** Data Layer Variable Name: **action**
-4. **angulartics event label** Type: **Data Layer Variable** Data Layer Variable Name: **target-properties**
-5. **angulartics event value** Macro Type: **Data Layer Variable** Data Layer Variable Name: **value**
-6. **angulartics event interaction type** Type: **Data Layer Variable** Data Layer Variable Name: **interaction-type**
-
-#### 2 Triggers
-
-Name and case must match
-
-1. **Angulartics events** Event: **Custom Event** Fire on: **interaction**
-2. **Angulartics pageviews** Event: **Custom Event** Fire on: **content-view**
-
-#### 2 Tags
-
-1. **Angulartics Events** Product: **Google Analytics** Type: **Universal Analytics** Tracking ID: **YourGoogleAnalyticsID** Track Type: **Event** Category: **{{angulartics event category}}** Action: **{{angulartics event action}}** Label: **{{angulartics event label}}** Value: **{{angulartics event value}}** Non-Interaction Hit: **{{angulartics event interaction type}}** Fire On: **Angulartics events**
-2. **Angulartics Pageviews** Product: **Google Analytics** Type: **Universal Analytics** Tracking ID: **YourGoogleAnalyticsID** Track Type: **Page View** More settings > Field to Set > name: **page**, value: **{{angulartics page path}}** Fire On: **Angulartics pageviews**
-
-### for Google Tag Manager (old interface)
-
-    angular.module('myApp', ['angulartics', 'angulartics.google.tagmanager'])
-
-Add the full tracking code from Google Tag Manager to the beginning of your body tag.
-
-Setup listeners in Google Tag Manager
-
-#### 6 Macros
-
-Naming and case must match.
-
-1. **angulartics page path** Type: **Data Layer Variable** Data Layer Variable Name: **content-name**
-2. **angulartics event category** Type: **Data Layer Variable** Data Layer Variable Name: **target**
-3. **angulartics event action** Type: **Data Layer Variable** Data Layer Variable Name: **action**
-4. **angulartics event label** Type: **Data Layer Variable** Data Layer Variable Name: **target-properties**
-5. **angulartics event value** Macro Type: **Data Layer Variable** Data Layer Variable Name: **value**
-6. **angulartics event interaction type** Type: **Data Layer Variable** Data Layer Variable Name: **interaction-type**
-
-#### 2 Rules
-
-Name and case must match
-
-1. **Angulartics events** Condition: **{{event}} equals interaction**
-2. **Angulartics pageviews** Condition: **{{event}} equals content-view**
-
-#### 2 Tags
-
-1. **Angulartics Events** Product: **Google Analytics** Type: **Universal Analytics** Tracking ID: **YourGoogleAnalyticsID** Track Type: **Event** Category: **{{angulartics event category}}** Action: **{{angulartics event action}}** Label: **{{angulartics event label}}** Value: **{{angulartics event value}}** Non-Interaction Hit: **{{angulartics event interaction type}}** Firing Rules: **Angulartics events**
-2. **Angulartics Pageviews** Product: **Google Analytics** Type: **Universal Analytics** Tracking ID: **YourGoogleAnalyticsID** Track Type: **Page View** More settings > Basic Configuration > Document Path: **{{angulartics page path}}** Firing Rules: **Angulartics pageviews**
-
-### for Piwik ##
-
-See [angulartics-piwik](https://github.com/angulartics/angulartics-piwik) for more details.
-
-### for other providers
-
-[Browse the website for detailed instructions.](http://angulartics.github.io)
-
-## Supported providers
-
-* [Adobe Analytics](https://github.com/angulartics/angulartics-adobe-analytics)
-* [Chartbeat](https://github.com/angulartics/angulartics-chartbeat)
-* [Clicky](https://github.com/angulartics/angulartics-clicky)
-* \[Facebook Pixel\] (https://github.com/mooyoul/angulartics-facebook-pixel)
-* [Flurry](https://github.com/angulartics/angulartics-flurry)
-* [Google Analytics](https://github.com/angulartics/angulartics-google-analytics)
-* Google Tag Manager
-* GoSquared
-* [HubSpot](https://github.com/angulartics/angulartics-hubspot)
-* [IBM Digital Analytics](https://github.com/cwill747/angulartics-coremetrics)
-* [Kissmetrics](https://github.com/angulartics/angulartics-kissmetrics)
-* [Localytics](https://github.com/angulartics/angulartics-localytics)
-* Loggly
-* Marketo
-* [Mixpanel](https://github.com/angulartics/angulartics-mixpanel)
-* Piwik
-* [Scout](https://github.com/Trolleymusic/angulartics-scout)
-* Scroll tracking
-* [Segment](https://github.com/angulartics/angulartics-segment)
-* Splunk
-* Woopra
-
-If there's no Angulartics plugin for your analytics vendor of choice, please feel free to write yours and PR' it! Here's how to do it.
-
-## Creating your own vendor plugin
-
-> Make sure you follow the [Plugin contribution guidelines](https://github.com/angulartics/angulartics/wiki/Plugin-contribution-rules). You can also use [any of the existing plugins](https://github.com/angulartics) as a starter template.
-
-It's very easy to write your own plugin. First, create your module and inject `$analyticsProvider`:
-
-    angular.module('angulartics.myplugin', ['angulartics'])
-      .config(['$analyticsProvider', function ($analyticsProvider) {
-
-Please follow the style `angulartics.{vendorname}`.
-
-Next, you register either the page track function, event track function, or both. You do it by calling the `registerPageTrack` and `registerEventTrack` methods. Let's take a look at page tracking first:
-
-    $analyticsProvider.registerPageTrack(function (path) {
-        // your implementation here
+```JavaScript
+myModule.directive('alertButton', function () {
+  return {
+    template: '<button ng-transclude></button>',
+    scope: {
+      content: '@'
+    },
+    replace: true,
+    restrict: 'E',
+    transclude: true,
+    link: function (scope, el) {
+      el.click(function () {
+        alert(scope.content);
+      });
     }
+  };
+});
+```
 
-By calling `registerPageTrack`, you tell Angulartics to invoke your function on `$routeChangeSuccess` or `$stateChangeSuccess`. Angulartics will send the new path as an argument.
+```HTML
+<alert-button content="42">Click me</alert-button>
+```
 
-    $analyticsProvider.registerEventTrack(function (action, properties) {
-        // your implementation here
+In the example above the tag `<alert-button></alert-button>` will be replaced button element. When the user clicks on the button the string `42` will be alerted.
 
-This is very similar to page tracking. Angulartics will invoke your function every time the event (`analytics-on` attribute) is fired, passing the action (`analytics-event` attribute) and an object composed of any `analytics-*` attributes you put in the element.
+Since the intent of this paper is not to explain the complete API of AngularJS, we will stop with the directives here.
 
-If the analytics provider is created async, you can wrap you code with:
+### Filters
 
-    angulartics.waitForVendorApi("var", 1000, function(window.var) {
-      ...
+The filters in AngularJS are responsible for encapsulating logic required for formatting data. Usually filters are used inside the partials but they are also accessible in the controllers, directives, *services* and other filters through Dependency Injection.
+
+Here is a definition of a sample filter, which changes the given string to uppercase:
+
+```JavaScript
+myModule.filter('uppercase', function () {
+  return function (str) {
+    return (str || '').toUpperCase();
+  };
+});
+```
+
+Inside a partial this filter could be used using the Unix's piping syntax:
+
+```HTML
+<div>{{ name | uppercase }}</div>
+```
+
+Inside a controller the filter could be used as follows:
+
+```JavaScript
+function MyCtrl(uppercaseFilter) {
+  $scope.name = uppercaseFilter('foo'); //FOO
+}
+```
+
+### Services
+
+Every piece of logic, which doesn't belong to the components described above, should be placed inside a service. Usually services encapsulate the domain specific logic, persistence logic, XHR, WebSockets, etc. When the controllers in the application became too "fat" the repetitive code should be placed inside a service.
+
+```JavaScript
+myModule.service('Developer', function () {
+  this.name = 'Foo';
+  this.motherLanguage = 'JavaScript';
+  this.live = function () {
+    while (true) {
+      this.code();
+    }
+  };
+});
+```
+
+The service could be injected inside any component, which supports dependency injection (controllers, other services, filters, directives).
+
+```JavaScript
+function MyCtrl(Developer) {
+  var developer = new Developer();
+  developer.live();
+}
+```
+
+## AngularJS Patterns
+
+In the next a couple of sections, we are going to take a look how the traditional design and architectural patterns are composed in the AngularJS components.
+
+In the last chapter we are going to take a look at some architectural patterns, which are frequently used in the development of Single-Page Applications with (but not limited to) AngularJS.
+
+### Services
+
+#### Singleton
+> The singleton pattern is a design pattern that restricts the instantiation of a class to one object. This is useful when exactly one object is needed to coordinate actions across the system. The concept is sometimes generalized to systems that operate more efficiently when only one object exists, or that restrict the instantiation to a certain number of objects.
+
+In the UML diagram bellow is illustrated the singleton design pattern.
+
+![Singleton](https://rawgit.com/mgechev/angular-in-patterns/master/images/singleton.svg "Fig. 1")
+
+When given dependency is required by any component, AngularJS resolves it using the following algorithm:
+
+- Takes its name and makes a lookup at a hash map, which is defined into a lexical closure (so it has a private visibility).
+- If the dependency exists AngularJS pass it as parameter to the component, which requires it.
+- If the dependency does not exists:
+  - AngularJS instantiate it by calling the factory method of its provider (i.e. `$get`). Note that instantiating the dependency may require recursive call to the same algorithm, for resolving all the dependencies required by the given dependency. This process may lead to circular dependency.
+  - AngularJS caches it inside the hash map mentioned above.
+  - AngularJS passes it as parameter to the component, which requires it.
+
+We can take better look at the AngularJS' source code, which implements the method `getService`:
+
+```JavaScript
+function getService(serviceName) {
+  if (cache.hasOwnProperty(serviceName)) {
+    if (cache[serviceName] === INSTANTIATING) {
+      throw $injectorMinErr('cdep', 'Circular dependency found: {0}', path.join(' <- '));
+    }
+    return cache[serviceName];
+  } else {
+    try {
+      path.unshift(serviceName);
+      cache[serviceName] = INSTANTIATING;
+      return cache[serviceName] = factory(serviceName);
+    } catch (err) {
+      if (cache[serviceName] === INSTANTIATING) {
+        delete cache[serviceName];
+      }
+      throw err;
+    } finally {
+      path.shift();
+    }
+  }
+}
+```
+
+We can think of each service as a singleton, because each service is instantiated no more than a single time. We can consider the cache as a singleton manager. There is a slight variation from the UML diagram illustrated above because instead of keeping static, private reference to the singleton inside its constructor function, we keep the reference inside the singleton manager (stated in the snippet above as `cache`).
+
+This way the services are actually singletons but not implemented through the Singleton pattern, which provides a few advantages over the standard implementation:
+
+- It improves the testability of your source code
+- You can control the creation of singleton objects (in our case the IoC container controls it for us, by instantiating the singletons lazy)
+
+For further discussion on this topic Misko Hevery's [article](http://googletesting.blogspot.com/2008/05/tott-using-dependancy-injection-to.html) in the Google Testing blog could be considered.
+
+#### Factory Method
+> The factory method pattern is a creational pattern, which uses factory methods to deal with the problem of creating objects without specifying the exact class of object that will be created. This is done by creating objects via a factory method, which is either specified in an interface (abstract class) and implemented in implementing classes (concrete classes); or implemented in a base class, which can be overridden when inherited in derived classes; rather than by a constructor.
+
+![Factory Method](https://rawgit.com/mgechev/angular-in-patterns/master/images/factory-method.svg "Fig. 2")
+
+Lets consider the following snippet:
+
+```JavaScript
+myModule.config(function ($provide) {
+  $provide.provider('foo', function () {
+    var baz = 42;
+    return {
+      //Factory method
+      $get: function (bar) {
+        var baz = bar.baz();
+        return {
+          baz: baz
+        };
+      }
+    };
+  });
+});
+
+```
+
+In the code above we use the `config` callback in order to define new "provider". Provider is an object, which has a method called `$get`. Since in JavaScript we don't have interfaces and the language is duck-typed there is a convention to name the factory method of the providers that way.
+
+Each service, filter, directive and controller has a provider (i.e. object which factory method, called `$get`), which is responsible for creating the component's instance.
+
+We can dig a little bit deeper in AngularJS' implementation:
+
+```JavaScript
+//...
+
+createInternalInjector(instanceCache, function(servicename) {
+  var provider = providerInjector.get(servicename + providerSuffix);
+  return instanceInjector.invoke(provider.$get, provider, undefined, servicename);
+}, strictDi));
+
+//...
+
+function invoke(fn, self, locals, serviceName){
+  if (typeof locals === 'string') {
+    serviceName = locals;
+    locals = null;
+  }
+
+  var args = [],
+      $inject = annotate(fn, strictDi, serviceName),
+      length, i,
+      key;
+
+  for(i = 0, length = $inject.length; i < length; i++) {
+    key = $inject[i];
+    if (typeof key !== 'string') {
+      throw $injectorMinErr('itkn',
+              'Incorrect injection token! Expected service name as string, got {0}', key);
+    }
+    args.push(
+      locals && locals.hasOwnProperty(key)
+      ? locals[key]
+      : getService(key)
+    );
+  }
+  if (!fn.$inject) {
+    // this means that we must be an array.
+    fn = fn[length];
+  }
+
+  return fn.apply(self, args);
+}
+```
+
+From the example above we can notice how the `$get` method is actually used:
+
+```JavaScript
+instanceInjector.invoke(provider.$get, provider, undefined, servicename)
+```
+
+The snippet above calls the `invoke` method of `instanceInjector` with the factory method (i.e. `$get`) of given service, as first argument. Inside `invoke`'s body `annotate` is called with first argument the factory method. Annotate resolves all dependencies through the dependency injection mechanism of AngularJS, which was considered above. When all dependencies are resolved the factory method is being called: `fn.apply(self, args)`.
+
+If we think in terms of the UML diagram above we can call the provider a "ConcreteCreator" and the actual component, which is being created a "Product".
+
+There are a few benefits of using the factory method pattern in this case, because of the indirection it creates. This way the framework can take care of the boilerplates during the instantiation of new components like:
+
+- The most appropriate moment, when the component needs to be instantiated
+- Resolving all the dependencies required by the component
+- The number of instances the given component is allowed to have (for services and filters only a single one but multiple for the controllers)
+
+#### Decorator
+> The decorator pattern (also known as Wrapper, an alternative naming shared with the Adapter pattern) is a design pattern that allows behavior to be added to an individual object, either statically or dynamically, without affecting the behavior of other objects from the same class.
+
+![Decorator](https://rawgit.com/mgechev/angular-in-patterns/master/images/decorator.svg "Fig. 4")
+
+AngularJS provides out-of-the-box way for extending and/or enhancing the functionality of already existing services. Using the method `decorator` of `$provide` you can create "wrapper" of any service you have previously defined or used by a third-party:
+
+```JavaScript
+myModule.controller('MainCtrl', function (foo) {
+  foo.bar();
+});
+
+myModule.factory('foo', function () {
+  return {
+    bar: function () {
+      console.log('I\'m bar');
+    },
+    baz: function () {
+      console.log('I\'m baz');
+    }
+  };
+});
+
+myModule.config(function ($provide) {
+  $provide.decorator('foo', function ($delegate) {
+    var barBackup = $delegate.bar;
+    $delegate.bar = function () {
+      console.log('Decorated');
+      barBackup.apply($delegate, arguments);
+    };
+    return $delegate;
+  });
+});
+```
+The example above defines new service called `foo`. In the `config` callback is called the method `$provide.decorator` with first argument `"foo"`, which is the name of the service, we want to decorate and second argument factory function, which implements the actual decoration. `$delegate` keeps reference to the original service `foo`. Using the dependency injection mechanism of AngularJS, reference to this local dependency is passed as first argument of the constructor function. We decorate the service by overriding its method `bar`. The actual decoration is simply extending `bar` by invoking one more `console.log statement` - `console.log('Decorated');` and after that call the original `bar` method with the appropriate context.
+
+Using this pattern is especially useful when we need to modify the functionality of third party services. In cases when multiple similar decorations are required (like performance measurement of multiple methods, authorization, logging, etc.), we may have a lot of duplications and violate the DRY principle. In such cases it is useful to use [aspect-oriented programming](http://en.wikipedia.org/wiki/Aspect-oriented_programming). The only AOP framework for AngularJS I'm aware of could be found at [github.com/mgechev/angular-aop](https://github.com/mgechev/angular-aop).
+
+#### Facade
+> A facade is an object that provides a simplified interface to a larger body of code, such as a class library. A facade can:
+> 1. make a software library easier to use, understand and test, since the facade has convenient methods for common tasks;
+> 2. make the library more readable, for the same reason;
+> 3. reduce dependencies of outside code on the inner workings of a library, since most code uses the facade, thus allowing more flexibility in developing the system;
+> 4. wrap a poorly designed collection of APIs with a single well-designed API (as per task needs).
+
+![Facade](https://rawgit.com/mgechev/angular-in-patterns/master/images/facade.svg "Fig. 11")
+
+There are a few facades in AngularJS. Each time you want to provide higher level API to given functionality you practically create a facade.
+
+For example, lets take a look how we can create an `XMLHttpRequest` POST request:
+
+```JavaScript
+var http = new XMLHttpRequest(),
+    url = '/example/new',
+    params = encodeURIComponent(data);
+http.open("POST", url, true);
+
+http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+http.setRequestHeader("Content-length", params.length);
+http.setRequestHeader("Connection", "close");
+
+http.onreadystatechange = function () {
+  if(http.readyState == 4 && http.status == 200) {
+    alert(http.responseText);
+  }
+}
+http.send(params);
+```
+But if we want to post this data using the AngularJS' `$http` service we can:
+
+```JavaScript
+$http({
+  method: 'POST',
+  url: '/example/new',
+  data: data
+})
+.then(function (response) {
+  alert(response);
+});
+```
+or we can even:
+
+```JavaScript
+$http.post('/someUrl', data)
+.then(function (response) {
+  alert(response);
+});
+```
+The second option provides pre-configured version, which creates a HTTP POST request to the given URL.
+
+Even higher level of abstraction is being created by `$resource`, which is build over the `$http` service. We will take a further look at this service in [Active Record](#active-record) and [Proxy](#proxy) sections.
+
+#### Proxy
+> A proxy, in its most general form, is a class functioning as an interface to something else. The proxy could interface to anything: a network connection, a large object in memory, a file, or some other resource that is expensive or impossible to duplicate.
+
+![Proxy](https://rawgit.com/mgechev/angular-in-patterns/master/images/proxy.svg "Fig. 9")
+
+We can distinguish three different types of proxy:
+
+- Virtual Proxy
+- Remote Proxy
+- Protection Proxy
+
+In this sub-chapter we are going to take a look at AngularJS' implementation of Virtual Proxy.
+
+In the snippet bellow, there is a call to the `get` method of `$resource` instance, called `User`:
+
+```JavaScript
+var User = $resource('/users/:id'),
+    user = User.get({ id: 42 });
+console.log(user); //{}
+```
+
+`console.log` would outputs an empty object. Since the AJAX request, which happens behind the scene, when `User.get` is invoked, is asynchronous, we don't have the actual user when `console.log` is called. Just after `User.get` makes the GET request it returns an empty object and keeps reference to it. We can think of this object as virtual proxy (a simple placeholder), which would be populated with the actual data once the client receives response by the server.
+
+How does this works with AngularJS? Well, lets consider the following snippet:
+
+```JavaScript
+function MainCtrl($scope, $resource) {
+  var User = $resource('/users/:id'),
+  $scope.user = User.get({ id: 42 });
+}
+```
+
+```html
+<span ng-bind="user.name"></span>
+```
+Initially when the snippet above executes, the property `user` of the `$scope` object will be with value an empty object (`{}`), which means that `user.name` will be undefined and nothing will be rendered. Internally AngularJS will keep reference to this empty object. Once the server returns response for the get request, AngularJS will populate the object with the data, received from the server. During the next `$digest` loop AngularJS will detect change in `$scope.user`, which will lead to update of the view.
+
+#### Active Record
+> The Active Record object is an object, which carries both data and behavior. Usually most of the data in these objects is persistent, responsibility of the Active Record object is to take care of the communication with the database in order to create, update, retrieve or delete the data. It may delegate this responsibility to lower level objects but calls to instance or static methods of the active record object cause the database communication.
+
+![Active Record](https://rawgit.com/mgechev/angular-in-patterns/master/images/active-record.svg "Fig. 7")
+
+AngularJS defines a service called `$resource`. In the current version of AngularJS (1.2+) it is being distributed in module outside of the AngularJS' core.
+
+According to the AngularJS' documentation `$resource` is:
+> A factory which creates a resource object that lets you interact with RESTful server-side data sources. The returned resource object has action methods which provide high-level behaviors without the need to interact with the low level $http service.
+
+Here is how `$resource` could be used:
+
+```JavaScript
+var User = $resource('/users/:id'),
+    user = new User({
+      name: 'foo',
+      age : 42
     });
 
-which will polls every 1000ms for `window.var`, and fire `function(window.var)` once `window.var` is not `undefined`. Calls made by `$analytics` will be buffered until `function(window.var)` fires.
+user.$save();
+```
 
-You can also poll for `window.var.subvar` with:
+The call of `$resource` will create a constructor function for our model instances. Each of the model instances will have methods, which could be used for the different CRUD operations.
 
-    angulartics.waitForVendorApi("var", 1000, "subvar", function(window.var) {
-      ...
+This way we can use the constructor function and its static methods by:
+
+```JavaScript
+User.get({ userid: userid });
+```
+
+The code above will immediately return an empty object and keep reference to it. Once the response have been successfully returned and parsed, AngularJS will populate this object with the received data (see [proxy](#proxy)).
+
+You can find more details for `$resource` [The magic of $resource](http://blog.mgechev.com/2014/02/05/angularjs-resource-active-record-http/) and [AngularJS' documentation](https://docs.angularjs.org/api/ngResource/service/$resource).
+
+Since Martin Fowler states that
+
+> responsibility of the Active Record object is to take care of the communication with the database in order to create...
+
+`$resource` does not implements exactly the Active Record pattern, since it communicates with RESTful service instead of the database. Anyway, we can consider it as "Active Record like RESTful communication".
+
+#### Intercepting Filters
+> Create a chain of composable filters to implement common pre-processing and post-processing tasks during a Web page request.
+
+![Composite](https://rawgit.com/mgechev/angular-in-patterns/master/images/intercepting-filters.svg "Fig. 3")
+
+In some cases you need to do some kind of pre and/or post processing of HTTP requests. In the case of the Intercepting Filters you pre/post process given HTTP request/response in order to include logging, security or any other concern, which is influenced by the request body or headers. Basically the Intercepting Filters pattern include a chain of filters, each of which process data in given order. The output of each filter is input of the next one.
+
+In AngularJS we have the idea of the Intercepting Filters in `$httpProvider`. `$httpProvider` has an array property called `interceptors`, which contains a list of objects. Each object may have properties called: `request`, `response`, `requestError`, `responseError`.
+
+`requestError` is an interceptor, which gets called when a previous interceptor threw an error or resolved with a rejection, respectively `responseError` is being called when the previous `response` interceptor has thrown an error.
+
+Here is a basic example how you can add interceptors using object literal:
+
+```JavaScript
+$httpProvider.interceptors.push(function($q, dependency1, dependency2) {
+  return {
+   'request': function(config) {
+       // same as above
+    },
+    'response': function(response) {
+       // same as above
+    }
+  };
+});
+```
+
+### Directives
+
+#### Composite
+> The composite pattern is a partitioning design pattern. The composite pattern describes that a group of objects are to be treated in the same way as a single instance of an object. The intent of a composite is to "compose" objects into tree structures to represent part-whole hierarchies.
+
+![Composite](https://rawgit.com/mgechev/angular-in-patterns/master/images/composite.svg "Fig. 3")
+
+According to the Gang of Four, MVC is nothing more than combination of:
+
+- Strategy
+- Composite
+- Observer
+
+They state that the view is composition of components. In AngularJS the situation is similar. Our views are formed by a composition of directives and DOM elements, on which these directives could be applied.
+
+Lets look at the following example:
+
+```HTML
+<!doctype html>
+<html>
+  <head>
+  </head>
+  <body>
+    <zippy title="Zippy">
+      Zippy!
+    </zippy>
+  </body>
+</html>
+```
+
+```JavaScript
+myModule.directive('zippy', function () {
+  return {
+    restrict: 'E',
+    template: '<div><div class="header"></div><div class="content" ng-transclude></div></div>',
+    link: function (scope, el) {
+      el.find('.header').click(function () {
+        el.find('.content').toggle();
+      });
+    }
+  }
+});
+```
+
+This example defines a simple directive, which is a UI component. The defined component (called "zippy") has header and content. Click on its header toggles the visibility of the content.
+
+From the first example we can note that the whole DOM tree is a composition of elements. The root component is the `html` element, directly followed by the nested elements `head` and `body` and so on...
+
+In the second, JavaScript, example we see that the `template` property of the directive, contains markup with `ng-transclude` directive inside it. So this means that inside the directive `zippy` we have another directive called `ng-transclude`, i.e. composition of directives. Theoretically we can nest the components infinitely until we reach a leaf node.
+
+#### Interpreter
+> In computer programming, the interpreter pattern is a design pattern that specifies how to evaluate sentences in a language. The basic idea is to have a class for each symbol (terminal or nonterminal) in a specialized computer language. The syntax tree of a sentence in the language is an instance of the composite pattern and is used to evaluate (interpret) the sentence.
+
+![Interpreter](https://rawgit.com/mgechev/angular-in-patterns/master/images/interpreter.svg "Fig. 6")
+
+Behind its `$parse` service, AngularJS provides its own implementation of interpreter of a DSL (Domain Specific Language). The used DSL is simplified and modified version of JavaScript. The main differences between the JavaScript expressions and AngularJS expressions that AngularJS expressions:
+
+- may contain filters with UNIX like pipe syntax
+- don't throw any errors
+- don't have any control flow statements (exceptions, loops, if statements although you can use the ternary operator)
+- are evaluated in given context (the context of the current `$scope`)
+
+Inside the `$parse` service are defined two main components:
+
+```JavaScript
+//Responsible for converting given string into tokens
+var Lexer;
+//Responsible for parsing the tokens and evaluating the expression
+var Parser;
+```
+
+Once given expression have been tokenized it is cached internally, because of performance concerns.
+
+The terminal expressions in the AngularJS DSL are defined as follows:
+
+```JavaScript
+var OPERATORS = {
+  /* jshint bitwise : false */
+  'null':function(){return null;},
+  'true':function(){return true;},
+  'false':function(){return false;},
+  undefined:noop,
+  '+':function(self, locals, a,b){
+        //...
+      },
+  '*':function(self, locals, a,b){return a(self, locals)*b(self, locals);},
+  '/':function(self, locals, a,b){return a(self, locals)/b(self, locals);},
+  '%':function(self, locals, a,b){return a(self, locals)%b(self, locals);},
+  '^':function(self, locals, a,b){return a(self, locals)^b(self, locals);},
+  '=':noop,
+  '===':function(self, locals, a, b){return a(self, locals)===b(self, locals);},
+  '!==':function(self, locals, a, b){return a(self, locals)!==b(self, locals);},
+  '==':function(self, locals, a,b){return a(self, locals)==b(self, locals);},
+  '!=':function(self, locals, a,b){return a(self, locals)!=b(self, locals);},
+  '<':function(self, locals, a,b){return a(self, locals)<b(self, locals);},
+  '>':function(self, locals, a,b){return a(self, locals)>b(self, locals);},
+  '<=':function(self, locals, a,b){return a(self, locals)<=b(self, locals);},
+  '>=':function(self, locals, a,b){return a(self, locals)>=b(self, locals);},
+  '&&':function(self, locals, a,b){return a(self, locals)&&b(self, locals);},
+  '||':function(self, locals, a,b){return a(self, locals)||b(self, locals);},
+  '&':function(self, locals, a,b){return a(self, locals)&b(self, locals);},
+  '|':function(self, locals, a,b){return b(self, locals)(self, locals, a(self, locals));},
+  '!':function(self, locals, a){return !a(self, locals);}
+};
+```
+
+We can think of the function associated with each terminal as implementation of the `AbstractExpression`'s interface.
+
+Each `Client` interprets given AngularJS expression in a specific context - specific scope.
+
+Few sample AngularJS expressions are:
+
+```JavaScript
+// toUpperCase filter is applied to the result of the expression
+// (foo) ? bar : baz
+(foo) ? bar : baz | toUpperCase
+```
+
+#### Template View
+
+> Renders information into HTML by embedding markers in an HTML page.
+
+![Template View](https://rawgit.com/mgechev/angular-in-patterns/master/images/template-view.svg "Fig. 8")
+
+The dynamic page rendering is not that trivial thing. It is connected with a lot of string concatenations, manipulations and frustration. Far easier way to build your dynamic page is to write your markup and embed little expressions inside it, which are lately evaluated in given context and so the whole template is being compiled to its end format. In our case this format is going to be HTML (or even DOM). This is exactly what the template engines do - they take given DSL, evaluate it in the appropriate context and then turn it into its end format.
+
+Templates are very commonly used especially in the back-end. For example, you can embed PHP code inside HTML and create a dynamic page, you can use Smarty or you can use eRuby with Ruby in order to embed Ruby code inside your static pages.
+
+For JavaScript there are plenty of template engines, such as mustache.js, handlebars, etc. Most of these engines manipulate the template as a string. The template could be located in different places - as static file, which is fetched with AJAX, as `script` embedded inside your view or even inlined into your JavaScript.
+
+For example:
+
+```html
+<script type="template/mustache">
+  <h2>Names</h2>
+  {{#names}}
+    <strong>{{name}}</strong>
+  {{/names}}
+</script>
+```
+
+The template engine turns this string into DOM elements by compiling it within a given context. This way all the expressions embedded in the markup are evaluated and replaced by their value.
+
+For example if we evaluate the template above in the context of the following object: `{ names: ['foo', 'bar', 'baz'] }`, so we will get:
+
+```html
+<h2>Names</h2>
+  <strong>foo</strong>
+  <strong>bar</strong>
+  <strong>baz</strong>
+```
+
+AngularJS templates are actually HTML, they are not in an intermediate format like the traditional templates are. What AngularJS compiler does is to traverse the DOM tree and look for already known directives (elements, attributes, classes or even comments). When AngularJS finds any of these directives it invokes the logic associated with them, which may involve evaluation of different expressions in the context of the current scope.
+
+For example:
+
+```html
+<ul ng-repeat="name in names">
+  <li>{{name}}</li>
+</ul>
+```
+
+in the context of the scope:
+
+```javascript
+$scope.names = ['foo', 'bar', 'baz'];
+```
+
+will produce the same result as the one above. The main difference here is that the template is not wrapped inside a `script` tag but is HTML instead.
+
+
+### Scope
+
+#### Observer
+> The observer pattern is a software design pattern in which an object, called the subject, maintains a list of its dependents, called observers, and notifies them automatically of any state changes, usually by calling one of their methods. It is mainly used to implement distributed event handling systems.
+
+![Observer](https://rawgit.com/mgechev/angular-in-patterns/master/images/observer.svg "Fig. 7")
+
+There are two basic ways of communication between the scopes in an AngularJS application. The first one is calling methods of parent scope by a child scope. This is possible since the child scope inherits prototypically by its parent, as mentioned above (see [Scope](#scope)). This allows communication in a single direction - child to parent. Some times it is necessary to call method of given child scope or notify it about a triggered event in the context of the parent scope. AngularJS provides built-in observer pattern, which allows this. Another possible use case, of the observer pattern, is when multiple scopes are interested in given event but the scope, in which context the event is triggered, is not aware of them. This allows decoupling between the different scopes, non of the scopes should be aware of the rest of the scopes.
+
+Each AngularJS scope has public methods called `$on`, `$emit` and `$broadcast`. The method `$on` accepts topic as first argument and callback as second. We can think of the callback as an observer - an object, which implements the `Observer` interface (in JavaScript the functions are first-class, so we can provide only implementation of the `notify` method):
+
+```JavaScript
+function ExampleCtrl($scope) {
+  $scope.$on('event-name', function handler() {
+    //body
+  });
+}
+```
+
+In this way the current scope "subscribes" to events of type `event-name`. When `event-name` is triggered in any parent or child scope of the given one, `handler` would be called.
+
+The methods `$emit` and `$broadcast` are used for triggering events respectively upwards and downwards through the scope chain. For example:
+
+```JavaScript
+function ExampleCtrl($scope) {
+  $scope.$emit('event-name', { foo: 'bar' });
+}
+```
+
+The scope in the example above, triggers the event `event-name` to all scopes upwards. This means that each of the parent scopes of the given one, which are subscribed to the event `event-name`, would be notified and their handler callback will be invoked.
+
+Analogical is the case when the method `$broadcast` is called. The only difference is that the event would be transmitted downwards - to all children scopes. Each scope can subscribe to any event with multiple callbacks (i.e. it can associate multiple observers to given event).
+
+In the JavaScript community this pattern is better known as publish/subscribe.
+
+For a best practice example see [Observer Pattern as an External Service](#observer-pattern-as-an-external-service)
+
+#### Chain of Responsibilities
+> The chain-of-responsibility pattern is a design pattern consisting of a source of command objects and a series of processing objects. Each processing object contains logic that defines the types of command objects that it can handle; the rest are passed to the next processing object in the chain. A mechanism also exists for adding new processing objects to the end of this chain.
+
+![Chain of Responsibilities](https://rawgit.com/mgechev/angular-in-patterns/master/images/chain-of-responsibilities.svg "Fig. 5")
+
+As stated above the scopes in an AngularJS application form a hierarchy known as the scope chain. Some of the scopes are "isolated", which means that they don't inherit prototypically by their parent scope, but are connected to it via their `$parent` property.
+
+When `$emit` or `$broadcast` are called we can think of the scope chain as event bus, or even more accurately chain of responsibilities. Once the event is triggered it is emitted downwards or upwards (depending on the method, which was called). Each subsequent scope may:
+
+- Handle the event and pass it to the next scope in the chain
+- Handle the event and stop its propagation
+- Pass the event to the next scope in the chain without handling it
+- Stop the event propagation without handling it
+
+In the example bellow you can see an example in which `ChildCtrl` triggers an event, which is propagated upwards through the scope chain. In the case above each of the parent scopes (the one used in `ParentCtrl` and the one used in `MainCtrl`) are going to handle the event by logging into the console: `"foo received"`. If any of the scopes should be considered as final destination it can call the method `stopPropagation` of the event object, passed to the callback.
+
+```JavaScript
+myModule.controller('MainCtrl', function ($scope) {
+  $scope.$on('foo', function () {
+    console.log('foo received');
+  });
+});
+
+myModule.controller('ParentCtrl', function ($scope) {
+  $scope.$on('foo', function (e) {
+    console.log('foo received');
+  });
+});
+
+myModule.controller('ChildCtrl', function ($scope) {
+  $scope.$emit('foo');
+});
+```
+
+The different handlers from the UML diagram above are the different scopes, injected to the controllers.
+
+#### Command
+> In object-oriented programming, the command pattern is a behavioral design pattern in which an object is used to represent and encapsulate all the information needed to call a method at a later time. This information includes the method name, the object that owns the method and values for the method parameters.
+
+![Command](https://rawgit.com/mgechev/angular-in-patterns/master/images/command.svg "Fig. 11")
+
+Before continuing with the application of the command pattern lets describe how AngularJS implements data binding.
+
+When we want to bind our model to the view we use the directives `ng-bind` (for single-way data binding) and `ng-model` (for two-way data binding). For example, if we want each change in the model `foo` to reflect the view we can:
+
+```html
+<span ng-bind="foo"></span>
+```
+
+Now each time we change the value of `foo` the inner text of the span will be changed. We can achieve the same effect with more complex AngularJS expressions, like:
+
+```html
+<span ng-bind="foo + ' ' + bar | uppercase"></span>
+```
+
+In the example above the value of the span will be the concatenated uppercased value of `foo` and `bar`. What happens behind the scene?
+
+Each `$scope` has method called `$watch`. When the AngularJS compiler find the directive `ng-bind` it creates a new watcher of the expression `foo + ' ' + bar | uppercase`, i.e. `$scope.$watch("foo + ' ' + bar | uppercase", function () { /* body */ });`. The callback will be triggered each time the value of the expression change. In the current case the callback will update the value of the span.
+
+Here are the first a couple of lines of the implementation of `$watch`:
+
+```javascript
+$watch: function(watchExp, listener, objectEquality) {
+  var scope = this,
+      get = compileToFn(watchExp, 'watch'),
+      array = scope.$$watchers,
+      watcher = {
+        fn: listener,
+        last: initWatchVal,
+        get: get,
+        exp: watchExp,
+        eq: !!objectEquality
+      };
+//...
+```
+
+We can think of the `watcher` object as a command. The expression of the command is being evaluated on each [`"$digest"`](https://docs.angularjs.org/api/ng/type/$rootScope.Scope#$digest) loop. Once AngularJS detects change in the expression, it invokes the `listener` function. The `watcher` command encapsulates the whole information required for watching given expression and delegates the execution of the command to the `listener` (the actual receiver). We can think of the `$scope` as the command's `Client` and the `$digest` loop as the command's `Invoker`.
+
+### Controllers
+
+#### Page Controller
+> An object that handles a request for a specific page or action on a Web site. Martin Fowler
+
+![Page Controller](https://rawgit.com/mgechev/angular-in-patterns/master/images/page-controller.svg "Fig. 8")
+
+According to [4](#references) the page controller:
+> Page Controller pattern accept input from the page request, invoke the requested actions on the model, and determine the correct view to use for the resulting page. Separate the dispatching logic from any view-related code
+
+Since there is a lot of duplicate behavior between the different pages (like rendering footers, headers, taking care of the user's session, etc.) page controllers can form a hierarchy. In AngularJS we have controllers, which are with more limited scope of responsibilities. They don't accept user requests, since this is responsibility of the `$route` or `$state` services and the page rendering is responsibility of the directives `ng-view`/`ui-view`.
+
+Similarly to the page controllers, AngularJS controllers handle user interactions, provide and update the models. The model is exposed to the view when it is being attached to the scope, all methods invoked by the view, in result of user actions, are ones, which are already attached to the scope. Another similarity between the page controllers and the AngularJS controllers is the hierarchy, which they form. It corresponds to the scope hierarchy. That way common actions can be isolated to the base controllers.
+
+The controllers in AngularJS are quite similar to the code-behind in ASP.NET WebForms, since their responsibilities almost overlap. Here is an example hierarchy between few controllers:
+
+```HTML
+<!doctype html>
+<html>
+  <head>
+  </head>
+  <body ng-controller="MainCtrl">
+    <div ng-controller="ChildCtrl">
+      <span>{{user.name}}</span>
+      <button ng-click="click()">Click</button>
+    </div>
+  </body>
+</html>
+```
+
+```JavaScript
+function MainCtrl($scope, $location, User) {
+  if (!User.isAuthenticated()) {
+    $location.path('/unauthenticated');
+  }
+}
+
+function ChildCtrl($scope, User) {
+  $scope.click = function () {
+    alert('You clicked me!');
+  };
+  $scope.user = User.get(0);
+}
+```
+
+This example aims to illustrates the most trivial way to reuse logic by using a base controller, anyway in production applications I don't recommend you to put your authorization logic in the controllers. The access to the different routes could be determined on a higher level of abstraction.
+
+The `ChildCtrl` is responsible for handling actions such as clicking the button with label `"Click"` and exposing the model to the view, by attaching it to the scope.
+
+### Others
+
+#### Module Pattern
+
+This is actually not a design pattern from Gang of Four, neither one from P of EAA. This is a traditional JavaScript pattern, which main goal is to provide encapsulation and privacy.
+
+Using the module pattern you can achieve privacy based on the JavaScript's functional lexical scope. Each module may have zero or more private members, which are hidden in the local scope of a function. This function returns an object, which exports the public API of the given module:
+
+```javascript
+var Page = (function () {
+
+  var title;
+
+  function setTitle(t) {
+    document.title = t;
+    title = t;
+  }
+
+  function getTitle() {
+    return title;
+  }
+
+  return {
+    setTitle: setTitle,
+    getTitle: getTitle
+  };
+}());
+```
+
+In the example above we have IIFE (Immediately-Invoked Function Expression), which after being called returns an object, with two methods (`setTitle` and `getTitle`). The returned object is being assigned to the `Page` variable.
+
+In this case the user of the `Page` object doesn't has direct access to the `title` variable, which is defined inside the local scope of the IIFE.
+
+The module pattern is very useful when defining services in AngularJS. Using this pattern we can simulate (and actually achieve) privacy:
+
+```javascript
+app.factory('foo', function () {
+
+  function privateMember() {
+    //body...
+  }
+
+  function publicMember() {
+    //body...
+    privateMember();
+    //body
+  }
+
+  return {
+    publicMember: publicMember
+  };
+});
+```
+
+Once we want to inject `foo` inside any other component we won't be able to use the private methods, but only the public ones. This solution is extremely powerful especially when one is building a reusable library.
+
+#### Data Mapper
+> A Data Mapper is a Data Access Layer that performs bidirectional transfer of data between a persistent data store (often a relational database) and an in memory data representation (the domain layer). The goal of the pattern is to keep the in memory representation and the persistent data store independent of each other and the data mapper itself.
+
+![Data Mapper](https://rawgit.com/mgechev/angular-in-patterns/master/images/data-mapper.svg "Fig. 10")
+
+As the description above states, the data mapper is used for bidirectional transfer of data between a persistent data store and an in memory data representation. Usually our AngularJS application communicates with API server, which is written in any server-side language (Ruby, PHP, Java, JavaScript, etc.).
+
+Usually, if we have RESTful API `$resource` will help us communicate with the server in Active Record like fashion. Although, in some applications the data entities returned by the server are not in the most appropriate format, which we want to use in the front-end.
+
+For instance, lets assume we have application in which each user has:
+
+- name
+- address
+- list of friends
+
+And our API has the methods:
+
+- `GET /user/:id` - returns the user's name and the address of given user
+- `GET /friends/:id` - returns the list of friends of given user
+
+Possible solution is to have two different services, one for the first method and one for the second one. Probably more useful solution would be if we have a single service called `User`, which loads the user's friends when we request the user:
+
+```javascript
+app.factory('User', function ($q) {
+
+  function User(name, address, friends) {
+    this.name = name;
+    this.address = address;
+    this.friends = friends;
+  }
+
+  User.get = function (params) {
+    var user = $http.get('/user/' + params.id),
+        friends = $http.get('/friends/' + params.id);
+    $q.all([user, friends])
+    .then(function (user, friends) {
+      return new User(user.name, user.address, friends);
     });
-
-Check out the bundled plugins as reference. If you still have any questions, feel free to email me or post an issue at GitHub!
-
-## Playing around
-
-### Opt-out settings
-
-When working on a global product there are many countries who by default require the opt-out functionality of all analytics and tracking. These opt out settings are meant to aid with that. The developer mode simply cripples the library where as this actually disables the tracking so it can be turned on and off.
-
-    // $analytics.setOptOut(boolean Optout);
-    // To opt out
-    $analytics.setOptOut(true);
-    
-    // To opt in
-    $analytics.setOptOut(false);
-    
-    // To get opt out state
-    $analytics.getOptOut(); // Returns true or false
-
-
-### Disabling virtual pageview tracking
-
-If you want to keep pageview tracking for its traditional meaning (whole page visits only), set virtualPageviews to false:
-
-    module.config(function ($analyticsProvider) {
-        $analyticsProvider.virtualPageviews(false);
-
-### Disabling pageview tracking for specific routes
-
-If you want to disable pageview tracking for specific routes, you can define a list of excluded routes (using strings or regular expressions):
-
-    module.config(function ($analyticsProvider) {
-            $analyticsProvider.excludeRoutes(['/abc','/def']);
-
-Urls and routes that contain any of the strings or match any of the regular expressions will not trigger the pageview tracking.
-
-### Disabling tracking of specific query string keys
-
-If you want to disable tracking for specific query string keys, you can define a list of both whitelisted and blacklisted keys (using strings or regular expressions):
-
-    module.config(function ($analyticsProvider) {
-            $analyticsProvider.queryKeysWhitelist([/^utm_.*/]);
-            $analyticsProvider.queryKeysBlacklist(['email',/^user/]);
-
-Any query string key/value pairs will be filtered out of the URL sent to the tracking authority.
-
-Blacklisting overrides Whitelisting.
-
-### Disabling tracking on $routeChangeSuccess
-
-If you want to disable pageview tracking for the $routeChangeSuccess event, set trackRoutes to false:
-
-    module.config(function ($analyticsProvider) {
-      $analyticsProvider.trackRoutes(false);
-
-### Disabling tracking on $stateChangeSuccess
-
-If you want to disable pageview tracking for the $stateChangeSuccess event, set trackStates to false:
-
-    module.config(function ($analyticsProvider) {
-      $analyticsProvider.trackStates(false);
-
-### Programmatic tracking
-
-Use the `$analytics` service to emit pageview and event tracking:
-
-    module.controller('SampleCtrl', function($analytics) {
-        // emit pageview beacon with path /my/url
-        $analytics.pageTrack('/my/url');
-    
-        // emit event track (without properties)
-        $analytics.eventTrack('eventName');
-    
-        // emit event track (with category and label properties for GA)
-        $analytics.eventTrack('eventName', {
-          category: 'category', label: 'label'
-        });
-
-### Declarative tracking
-
-Use `analytics-on` and `analytics-event` attributes for enabling event tracking on a specific HTML element:
-
-    <a href="file.pdf"
-        analytics-on="click"
-        analytics-if="myScope.shouldTrack"
-        analytics-event="Download">Download</a>
-
-`analytics-on` lets you specify the DOM event that triggers the event tracking; `analytics-event` is the event name to be sent.
-
-`analytics-if` is a conditional check. If the attribute value evaluates to a falsey, the event will NOT be fired. Useful for user tracking opt-out, etc.
-
-Additional properties (for example, category as required by GA) may be specified by adding `analytics-*` attributes:
-
-    <a href="file.pdf"
-        analytics-on="click"
-        analytics-event="Download"
-        analytics-category="Content Actions">Download</a>
-
-or setting `analytics-properties`:
-
-    <a href="file.pdf"
-        analytics-on="click"
-        analytics-event="Download"
-        analytics-properties="{ category: 'Content Actions' }">Download</a>
-
-### Scroll tracking
-
-You can use:
-
-    <div analytics-on="scrollby">
-
-which will track an event when the element is scrolled to the top of the viewport. This relies on [jQuery Waypoints](http://imakewebthings.com/jquery-waypoints/) which must be loaded:
-
-    <script src="waypoints/waypoints.min.js"></script>
-    <script src="angulartics/dist/angulartics-scroll.min.js"></script>
-
-The following module must be enabled as well:
-
-    angular.module('myApp', [..., 'angulartics.scroll'])
-
-You can pass [extra options](http://imakewebthings.com/waypoints/api/waypoint/) to Waypoints with `scrollby-OPTION`. For example, to track an event when the element is in the middle on the viewport:
-
-    <div analytics-on="scrollby" scrollby-offset="50%">
-
-Waypoints is fired with the following options:
-  - `continuous: false`, when jumping (for example with a URL anchor) passed several tracked elements, only the last one will fire an event
-  - `triggerOnce: true`, the tracking event is only fired once for a given page
-
-### User tracking
-
-You can assign user-related properties which will be sent along each page or event tracking thanks to:
-
-    $analytics.setAlias(alias)
-    $analytics.setUsername(username)
-    $analytics.setUserProperties(properties)
-    $analytics.setSuperProperties(properties)
-
-Like `$analytics.pageTrack()` and `$analytics.eventTrack()`, the effect depends on the analytics provider (i.e. `$analytics.register*()`). Not all of them implement those methods.
-
-The Google Analytics module lets you call `$analytics.setUsername(username)` or set up `$analyticsProvider.settings.ga.userId = 'username'`.
-
-### Exception tracking
-
-You can enable automatic exception tracking which decorates angular's `$exceptionHandler` and reports the exception to the analytics provider:
-
-    $analyticsProvider.trackExceptions(true)
-
-Currently only the Google Analytics provider supports tracking exceptions, and it does so by reporting it as an event.
-
-### Developer mode
-
-You can disable tracking with:
-
-    $analyticsProvider.developerMode(true);
-
-You can also debug Angulartics by adding the following module:
-
-    angular.module('myApp', [..., 'angulartics.debug'])
-
-which will call `console.log('Page|Event tracking: ', ...)` accordingly.
-
-## What else?
-
-See more docs and samples at [http://angulartics.github.io](http://angulartics.github.io "http://angulartics.github.io").
-
-## <a name="FunnyStory"></a>Funny Story
-
-Back in 2003 [@mgonto](http://github.com/mgonto) and I were excited with Angular, doing a bunch of stuff. We had met each other at the [Nardoz](http://github.com/nardoz) group and even crossed paths working for the same company. It turns out, both of us came up with the idea of building a module for analytics **at the same time, without knowing about it**. We even created our respective repos with just seconds of difference. Check that out yourselves by using the GitHub api and inspecting [the creation date for this repo](https://api.github.com/repos/angulartics/angulartics) (at that time, this repo was under my username [@luisfarzati](http://github.com/luisfarzati), this is the original so it has the original creation date) and then [Angularytics](https://api.github.com/repos/mgonto/angularytics)' creation date. Even our initial commits were about the same time.
-
-To be honest, initially I thought he was just blatantly copycating the idea but then when I checked out the repo data, truth was his repo timestamp was even earlier than mine. So, technically, I copycated his idea. Of course I did not, that's the funny and weirdest thing of the story. Or perhaps, even weirder, is that we both chose almost the same exact name, only that @mgonto went with an additional Y.
-
-We discussed about renaming one of our projects, we almost decided to play a Rock, Paper, Scissors, Lizard, Spock game to decide who keeps the original name, but both of us really liked our names. So we kept it that way.
-
-Isn't the open source world crazy?
-
-## License
-
-[MIT](LICENSE)
+  };
+  return User;
+});
+```
+
+This way we create pseudo-data mapper, which adapts our API according to the SPA requirements.
+
+We can use the `User` service by:
+
+```javascript
+function MainCtrl($scope, User) {
+  User.get({ id: 1 })
+  .then(function (data) {
+    $scope.user = data;
+  });
+}
+```
+
+And the following partial:
+
+```html
+<div>
+  <div>
+    Name: {{user.name}}
+  </div>
+  <div>
+    Address: {{user.address}}
+  </div>
+  <div>
+    Friends with ids:
+    <ul>
+      <li ng-repeat="friend in user.friends">{{friend}}</li>
+    </ul>
+  </div>
+</div>
+```
+
+#### Observer Pattern as an External Service
+
+##### About
+
+Below is an example taken from [here](https://github.com/greglbd/angular-observer-pattern). This is an angular factory which creates a service implementing the Observer Pattern.  It works well with the ControllerAs method of working as it can be much more efficient that `$scope.$watch` and more specific to a unique scope or object than $emit and $broadcast when used correctly.
+
+**Use Case:** You would use this pattern to communicate between 2 controllers that use the same model but are not connected in anyway.
+
+##### Controller Example
+
+Below example shows how to attach, notify and detach an event.
+
+```javascript
+angular.module('app.controllers')
+  .controller('ObserverExample', ObserverExample);
+ObserverExample.$inject= ['ObserverService', '$timeout'];
+
+function ObserverExample(ObserverService, $timeout) {
+  var vm = this;
+  var id = 'vm1';
+
+  ObserverService.attach(callbackFunction, 'let_me_know', id)
+
+  function callbackFunction(params){
+    console.log('now i know');
+    ObserverService.detachByEvent('let_me_know')
+  }
+
+  $timeout(function(){
+    ObserverService.notify('let_me_know');
+  }, 5000);
+}
+```
+Alternative way to remove event
+
+```javascript
+angular.module('app.controllers')
+  .controller('ObserverExample', ObserverExample);
+ObserverExample.$inject= ['ObserverService', '$timeout', '$scope'];
+
+function ObserverExample(ObserverService, $timeout, $scope) {
+  var vm = this;
+  var id = 'vm1';
+  ObserverService.attach(callbackFunction, 'let_me_know', id)
+
+  function callbackFunction(params){
+    console.log('now i know');
+  }
+
+  $timeout(function(){
+    ObserverService.notify('let_me_know');
+  }, 5000);
+
+  // Cleanup listeners when this controller is destroyed
+  $scope.$on('$destroy', function handler() {
+    ObserverService.detachByEvent('let_me_know')
+  });
+}
+```
+
+## References
+
+1. [Wikipedia](https://en.wikipedia.org/wiki). The source of all brief descriptions of the design patterns is Wikipedia.
+2. [AngularJS' documentation](https://docs.angularjs.org)
+3. [AngularJS' git repository](https://github.com/angular/angular.js)
+4. [Page Controller](http://msdn.microsoft.com/en-us/library/ff649595.aspx)
+5. [Patterns of Enterprise Application Architecture (P of EAA)](http://martinfowler.com/books/eaa.html)
+6. [Using Dependency Injection to Avoid Singletons](http://googletesting.blogspot.com/2008/05/tott-using-dependancy-injection-to.html)
+7. [Why would one use the Publish/Subscribe pattern (in JS/jQuery)?](https://stackoverflow.com/questions/13512949/why-would-one-use-the-publish-subscribe-pattern-in-js-jquery)
