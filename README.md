@@ -1,1351 +1,524 @@
-# Angular-filter &nbsp; [![NPM version](https://img.shields.io/npm/v/angular-filter.svg?style=flat-square)](https://npmjs.org/package/angular-filter) [![Build status](https://img.shields.io/travis/a8m/angular-filter.svg?style=flat-square)](https://travis-ci.org/a8m/angular-filter) [![Test coverage](https://img.shields.io/coveralls/a8m/angular-filter.svg?style=flat-square)](https://coveralls.io/r/a8m/angular-filter) [![License](http://img.shields.io/npm/l/angular-filter.svg?style=flat-square)](LICENSE)
-Bunch of useful filters for AngularJS *(with no external dependencies!)*
+Angular UI Tree
+======================
 
-<h3 align="center">
-<img src="https://angular.io/assets/images/logos/angular/angular.svg" width="50" alt="angular pipes"><br />
- Angular 2 version is now available: <a href="https://github.com/a8m/ng-pipes">ng-pipes</a>
- </h3>
+[![Build Status](https://travis-ci.org/angular-ui-tree/angular-ui-tree.svg?branch=master)](https://travis-ci.org/angular-ui-tree/angular-ui-tree) [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/angular-ui-tree/angular-ui-tree?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-## Table of contents:
-- [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/a8m/angular-filter?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-- [Get Started](#get-started)
-- [Common Questions](https://github.com/a8m/angular-filter/wiki/Common-Questions)
-- [Changelog](#changelog)
-- [Contributing](#contributing)
-- [TODO](#todo)
-- [Collection](#collection)
-  - [after](#after)
-  - [afterWhere](#afterwhere)
-  - [before](#before)
-  - [beforeWhere](#beforewhere)
-  - [concat](#concat)
-  - [contains](#contains)
-  - [countBy](#countby)
-  - [chunkBy](#chunkby)
-  - [defaults](#defaults)
-  - [every](#every)
-  - [filterBy](#filterby)
-  - [first](#first)
-  - [flatten](#flatten)
-  - [fuzzy](#fuzzy)
-  - [fuzzyBy](#fuzzyby)
-  - [groupBy](#groupby)
-  - [isEmpty](#isempty)
-  - [join](#join)
-  - [last](#last)
-  - [map](#map)
-  - [omit](#omit)
-  - [pick](#pick)
-  - [pluck](#pluck)
-  - [range](#range)
-  - [reverse](#reverse)
-  - [remove](#remove)
-  - [removeWith](#removewith)
-  - [searchField](#searchfield)
-  - [some](#contains)
-  - [toArray](#toarray)
-  - [unique](#unique)
-  - [where](#where)
-  - [xor](#xor)
-- [String](#string)
-  - [endsWith](#endswith)
-  - [latinize](#latinize)
-  - [repeat](#repeat)
-  - [reverse](#reverse-1)
-  - [slugify](#slugify)
-  - [split](#split)
-  - [startsWith](#startswith)
-  - [stripTags](#striptags)
-  - [stringular](#stringular)
-  - [match](#match)
-  - [phoneUS](#phoneus)
-  - [test](#test)
-  - [trim](#trim)
-  - [ltrim](#ltrim)
-  - [rtrim](#rtrim)
-  - [truncate](#truncate)
-  - [ucfirst](#ucfirst)
-  - [uriEncode](#uriencode)
-  - [uriComponentEncode](#uricomponentencode)
-  - [wrap](#wrap)
-- [Math](#math)
-  - [min](#min)
-  - [max](#max)
-  - [abs](#abs)
-  - [percent](#percent)
-  - [radix](#radix)
-  - [sum](#sum)
-  - [degrees](#degrees)
-  - [radians](#radians)
-  - [shortFmt](#shortfmt)
-  - [byteFmt](#bytefmt)
-  - [kbFmt](#kbfmt)
-- [Boolean](#boolean)
-  - [isNull](#isnull)
-  - [isDefined](#isdefined)
-  - [isUndefined](#isundefined)
-  - [isString](#isstring)
-  - [isNumber](#isnumber)
-  - [isObject](#isobject)
-  - [isArray](#isarray)
-  - [isFunction](#isfunction)
-  - [isEqual](#isequal)
-  - [isGreaterThan](#isgreaterthan) `>`
-  - [isGreaterThanOrEqualTo](#isgreaterthanorequalto) `>=`
-  - [isLessThan](#islessthan) `<`
-  - [isLessThanOrEqualTo](#islessthanorequalto) `<=`
-  - [isEqualTo](#isequalto) `==`
-  - [isNotEqualTo](#isnotequalto) `!=`
-  - [isIdenticalTo](#isidenticalto) `===`
-  - [isNotIdenticalTo](#isnotidenticalto) `!==`
+Angular UI Tree is an AngularJS UI component that can sort nested lists, provides drag & drop support and doesn't depend on jQuery. If you are a user who uses `angular-nestedSortable`, this is [How to migrate From v1.x to v2.0](https://github.com/JimLiu/angular-ui-tree/wiki/Migrate-From-v1.x-to-v2.0).
 
-## Get Started
-**(1)** You can install angular-filter using 4 different methods:
-  - clone & [build](#Contributing) this repository
-  - via **[Bower](http://bower.io/)**: by running `$ bower install angular-filter` from your terminal
-  - via **[npm](https://www.npmjs.org/)**: by running `$ npm install angular-filter` from your terminal
-  - via cdnjs http://www.cdnjs.com/libraries/angular-filter
+### Considering Contributing?
 
-**(2)** Include `angular-filter.js` (or `angular-filter.min.js`) in your `index.html`, after including Angular itself.
+Read our contributing guidelines and become a contributing member of Angular UI Tree!
 
-**(3)** Add `'angular.filter'` to your main module's list of dependencies.
+[CONTRIBUTING](https://github.com/angular-ui-tree/angular-ui-tree/blob/master/CONTRIBUTING.md)
 
-When you're done, your setup should look similar to the following:
 
+## Features
+
+- Uses the native AngularJS scope for data binding
+- Sorted and move items through the entire tree
+- Prevent elements from accepting child nodes
+
+## Supported browsers
+
+The Angular UI Tree is tested with the following browsers:
+
+- Chrome (stable)
+- Firefox
+- IE 8, 9 and 10
+
+For IE8 support, make sure you do the following:
+
+- include an [ES5 shim](https://github.com/es-shims/es5-shim)
+- make your [AngularJS application compatible with Internet Explorer](http://docs.angularjs.org/guide/ie)
+- use [jQuery 1.x](http://jquery.com/browser-support/)
+
+## Demo
+Watch the Tree component in action on the [demo page](http://angular-ui-tree.github.io/angular-ui-tree/).
+
+## Requirements
+
+- Angularjs
+
+## Usage
+
+### Download
+- Using [bower](http://bower.io/) to install it. `bower install angular-ui-tree`
+- [Download](https://github.com/angular-ui-tree/angular-ui-tree/archive/master.zip) from github.
+
+### Load CSS
+Load the css file: `angular-ui-tree.min.css` in your application:
 ```html
-<!doctype html>
-<html ng-app="myApp">
-<head>
-
-</head>
-<body>
-    ...
-    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.0/angular.min.js"></script>
-    <script src="bower_components/angular-filter/dist/angular-filter.min.js"></script>
-    ...
-    <script>
-        var myApp = angular.module('myApp', ['angular.filter']);
-
-    </script>
-    ...
-</body>
-</html>
+<link rel="stylesheet" href="bower_components/angular-ui-tree/dist/angular-ui-tree.min.css">
 ```
 
-## Collection
 
-### concat
+### Load Script
+Load the script file: `angular-ui-tree.js` or `angular-ui-tree.min.js` in your application:
 
-Concatenates an array/object into another one.
+```html
+<script type="text/javascript" src="bower_components/angular-ui-tree/dist/angular-ui-tree.js"></script>
+```
 
+### Code
+Add the sortable module as a dependency to your application module:
 
 ```js
-function MainController ($scope) {
-  $scope.array = [ {a: 1}, {a: 2} ];
-  $scope.object = {
-    0: {a: 3},
-    1: {a: 4}
-  };
-}
+var myAppModule = angular.module('MyApp', ['ui.tree'])
 ```
+
+Injecting `ui.tree`, `ui-tree-nodes`, `ui-tree-node`, `ui-tree-handle` to your html.
+
+#### HTML View or Templates
+```html
+<div ui-tree>
+  <ol ui-tree-nodes="" ng-model="list">
+    <li ng-repeat="item in list" ui-tree-node>
+      <div ui-tree-handle>
+        {{item.title}}
+      </div>
+      <ol ui-tree-nodes="" ng-model="item.items">
+        <li ng-repeat="subItem in item.items" ui-tree-node>
+          <div ui-tree-handle>
+            {{subItem.title}}
+          </div>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</div>
+```
+**Developing Notes:**
+- Adding `ui-tree` to your root element of the tree.
+- Adding `ui-tree-nodes` to the elements which contain the nodes. `ng-model` is required, and it should be an array, so that the directive knows which model to bind and update.
+- Adding `ui-tree-node` to your node element, it always follows the `ng-repeat` attribute.
+- Adding `ui-tree-handle` to the element used to drag the object.
+- All `ui-tree`, `ui-tree-nodes`, `ng-model`, `ui-tree-node` are necessary. And they can be nested.
+- If you don't add a `ui-tree-handle` for a node, the entire node can be dragged.
+
+**Styling Notes:**
+- While an element is being dragged, it is temporarily removed from the DOM and injected just before closing `</body>` tag. When dropped, it returns to it's original place in the DOM's hierarchy.
+- The dragged element `ui-tree-node`, together with its parent `ui-tree-nodes`, are the only ones being injected. hence any styling that relies on a 'higher' parent, will not apply.
+- To target the dragged element use the class `angular-ui-tree-drag`, which is added to the `ui-tree-nodes` element.
+- While a node is being dragged, a new empty node is added into the tree to act as a placeholder. this node will have the class 'angular-ui-tree-placeholder'.
+
+#### Unlimited nesting HTML View or Templates Example
 
 ```html
-<li ng-repeat="elm in array | concat:object">
-  {{ elm.a }}
-</li>
-
-<!--
-result:
-1 2 3 4
--->
-
-<li ng-repeat="elm in object | concat:array">
-  {{ elm.a }}
-</li>
-
-<!--
-result:
-3 4 1 2
--->
+<!-- Nested node template -->
+<script type="text/ng-template" id="nodes_renderer.html">
+  <div ui-tree-handle>
+    {{node.title}}
+  </div>
+  <ol ui-tree-nodes="" ng-model="node.nodes">
+    <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'">
+    </li>
+  </ol>
+</script>
+<div ui-tree>
+  <ol ui-tree-nodes="" ng-model="data" id="tree-root">
+    <li ng-repeat="node in data" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+  </ol>
+</div>
 ```
 
-### unique
-Видаліть дублікати з масиву / об’єкта.<br /> Якщо надається рядок, вона відфільтрує дублікати, використовуючи наданий вираз.<br /> **Використання:** `колекція | унікальний: 'властивість'`<br /> **псевдоніми:** uniq
-```js
-function MainController ($scope) {
-  $scope.orders = [
-    { id:1, customer: { name: 'John', id: 10 } },
-    { id:2, customer: { name: 'William', id: 20 } },
-    { id:3, customer: { name: 'John', id: 10 } },
-    { id:4, customer: { name: 'William', id: 20 } },
-    { id:5, customer: { name: 'Clive', id: 30 } }
-  ];
-}
-```
-Ex: Filter by customer.id
+## Structure of angular-ui-tree
+
+    ui-tree                             --> Root of tree
+      ui-tree-nodes                     --> Container of nodes
+        ui-tree-node                    --> One of the node of a tree
+          ui-tree-handle                --> Handle
+          ui-tree-nodes                 --> Container of child-nodes
+            ui-tree-node                --> Child node
+              ui-tree-handle            --> Handle
+            ui-tree-node                --> Child node
+        ui-tree-node                    --> Another node
+          ui-tree-handle                --> Handle
+
+## Migrate From v1.x to v2.0
+[Migrate From v1.x to v2.0](https://github.com/angular-ui-tree/angular-ui-tree/wiki/Migrate-From-v1.x-to-v2.0)
+
+## API
+
+### ui-tree
+`ui-tree` is the root scope for a tree
+
+#### Attributes
+##### data-nodrop-enabled
+Prevent dropping of nodes into this tree. This applies to both nodes dragged within this tree and nodes from a connected tree. Adding this attribute to the `ui-tree` effectively makes the tree a drag source only. To prevent a particular node from accepting children, add the attribute to the `ui-tree-nodes` element instead (see below). See the [demo page](http://angular-ui-tree.github.io/angular-ui-tree/#/nodrop) for examples.
+- `false` (default): turn off
+- `true`: turn on no drop
+
+##### data-dropzone-enabled
+Turn on a dropzone that is always visible, even when tree is not empty.
+- `false` (default): turn off
+- `true`: turn on dropzone
+
+##### data-clone-enabled
+Turn on cloning of nodes. This will clone the source node to the destination when dragging between 2 trees.
+- `false` (default): turn off clone
+- `true`: turn on clone
+
+##### data-drag-enabled
+Turn on dragging and dropping of nodes.
+- `true` (default): allow drag and drop
+- `false`: turn off drag and drop
+
+##### data-max-depth
+Number of levels a nodes can be nested (default 0). 0 means no limit. **Note** If you write your own [$callbacks.accept](#accept) method, you have to check `data-max-depth` by yourself.
+
+##### data-drag-delay
+Number of milliseconds a click must be held to start a drag. (default 0)
+
+##### data-empty-placeholder-enabled
+If a tree is empty, there will be an empty placeholder which is used to drop node from other trees by default.
+- `true` (default): display an empty placeholder if the tree is empty
+- `false`: do not display an empty placeholder
+
+##### Example
+- turn on/off drag and drop.
+- Limit depth to 5
+- 500 milliseconds delay
+
 ```html
-<th>Customer list:</th>
-<tr ng-repeat="order in orders | unique: 'customer.id'" >
-   <td> {{ order.customer.name }} , {{ order.customer.id }} </td>
-</tr><!-- result:
-All customers list:
-John 10
-William 20
-Clive 30
+<div ui-tree data-drag-enabled="tree.enabled" data-max-depth="5" data-drag-delay="500">
 
-```
-### filterBy
-Filter a collection by a specific property.<br /> **Usage:** `collection | filterBy: [prop, nested.prop, etc..]: search: strict[optional]`<br /> **Note:** You can even use compound properties (e.g: `|filterBy: [property + property]: model`)<br />
-
-```js
-$scope.users = [
-  { id: 1, user: { first_name: 'Rob', last_name: 'John',  mobile: 4444 } },
-  { id: 2, user: { first_name: 'John', last_name: 'Wayne',  mobile: 3333 } },
-  { id: 3, user: { first_name: 'Rob', last_name: 'Johansson',  mobile: 2222 } },
-  { id: 4, user: { first_name: 'Mike', last_name: 'Terry',  mobile: 1111 } }
-];
-```
-Return users whose id is 1
-```html
-<!--search only by id --><th ng-repeat="user in users | filterBy: ['id']: 1">
-  {{ user.id }} : {{ user.first_name }} {{ user.last_name }}
-</th>
-<!--result:
-  1: Rob John
--->
-
-```
-Return users whose first name or last name is 'John' (uses nested properties).
-```html
-<!--search by first_name and last_name -->
-<th ng-repeat="user in users | filterBy: ['user.first_name', 'user.last_name']: 'John'">
-  {{ user.first_name }} {{ user.last_name }}
-</th>
-<!--result:
-  1: Rob John
-  2: John Wayne
--->
-
-```
-Return users whose full name is
-```html
-<!--search by full name -->
-<th ng-repeat="user in users | filterBy: ['user.first_name + user.last_name']: 'Rob Joh'">
-  {{ user.id }}: {{ user.first_name }} {{ user.last_name }}
-</th>
-<!--result:
-  1: Rob John
-  3: Rob Johannson
--->
-```
-### first
-Gets the first element(s) of a collection.<br /> If an expression is provided, it will only return elements whose expression is truthy.<br /> ***Usage:*** See below <br />
-
-```js
-$scope.users = [
-  { id: 1, name: { first: 'John', last: 'Wayne' } },
-  { id: 2, name: { first: 'Mike', last: 'Johannson' } },
-  { id: 3, name: { first: 'William', last: 'Kyle' } },
-  { id: 4, name: { first: 'Rob', last: 'Thomas' } }
-];
-```
-Returns the first user.
-```html
-{{ users | first }}
-<!--result:
-{ id: 1, name: { first: 'John', last: 'Wayne' } }
--->
-
-```
-Returns the first user whose first name is 'Rob' and last name is 'Thomas'
-```html
-<!-- collection | first: expression -->
-{{ users | first: 'name.first === \'Rob\' && name.last === \'Thomas\'' }}
-<!--result:
-[ { id: 4, name: { first: 'Rob', last: 'Thomas' } } ]
--->
-
-```
-Return the first two users
-```html
-<!-- collection | first: n -->
-<th ng-repeat="user in users | first: 2">
-  {{ user.name.first }}
-</th>
-<!--result:
-John
-Mike
--->
-
-```
-Return the first two users with even id
-```html
-<!-- collection | first: n: expression -->
-<th ng-repeat="user in users | first: 2: '!(id%2)'">
-  {{ user.name }}
-</th><!--result:
-Mike
-Rob
-```
-### last
-Gets the last element or last n elements of a collection,<br /> if expression is provided, is returns as long the expression return truthy<br /> ***Usage:*** See below <br />
-```js
-$scope.users = [
-  { id: 1, name: { first: 'foo', last: 'bar' } },
-  { id: 2, name: { first: 'baz', last: 'bar' } },
-  { id: 3, name: { first: 'bar', last: 'bar' } },
-  { id: 4, name: { first: 'lol', last: 'bar' } }
-];
-```
-```html
-{{ users | last }}
-<!--result:
-{ id: 4, name: { first: 'lol', last: 'bar' } }
-```
-```html
-<!-- collection | last: expression -->{{ users | last: 'name.last === \'bar\'' }}
-<!--result:
-[ { id: 4, name: { first: 'lol', last: 'bar' } } ]
-```
-```html
-<!-- collection | last: n -->
-<th ng-repeat="user in users | last: 2">
-  {{ user.name }}
-</th>
-<!--result:
-bar
-lol
-```
-```html
-<!-- collection | last: n: expression -->
-<th ng-repeat="user in users | last: 2: '!(id%2)'">
-  {{ user.name }}
-</th><!--result:
-baz
-lol
-```
-### flatten
-Flattens a nested array (the nesting can be to any depth).<br /> If you pass shallow, the array will only be flattened a single level<br /> **Usage:** `collection | flatten: shallow[optional]`
-```js
-$scope.weirdArray = [[], 1, 2, 3, [4, 5, 6, [7, 8, 9, [10, 11, [12, [[[[[13], [[[[14, 15]]]]]]]]]]]]];
-```
-```html
-<th ng-repeat="elm in wierdArray | flatten">
- {{ elm }},
-</th>
-<!--result:
-1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+</div>
 ```
 
-### join
-Joins the contents of a collection into a string.<br /> By default, it will join elements with a *single space*, but you can provide your own delimiter.
+#### Events
+`angular-ui-tree:collapse-all` Collapse all it's child nodes.
 
-**Usage:** `collection | join:', '`
+`angular-ui-tree:expand-all` Expand all it's child nodes.
+
+#### Methods of scope
+##### $callbacks (type: Object)
+`$callbacks` is a very important property for `angular-ui-tree`. When some special events trigger, the functions in `$callbacks` are called. The callbacks can be passed through the directive.
 
 Example:
-
 ```js
-$scope.names = ['John', 'Sebastian', 'Will', 'James'];
-```
-
-```html
-<p>{{ names | join:', ' }}</p>
-<!-- Will print "John, Sebastian, Will, James" -->```
-
-
-### fuzzy
-fuzzy string searching(approximate string matching). [Read more](http://en.wikipedia.org/wiki/Approximate_string_matching)<br /> **note:** use fuzzyBy to filter by one property to improve performance<br /> **Usage:** `collection | fuzzy: search: caseSensitive[optional]`
-```js
-$scope.books = [
-  { title: 'The DaVinci Code', author: 'F. Scott Fitzgerald' },
-  { title: 'The Great Gatsby', author: 'Dan Browns' },
-  { title: 'Angels & Demons',  author: 'Dan Louis' },
-  { title: 'The Lost Symbol',  author: 'David Maine' },
-  { title: 'Old Man\'s War',   author: 'Rob Grant' }
-];
-```
-```html
-<input type="text" ng-model="search" placeholder="search book" />
-<li ng-repeat="book in books | fuzzy: search">
-  {{ book.title }}
-</li>
-<!--case sensitive-->
-<li ng-repeat="book in books | fuzzy: search: true">
-  {{ book.title }}
-</li>
-```
-### fuzzyBy
-fuzzy string searching(approximate string matching) by property(nested to). [Read more](http://en.wikipedia.org/wiki/Approximate_string_matching)<br /> **Usage:** `collection | fuzzyBy: 'property': search: caseSensitive[optional]`
-```js
-$scope.books = [
-  { title: 'The DaVinci Code' },
-  { title: 'The Great Gatsby' },
-  { title: 'Angels & Demons'  },
-  { title: 'The Lost Symbol'  },
-  { title: 'Old Man\'s War'   }
-];
-```
-```html
-<input type="text" ng-model="search" placeholder="search by title" />
-<li ng-repeat="book in books | fuzzyBy: 'title': search">
-  {{ book.title }}
-</li>
-<!--case sensitive-->
-<li ng-repeat="book in books | fuzzyBy: 'title': search: true">
-  {{ book.title }}
-</li>
-```
-### groupBy
-Create an object composed of keys generated from the result of running each element of a collection,<br /> each key is an array of the elements.<br /> **Usage:** `(key, value) in collection | groupBy: 'property'` or `... | groupBy: 'nested.property'`
-```js
-$scope.players = [
-  {name: 'Gene', team: 'alpha'},
-  {name: 'George', team: 'beta'},
-  {name: 'Steve', team: 'gamma'},
-  {name: 'Paula', team: 'beta'},
-  {name: 'Scruath', team: 'gamma'}
-];
-```
-```html
-<ul>
-  <li ng-repeat="(key, value) in players | groupBy: 'team'">
-    Group name: {{ key }}
-    <ul>
-      <li ng-repeat="player in value">
-        player: {{ player.name }}
-      </li>
-    </ul>
-  </li>
-</ul><!-- result:
-  Group name: alpha
-    * player: Gene
-  Group name: beta
-    * player: George
-    * player: Paula
-  Group name: gamma
-    * player: Steve
-    * player: Scruath
-```
-### countBy
-Create an object composed of keys generated from the result of running each element of a collection,<br /> each key is the count of objects in each group<br /> **Usage:** `(key, value) in collection | countBy: 'property'` or `... | countBy: 'nested.property'`
-```js
-$scope.players = [
-  {name: 'Gene', team: 'alpha'},
-  {name: 'George', team: 'beta'},
-  {name: 'Steve', team: 'gamma'},
-  {name: 'Paula', team: 'beta'},
-  {name: 'Scruath', team: 'gamma'}
-];
-```
-```html
-<li ng-repeat="(key, value) in players | countBy: 'team'" >
-  Group name: {{ key }}, length: {{ value }}
-</li>
-<!-- result:
-  Group name: alpha, length: 1
-  Group name: beta, length: 2
-  Group name: gamma, length: 2
-```
-### chunkBy
-Collect data into fixed-length chunks or blocks **Usage:** `(key, value) in collection | chunkBy: 'n': fill-value(optional)`
-```js
-$scope.array = [1, 2, 3, 4, 5, 6];
-```
-```html
-<li ng-repeat="block in array | chunkBy: 2" >
-  Block: {{ block }}
-</li>
-<!-- result:
-  Block: [1, 2]
-  Block: [3, 4]
-  Block: [5, 6]
---><-- Example with fill value -->
-<li ng-repeat="block in array | chunkBy: 4: 0" >
-  Block: {{ block }}
-</li><!-- result:
-  Block: [1, 2, 3, 4]
-  Block: [5, 6, 0, 0]
-```
-
-### defaults
-`defaultsFilter` allows to specify a default fallback value for properties that resolve to undefined.<br /> **Usage:** `col in collection | defaults: fallback`
-```js
-$scope.orders = [
-      { id:1, destination: { zip: 21908 }, name: 'Ariel M' },
-      { id:2, name: 'John F' },
-      { id:3, destination: { zip: 45841 } },
-      { id:4, destination: { zip: 78612 }, name: 'Danno L' },
-  ];
-$scope.fallback = {
-      name: 'Customer name not available',
-      destination: { zip: 'Pickup' }
+myAppModule.controller('MyController', function($scope) {
+  $scope.treeOptions = {
+    accept: function(sourceNodeScope, destNodesScope, destIndex) {
+      return true;
+    },
   };
+});
 ```
 ```html
-<li ng-repeat="order in orders | defaults: fallback">
-    <b>id:</b> {{ order.id }},
-    <b>name:</b> {{ order.name }},
-    <b>shipping address:</b> {{ order.destination.zip }}
-</li>
-<!--Results:
-* id: 1, name: Ariel M, shipping address: 21908
-* id: 2, name: John F, shipping address: Pickup
-* id: 3, name: Customer name not available, shipping address: 45841
-* id: 4, name: Danno L, shipping address: 78612
-```
-**Note:** `defaultsFilter` change the source object.<br /> **Why?** if we don't change the source object, it actually means we're gonna return a **new** object (copy operation) on **each digest cycle**.<br /> And it will cause adverse memory and performance implications.<br /> **How to avoid it?** see below
-```js
-//We copy it once, and it's really cheaper
-$scope.ordersWithFallback = angular.copy($scope.orders);
-```
-```html
-<li ng-repeat="order in ordersWithFallback | defaults: fallback">
-    <!-- ..... --></li>
-```
-### where
-comparison for each element in a collection to the given properties object,<br /> returning an array of all elements that have equivalent property values.
-```js
-  $scope.collection = [
-    { id: 1, name: 'foo' },
-    { id: 1, name: 'bar' },
-    { id: 2, name: 'baz' }
-  ]
-```
-```html
-<tr ng-repeat="obj in collection | where:{id: 1}">
-  {{ obj.name }}
-</tr>
-<!-- result:
-  foo
-  bar
--->
-
-<tr ng-repeat="obj in collection | where:{id: 1, name: 'foo'}">
-  {{ obj.name }}
-</tr>
-<!-- result:
-  foo
-  -->
-```
-### omit
-return collection without the omitted objects(by expression).<br /> usage: `collection | omit: expression`<br /> **example 1:**
-```js
-$scope.mod2 = function(elm) {
-  return !(elm % 2);
-}
-```
-```html
-<tr ng-repeat="num in [1,2,3,4,5,6] | omit: mod2">
-  {{ num }},
-</tr><!--result
-1, 3, 5
-```
-**example 2:**
-```js
-$scope.collection = [
-  { id: 1, user: { name: 'foo' } },
-  { id: 2, user: { name: 'bar' } },
-  { id: 3, user: { name: 'baz' } }
-]
-```
-```html
-<tr ng-repeat="obj in collection | omit:'id > 1 && user.name.indexOf(\'b\') !== -1'">
-  id: {{ obj.id }}, name: {{ obj.user.name }}
-</tr>
-<!--result:
-id: 1, name: foo
-```
-### pick
-return collection composed of the picked objects(by expression).<br /> usage: `collection | pick: expression`<br /> **example 1:**
-```js
-$scope.mod2 = function(elm) {
-  return !(elm % 2);
-}
-```
-```html
-<tr ng-repeat="num in [1,2,3,4,5,6] | pick: mod2">
-  {{ num }},
-</tr>
-<!--result
-2, 4, 6
-```
-**example 2:**
-```js
-$scope.collection = [
-  { id: 1, user: { name: 'foo' } },
-  { id: 2, user: { name: 'bar' } },
-  { id: 3, user: { name: 'baz' } }
-]
-```
-```html
-<tr ng-repeat="obj in collection | pick:'id > 1 && user.name.indexOf(\'b\') !== -1'">
-  id: {{ obj.id }}, name: {{ obj.user.name }}
-</tr>
-<!--result:
-id: 2, name: bar
-id:3, name: baz
+<div ui-tree="treeOptions">
+  <ol ui-tree-nodes ng-model="nodes">
+    <li ng-repeat="node in nodes" ui-tree-node>{{node.title}}</li>
+  </ol>
+</div>
 ```
 
-### remove
-Returns a new collection of removed elements.
-```js
-$scope.foo = { name: 'foo' };
-$scope.collection = [
-  { name: 'bar' },
-  $scope.foo,
-  null, 1
-];
-```
-```html
-<tr ng-repeat="obj in collection | remove: foo: null: 1">
-  {{ obj }}
-</tr>
-<!-- result:
-  { "name": "bar" }
-```
-### removeWith
-comparison for each element in a collection to the given properties object,<br /> returning an array without all elements that have equivalent property values.
-```js
-  $scope.collection = [
-    { id: 1, name: 'foo' },
-    { id: 1, name: 'bar' },
-    { id: 2, name: 'baz' }
-  ]
-```
-```html
-<tr ng-repeat="obj in collection | removeWith:{ id: 1 }">
-  {{ obj.name }}
-</tr>
-<!-- result:
-  baz
---><tr ng-repeat="obj in collection | removeWith:{ id: 1, name: 'foo' }">
-  {{ obj.name }}
-</tr><!-- result:
-  bar
-  baz
-```
-### searchField
-if you want to use the filter in angular and want to filter for multiple values<br /> so searchField filter return new collection with property called searchField<br /> **support nested properties with dot notation i.e:** `collection | searchField: 'prop': 'nested.prop'`
-```js
-$scope.users = [
-  { first_name: 'Sharon', last_name: 'Melendez' },
-  { first_name: 'Edmundo', last_name: 'Hepler' },
-  { first_name: 'Marsha', last_name: 'Letourneau' }
-];
-```
-```html
-<input ng-model="search" placeholder="search by full name"/>
-<th ng-repeat="user in users | searchField: 'first_name': 'last_name' | filter: search">
-  {{ user.first_name }} {{ user.last_name }}
-</th>
-<!-- so now you can search by full name -->```
-### after
-get a collection(array or object) and specified count, and returns all of the items in the collection after the specified count.
-```js
-$scope.collection = [
-    { name: 'foo' },
-    { name: 'bar' },
-    { name: 'baz' },
-    { name: 'zap' },
-  ];
-```
-```html
-<tr ng-repeat="col in collection | after:2">
-  {{ col.name }}
-</tr>
-<!--result:
-  baz
-  zap
--->
+#### Methods in $callbacks
+##### <a name="accept"></a>accept(sourceNodeScope, destNodesScope, destIndex)
+Check if the current dragging node can be dropped in the `ui-tree-nodes`.
 
-```
-### afterWhere
-get a collection and properties object, and returns all of the items, in the collection after the first that found with the given properties, including it.
-```js
-$scope.orders = [
-  { id: 1, customer: { name: 'foo' }, date: 'Tue Jul 15 2014' },
-  { id: 2, customer: { name: 'foo' }, date: 'Tue Jul 16 2014' },
-  { id: 3, customer: { name: 'foo' }, date: 'Tue Jul 17 2014' },
-  { id: 4, customer: { name: 'foo' }, date: 'Tue Jul 18 2014' },
-  { id: 5, customer: { name: 'foo' }, date: 'Tue Jul 19 2014' }
-];
-```
+**Parameters:**
+- `sourceNodeScope`: The scope of source node which is dragging.
+- `destNodesScope`: The scope of `ui-tree-nodes` which you want to drop in.
+- `destIndex`: The position you want to drop in.
+
+**Return** If the nodes accept the current dragging node.
+- `true` Allow it to drop.
+- `false` Not allow.
+
+##### <a name="beforeDrag"></a>beforeDrag(sourceNodeScope)
+Check if the current selected node can be dragged.
+
+**Parameters:**
+- `sourceNodeScope`: The scope of source node which is selected.
+
+**Return** If current node is draggable.
+- `true` Allow it to drag.
+- `false` Not allow.
+
+##### <a name="removed"></a>removed(node)
+If a node is removed, the `removed` callback will be called.
+
+**Parameters:**
+ - `node`: The node that was removed
+
+##### <a name="dropped"></a>dropped(event)
+If a node moves it's position after dropped, the `nodeDropped` callback will be called.
+
+**Parameters:** - <a name="eventParam"></a>`event`: Event arguments, it's an object.
+  * `source`: Source object
+    + `nodeScope`: The scope of source node which was dragged.
+    + `nodesScope`: The scope of the parent nodes of source node  when it began to drag.
+    + `index`: The position when it began to drag.
+    + `cloneModel`: Given data-clone-enabled is true, holds the model of the cloned node that is to be inserted, this can be edited before drop without affecting the source node.
+  * `dest`: Destination object
+    + `nodesScope`: The scope of `ui-tree-nodes` which you just dropped in.
+    + `index`: The position you dropped in.
+  * `elements`: The dragging relative elements.
+    + `placeholder`: The placeholder element.
+    + `dragging`: The dragging element.
+  * `pos`: Position object.
+
+To change the node being dropped before
+##### <a name="dragStart"></a>dragStart(event)
+The `dragStart` function is called when the user starts to drag the node. **Parameters:** Same as [Parameters](#eventParam) of dropped.
+
+##### dragMove(event)
+The `dragMove` function is called when the user moves the node.
+
+**Parameters:** Same as [Parameters](#eventParam) of dropped.
+
+##### dragStop(event)
+The `dragStop` function is called when the user stop dragging the node.
+
+**Parameters:** Same as [Parameters](#eventParam) of dropped.
+
+##### beforeDrop(event)
+The `beforeDrop` function is called before the dragging node is dropped. If you implement this callback, the return value determines whether the drop event is allowed to proceed.
+
+**Parameters:** Same as [Parameters](#eventParam) of dropped.
+
+**Callback Return Values**
+
+- **Resolved Promise** or **truthy**: Allow the node to be dropped
+
+- **Rejected Promise** or **false**: Disallow the node drop and return the dragged node to its original position
+
+##### toggle(collapsed, sourceNodeScope)
+The `toggle` function is called after the node is toggled
+
+**Parameters:**
+- `collapsed`: Boolean value with state of the node.
+- `sourceNodeScope`: The scope of source node which is toggled.
+
+### ui-tree-nodes
+`ui-tree-nodes` is the container of nodes. Every `ui-tree-node` should have a `ui-tree-nodes` as it's container, a `ui-tree-nodes` can have multiple child nodes.
+
+#### Attributes
+##### data-nodrop-enabled <a name="nodes_attrs_nodrop"></a>Prevent nodes from being dropped into this node container. This prevents nodes from being dropped directly into the container with the attribute but not into children that contain additional containers. See the [demo page](http://angular-ui-tree.github.io/angular-ui-tree/#/nodrop) for examples.
+
+##### data-max-depth <a name="nodes_attrs_maxDepth"></a>Number of levels a nodes can be nested (default 0). 0 means no limit. It can override the `data-max-depth` in `ui-tree`. **Note** If you write your own [$callbacks.accept](#accept) method, you have to check `data-nodrop-enabled` and `data-max-depth` by yourself.
+
+Example: turn off drop.
 ```html
-<tr ng-repeat="order in orders | afterWhere:{ date: 'Tue Jul 17 2014' }">
-  order: {{ order.id }}, {{ order.date }}
-</tr>
-<!--result:
-  order: 3, Tue Jul 17 2014
-  order: 4, Tue Jul 18 2014
-  order: 5, Tue Jul 19 2014
--->
+<ol ui-tree-nodes ng-model="nodes" data-nodrop-enabled="true">
+  <li ng-repeat="node in nodes" ui-tree-node>{{node.title}}</li>
+</ol>
 ```
 
-### before
-get a collection(array or object) and specified count, and returns all of the items in the collection before the specified count.
-```js
-$scope.collection = [
-    { name: 'foo' },
-    { name: 'bar' },
-    { name: 'baz' },
-    { name: 'zap' },
-  ];
-```
+#### Properties of scope
+##### $element (type: AngularElement)
+The html element which bind with the `ui-tree-nodes` scope.
+
+##### $modelValue (type: Object)
+The data which bind with the scope.
+
+##### $nodes (type: Array)
+All it's child nodes. The type of child node is scope of `ui-tree-node`.
+
+##### $nodeScope (type: Scope of ui-tree-node)
+The scope of node which current `ui-tree-nodes` belongs to. For example:
+
+    ui-tree-nodes                       --> nodes 1
+      ui-tree-node                      --> node 1.1
+        ui-tree-nodes                   --> nodes 1.1
+          ui-tree-node                  --> node 1.1.1
+          ui-tree-node                  --> node 1.1.2
+      ui-tree-node                      --> node 1.2
+
+The property `$nodeScope of` `nodes 1.1` is `node 1.1`. The property `$nodes` of `nodes 1.1` is [`node 1.1.1`, `node 1.1.2`]
+
+##### maxDepth
+Number of levels a node can be nested. It bases on the attribute [data-max-depth](#nodes_attrs_maxDepth).
+
+##### nodropEnabled
+Turn off drop on nodes. It bases on the attribute [data-nodrop-enabled](#nodes_attrs_nodrop).
+
+#### Methods of scope
+##### depth()
+Get the depth.
+
+##### outOfDepth(sourceNode)
+Check if depth limit has reached
+
+##### isParent(nodeScope)
+Check if the nodes is the parent of the target node. **Parameters:**
+- `nodeScope`: The target node which is used to check with the current nodes.
+
+
+### ui-tree-node
+A node of a tree. Every `ui-tree-node` should have a `ui-tree-nodes` as it's container.
+
+#### Attributes
+##### data-nodrag (type: boolean)
+Turn off drag of node. Example: turn off drag.
 ```html
-<tr ng-repeat="col in collection | before:3">
-  {{ col.name }}
-</tr>
-<!--result:
-  foo
-  bar
--->
-
-```
-
-### beforeWhere
-get a collection and properties object, and returns all of the items, in the collection before the first that found with the given properties, including it.
-```js
-$scope.orders = [
-  { id: 1, customer: { name: 'foo' }, date: 'Tue Jul 15 2014' },
-  { id: 2, customer: { name: 'foo' }, date: 'Tue Jul 16 2014' },
-  { id: 3, customer: { name: 'foo' }, date: 'Tue Jul 17 2014' },
-  { id: 4, customer: { name: 'foo' }, date: 'Tue Jul 18 2014' },
-  { id: 5, customer: { name: 'foo' }, date: 'Tue Jul 19 2014' }
-];
-```
-```html
-<tr ng-repeat="order in orders | beforeWhere:{ date: 'Tue Jul 17 2014' }">
-  order: {{ order.id }}, {{ order.date }}
-</tr>
-<!--result:
-  order: 1, Tue Jul 15 2014
-  order: 2, Tue Jul 16 2014
-  order: 3, Tue Jul 17 2014
--->
-```
-
-### reverse
-Reverse the order of the elements in a collection
-
-```js
-$scope.users = [
-  { id: 1, name: 'bazzy' },
-  { id: 2, name: 'dazzy' },
-  { id: 3, name: 'lazzy' }
-];
-```
-```html
-<tr ng-repeat="user in users | reverse">
-  user: {{ user.id }}, {{ user.name }}
-</tr>
-<!--result:
-  user: 3, lazzy
-  user: 2, dazzy,
-  user: 1, bazzy
--->
+<ol ui-tree-nodes ng-model="nodes">
+  <li ng-repeat="node in nodes" ui-tree-node data-nodrag>{{node.title}}</li>
+</ol>
 ```
 
-### isEmpty
-get collection or string and return if it empty[Boolean]
+##### data-collapsed (type: boolean)
+Collapse the node.
 
+##### data-expand-on-hover (type: boolean, number)
+Causes the node to expand (if it contains child nodes and was collapsed) when dragging a node over it. This lets users drag and drop items into a nested tree in a single drag operation, instead of having to expand all the nodes to the destination first. The target node will immediately expand when `true` is provided. When a number (in milliseconds) is specified, the target node will expand after the specified amount of milliseconds.
+
+##### data-scroll-container (type: string)
+Causes drag-scrolling to happen within a customisable container, as opposed to the default document body. Accepts any selector string that document.querySelector accepts. Example:
 ```html
-<tr ng-repeat="order in orders" ng-hide="orders | isEmpty">
-<!-- ..... -->
-</tr>
-<!--some replacer msg-->
-<tr ng-show="orders | isEmpty">
-  no content to show
-</tr>
-```
-### contains
-Checks if given expression(or value) is present in one or more object in the collection<br /> **Usage:** `collection | contains: 'expression'`<br /> **Aliases:** some<br /> example 1:
-```js
-$scope.array = [1,2,3,4];
-```
-```html
-<th ng-show="{{ array | contains: 2 }}">...</th>
-```
-example 2:
-```js
-$scope.collection = [
-  { user: { id: 1, name: 'foo' } },
-  { user: { id: 2, name: 'bar' } },
-  { user: { id: 3, name: 'baz' } }
-];
-```
-```html
-<th ng-show="{{ collection | some: '!(user.id % 2) && user.name.indexOf(\'b\') === 0' }}">...</th><!--result: true
-```
-### every
-Checks if given expression(or value) return truthy value for all members of a collection<br /> **Usage:** `collection | every: 'expression'`<br /> example 1:
-```js
-$scope.array = [1,1,1,1];
-```
-```html
-<th ng-show="{{ array | every: 1 }}">...</th>
-<!--result: true
-```
-example 2:
-```js
-$scope.collection = [
-  { user: { id: 4, name: 'foo' } },
-  { user: { id: 6, name: 'bar' } },
-  { user: { id: 8, name: 'baz' } }
-];
-```
-```html
-<th ng-show="{{ collection | every: '!(user.id % 2)' }}">...</th>
-<!--result: true
+<div ui-tree style="height: 300px; overflow:scroll;" class="wrapper">
+    <ul ui-tree-nodes style="height: 600px;">
+        <li ui-tree-node ng-repeat="item in items" data-scroll-container=".wrapper">
+    </ul>
+</div>
 ```
 
-### xor
-Exclusive or between two collections<br /> **Usage:** `collection1 | xor: collection2: expression[optional]`<br />
+#### Properties of scope
+##### $element (type: AngularElement)
+The html element which bind with the `ui-tree-nodes` scope.
 
-Example1:
-```html
-<p ng-repeat="elm in [1,2,3,4] | xor: [2,3,5]">
-{{ elm }}
-</p>
-<!--result:
-1 4 5
-```
-Example2:
-```js
-$scope.users1 = [
-  { id: 0, details: { first_name: 'foo', last_name: 'bar' } },
-  { id: 1, details: { first_name: 'foo', last_name: 'baz' } },
-  { id: 2, details: { first_name: 'foo', last_name: 'bag' } }
-];
-$scope.users2 = [
-  { id: 3, details: { first_name: 'foo', last_name: 'bar' } },
-  { id: 4, details: { first_name: 'foo', last_name: 'baz' } }
-];
-```
-```html
-<th ng-repeat="user in users1 | xor: users2">
-  {{ user.id }}
-</th>
-<!--result:
-1 2 3 4 5
---><th ng-repeat="user in users1 | xor: users2: 'details.last_name'">
-  {{ user.id }}, {{ user.details.first_name }} {{ user.details.last_name }}
-</th><!--result:
-2, foo bag
-```
-### toArray
-Convert objects into stable arrays. <br /> **Usage:** `object | toArray: addKey[optional]`<br /> if addKey set to true, the filter also attaches a new property $key to the value containing the original key that was used in the object we are iterating over to reference the property
-```html
-<th ng-repeat="elm in object | toArray | orderBy: 'property'">
-  {{ elm.name }}
-</th>
-```
-### map
-Returns a new collection of the results of each expression execution. <br /> **Usage:** `collection | map: expression` <br /> Example1:
-```js
-$scope.divide = function(elm) {
-  return elm/2
-}
-```
-```html
-<th ng-repeat="i in [1, 2, 3, 4, 5] | map: divide">
-  {{ i }}
-</th>
-<!--result:
-0.5, 1, 1.5, 2, 2.5
-```
-### pluck
-Used map
-```js
-$scope.users = [
-  { id:1, user: { name: 'Foo' } },
-  { id:1, user: { name: 'Bar' } },
-  { id:1, user: { name: 'Baz' } }
-];
-```
-```html
-<th ng-repeat="name in users | map: 'user.name' ">
-  {{ name }}
-</th>
-<!--result:
-Foo
-Bar
-Baz
-```
-### range
-Return a new collection from a given length, start, increment, and callback<br /> By default start is 0, increment is 1, and callback is null. **Usage:** `collection | range: length:start:increment:callback`<br />
-```html
-[<span ng-repeat="i in [] | range: 3">{{i}},</span>]
-<!--result:
-[0,1,2,]
--->```
-```html
-[<span ng-repeat="i in [] | range: 10:10">{{i}},</span>]
-<!--result:
-[10,11,12,13,14,15,16,17,18,19,]
--->
-```
-```html
-[<span ng-repeat="i in [] | range: 10:5:2">{{ i }},</span>]
-<!--result:
-[5, 7, 9, 11, 13, 15, 17, 19, 21, 23]
--->
-```
-```html
-[<span ng-repeat="i in [] | range: 11:4:2">{{ i }},</span>]
-<!--result:
-[4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24]
--->
-```
-```js
-$scope.double = function(i) {
-  return i * 2;
-}
-```
-```html
-[<span ng-repeat="i in [] | range: 11:4:2:double">{{ i }},</span>]
-<!--result:
-[8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48]
--->
-```
+##### $modelValue (type: Object)
+The data which bind with the scope.
 
-## String
+##### collapsed (type: boolean)
+If the node is collapsed
 
-### ucfirst
+- `true`: Current node is collapsed;
+- `false`: Current node is expanded.
 
-ucfirstFilter get string as parameter and return it capitalized
+##### $parentNodeScope (type: Scope of ui-tree-node)
+The scope of parent node.
 
-```html
-<p> {{ 'foo bar baz' | ucfirst }}</p>
+##### $childNodesScope (type: Scope of ui-tree-nodes)
+The scope of it's `ui-tree-nodes`.
 
-<!--
-result:
-Foo Bar Baz
--->
-```
+##### $parentNodesScope (type: Scope of ui-tree-nodes)
+The scope of it's parent `ui-tree-nodes`.
 
-### uriEncode
-get string as parameter and return encoded uri
+For example:
 
-```html
-<a ng-href="http://domain.com/fetch/{{ data.name | uriEncode }}">Link</a>
-```
+    ui-tree-nodes                       --> nodes 1
+      ui-tree-node                      --> node 1.1
+        ui-tree-nodes                   --> nodes 1.1
+          ui-tree-node                  --> node 1.1.1
+          ui-tree-node                  --> node 1.1.2
+      ui-tree-node                      --> node 1.2
 
-### uriComponentEncode
-get string as parameter and return encoded uri component
+- `node 1.1.1`.`$parentNodeScope` is `node 1.1`.
+- `node 1.1`.`$childNodesScope` is `nodes 1.1`.
+- `node 1.1`.`$parentNodesScope` is `nodes 1`.
 
-```html
-<a ng-href="http://domain.com/fetch/{{ 'Some&strange=chars' | uriComponentEncode }}">Link</a>
-```
+#### Methods of scope
+##### collapse()
+Collapse current node.
 
-### slugify
-Transform text into a URL slug. Replaces whitespaces, with dash("-"), or given argument
+##### expand()
+Expand current node.
 
-```html
-<a ng-href="http://domain.com/fetch/{{ 'Some string with spaces' | slugify }}">Link</a>
-<!--replace with given argument-->
-<a ng-href="http://domain.com/fetch/{{ 'Some string with spaces' | slugify:'=' }}">Link</a>
-<!--
-result:
-<a ng-href="http://domain.com/fetch/some-string-with-spaces">Link</a>
+##### toggle()
+Toggle current node.
 
-<a ng-href="http://domain.com/fetch/some=string=with=spaces">Link</a>
--->
-```
+##### remove()
+Remove current node.
 
-### latinize
-Remove accents/diacritics from a string
+##### depth()
+Get the depth of the node.
 
-```html
- {{ 'Sòme strÏng with Âccénts' | latinize }}
-<!--
-result:
-  Some strIng with Accents
--->
-```
-### startsWith
-return whether string starts with the starts parameter.<br /> usage: `string | startsWith: 'start': case-sensitive[optional]`<br />
-```html
- {{ 'Lorem ipsum' | startsWith: 'lorem' }}
- {{ 'Lorem Ipsum' | startsWith: 'lorem': true }}<!--result:
-  true
-  false
-```
-### endsWith
-return whether string ends with the ends parameter.<br /> usage: `string | endsWith: 'ends': case-sensitive[optional]`<br />
-```html
- {{ 'image.JPG' | endsWith: '.jpg' }}
- {{ 'image.JPG' | endsWith: '.jpg': true }}
- <!--result:
-  true
-  false
-```
-### stripTags
-strip out html tags from string<br /> **Important: this filter jobs it's not to replace ng-bind-html directive, it's only for tiny plain text
+##### maxSubDepth()
+Get the max depth of all the child nodes. If there is no child nodes, return 0.
+
+##### isSibling(targetNodeScope)
+Check if the current node is sibling with the target node. **Parameters:**
+- `targetNodeScope`: The target node which is used to check with the current node.
+
+##### isChild(targetNodeScope)
+Check if the current node is a child of the target node. **Parameters:**
+- `targetNodeScope`: The target node which is used to check with the current node.
+
+
+### ui-tree-handle
+Use the `ui-tree-handle` to specify an element used to drag the object. If you don't add a `ui-tree-handle` for a node, the entire node can be dragged.
+
+## Runtime Configuration
+Use the `treeConfig` service to configure the tree defaults at runtime. With this you can customize the classes applied to various tree elements (`treeClass`, `emptyTreeClass`, `hiddenClass`, `nodesClass`, `handleClass`, `placeholderClass`, `dragClass`).
+
+In addition, you can modify whether or not nodes are collapsed by default (`defaultCollapsed`: default false).
+
+You can also modify whether or not dragging a node over a parent node will insert the node as a child (`appendChildOnHover`: default true).
+
+For example:
 
 ```js
-$scope.text = '<p class="paragraph">Lorem Ipsum is simply dummy text of the printing...</p>';
-```
-```html
-<p>{{ text | stripTags }}</p>
-<!--result:
-Lorem Ipsum is simply dummy text of the printing...
--->```
-### stringular
-get string with {n} and replace match with enumeration values
-
-```html
-<p>{{ 'lorem {0} dolor {1} amet' | stringular:'ipsum':'sit' }}</p>
-<p>{{ '{3} {0} dolor {1} amet' | stringular:'ipsum':'sit':null:'lorem' }}</p>
-
-<!-- result:
-<p>lorem ipsum dolor sit amet</p>
-<p>lorem ipsum dolor sit amet</p>
--->
-
-<p>{{ 'lorem {0} dolor sit amet' | stringular }}<p><!--result:
-<p>lorem {0} dolor sit amet</p>
+module.config(function(treeConfig) {
+  treeConfig.defaultCollapsed = true; // collapse nodes by default
+  treeConfig.appendChildOnHover = true; // append dragged nodes as children by default
+});
 ```
 
-### phoneUS
-Format a string or a number into a us-style phone number
-```html
-<p>{{ 1234567890 | phoneUS }}</p>
+## NgModules Link
 
-<!--result:
-<p>(123) 456-7890</p>
-```
+[Give us a like on ngmodules](http://ngmodules.org/modules/angular-ui-tree)
 
-### truncate
-truncates a string given a specified length, providing a custom string to denote an omission.<br /> usage: `| truncate: [length]: [suffix-optional]: [preserve-optinal]`<br />
-```js
-$scope.text = 'lorem ipsum dolor sit amet';
-```
-```html
-<!--should not cut words in the middle if preserve is true--><p>{{ text | truncate: 7: '...': true }}</p>
+## Development environment setup
+#### Prerequisites
 
-<p>{{ text | truncate: 13: '...' }}</p>
+* [Node Package Manager](https://npmjs.org/) (NPM)
+* [Git](http://git-scm.com/)
 
-<!--should not touch string that shorter than the provided length -->
-<p>{{ text | truncate: 50: '...' }}</p><!--result:
-lorem ipsum...
-lorem ipsum d...
-lorem ipsum dolor sit amet
-```
-### split
-truncates a string given a specified length, providing a custom string to denote an omission.<br /> usage: `| split: [delimiter]: [skip-optional]`<br />
-```js
-$scope.text = 'lorem ipsum dolor sit amet';
-```
-```html
+#### Dependencies
 
-<p>{{ text | split: ' ' }}</p>
+* [Gulp](http://gulpjs.com/) (task automation)
+* [Bower](http://bower.io/) (package management)
 
-<p>{{ text | split: ' ': 2}}</p>
+#### Installation
+Run the commands below in the project root directory.
 
-<!--result:
-['lorem', 'ipsum', 'dolor', 'sit', 'amet']
-['lorem ipsum dolor', 'sit', 'amet']
-```
-### reverse
-Reverses a string
-```js
-$scope.text = 'lorem ipsum dolor sit amet';
-```
-```html
-<p>{{ text | reverse }}</p>
-<!--result:
-tema tis rolod muspi merol
-```
-### wrap
-Wrap a string with another string<br /> usage: `string | wrap: string: string[optional]`
-```html
-<p>{{ 'foo' | wrap: '/' }}</p>
-<p>{{ 'foo' | wrap: '{{': '}}' }}</p>
-<!--result:
-/foo/
-{{foo}}
-```
-### trim
-Strip whitespace (or other characters) from the beginning and end of a string<br /> usage: `string | trim: chars[optional]`
-```html
-<p>{{ '    foo   ' | trim }}</p>
-<p>{{ 'foobarfoo' | trim: 'foo' }}
-<!--result:
-foo
-bar
-```
-### ltrim
-Strip whitespace (or other characters) from the beginning of a string<br /> usage: `string | ltrim: chars[optional]`
-```html
-<p>{{ 'barfoobar' | ltrim: 'bar' }}
-<!--result:
-foobar
-```
-### rtrim
-Strip whitespace (or other characters) from the end of a string<br /> usage: `string | rtrim: chars[optional]`
-```html
-<p>{{ 'barfoobar' | rtrim: 'bar' }}
-<!--result:
-barfoo
-```
-### repeat
-Repeats a string n times<br /> **Usage:** `string | repeat: n: separator[optional]`
-```html
-<p>{{ 'foo' | repeat: 3: '-' }}</p>
-<!--repeat:
-foo-foo-foo
-```
-### test
-Test if a string match a pattern<br /> **Usage:** `string | test: pattern: flag[optional]`
-```html
-<p>{{ '15/12/2003' | test: '^[0-9]{2}[/]{1}[0-9]{2}[/]{1}[0-9]{4}$': 'i' }}</p>
-<p>{{ '0123456' | test: '\\D': 'i' }}</p>
-<!--result:
-true
-true
-```
-### match
-Return an array of matched element in a string<br /> **Usage:** `string | match: pattern: flag[optional]`
-```html
-<p>{{ '15/12/2003' | match: '\\d+': 'g' }}</p>
-<!--result:
-['15', '12', '2003']
-```
+##### 1. Install Gulp and Bower
 
-## Math
+    $ sudo npm install -g gulp bower
 
-### max
-max find and return the largest number in a given array. if an `expression` is provided, will return max value by expression. **Usage:** `array | max: expression[optional]`
-```js
-$scope.users = [
-  { user: { score: 988790 } },
-  { user: { score: 123414 } },
-  { user: { rank : 988999 } },
-  { user: { score: 987621 } }
-];
-```
-```html
-<p> {{ [1,2,3,4,7,8,9] | max }}</p>
-<p> {{ users | max: 'user.score || user.rank' }}</p>
-<!--
-result:
-* 9
-* { user: { rank : 988999 } }
-```
+##### 2. Install project dependencies
 
-### min
-min find and return the lowest number in a given array. if an `expression` is provided, will return min value by expression. **Usage:** `array | min: expression[optional]`
-```js
-$scope.users = [
-  { user: { score: 988790 } },
-  { user: { score: 123414 } },
-  { user: { score: 987621 } }
-];
-```
-```html
-<p> {{ [1,2,3,4,7,8,9] | min }}</p>
-<p> {{ users | min: 'user.score' }}</p>
-<!--
-result:
-* 1
-* { user: { score: 123414 } }
-```
-### abs
-Returns the absolute value of a number **Usage:** `number | string`
-```html
-<div ng-repeat="val in [-2.2, 1.3, '-3.4', '4.5']">The absolute value of {{val}} is {{val | abs}}</div>
-<!--
-result:
-* The absolute value of -1.2 is 1.2
-* The absolute value of 2.3 is 2.3
-* The absolute value of -3.4 is 3.4
-* The absolute value of '4.5' is 4.5
-```
-### percent
-Percentage between two numbers<br /> **Usage:** `number | percent: total: round[optional]`, round by default false.
-```html
-<p>{{ 23 | percent: 500 }}</p>
-<p>{{ 23 | percent: 500: true }}</p>
-<!--result:
-4.6
-4
-```
-### radix
-Converting decimal numbers to different bases(radix)<br /> **Usage:** `number | radix: base`
-```html
-<p>{{ 8 | radix: 2 }}</p>
-<p>{{ 32586 | radix: 16 }}</p>
-<!--result:
-1000
-7F4A
-```
-### sum
-Sum up all values within an array<br /> **Usage:** `array | sum: initial-value[optional]`
-```html
-{{ [2,3,5] | sum }}
-{{ [2,3,5] | sum: 10 }}
-<!--result
-10
-20
-```
-### degrees
-Converts radians into degrees<br /> **Usage:** `radians | degrees: round-to-decimal`,
-```html
-<p>{{ 0.785398 | degrees: 0 }}</p>
-<p>{{ -1.57 | degrees: 3 }}</p>
-<!--result
-45
--89.954
-```
-### radians
-Converts degrees into radians<br /> **Usage:** `degrees | radians: round-to-decimal`,
-```html
-<p>{{ 45 | radians: 2 }}</p>
-<p>{{ 180 | radians: 5 }}</p>
-<!--result
-0.79
-3.14159
-```
-### shortFmt
-Converts numbers into formatted display<br /> **Usage:** `number | shortFmt: round-to-decimal`,
-```html
-<p>{{ 45000 | shortFmt: 0 }}</p>
-<p>{{ 18234822 | shortFmt: 1 }}</p>
-<!--result
-45 k
-18.2 m
-```
-### byteFmt
-Converts bytes into formatted display<br /> **Usage:** `number | byteFmt: round-to-decimal`,
-```html
-<p>{{ 1998 | byteFmt: 2 }}</p>
-<p>{{ 1339234901 | byteFmt: 5 }}</p>
-<!--result
-1.95 KB
-1.24726 GB
-```
-### kbFmt
-Converts kilobytes into formatted display<br /> **Usage:** `number | kbFmt: round-to-decimal`,
-```html
-<p>{{ 1024 | kbFmt: 0 }}</p>
-<p>{{ 1049901 | kbFmt: 5 }}</p>
-<!--result
-1 MB
-1.00126 GB
+    $ npm install
+    $ ./node_modules/protractor/bin/webdriver-manager update
+    $ bower install
 
-```
-## Boolean
-> Used for boolean expression in chaining filters
+## Useful commands
 
-### isGreaterThan
-**aliases:** `>`
-```html
-<div ng-show="{{ array | map | sum | isGreaterThan: num }}"></div>
-<!--or: --><div ng-show="{{ array | map | sum | >: num }}"></div>
-```
+#### Running a Local Development Web Server
+To debug code and run end-to-end tests, it is often useful to have a local HTTP server. For this purpose, we have made available a local web server based on Node.js.
 
-### isGreaterThanOrEqualTo
-**aliases:** `>=`
-```html
-<div ng-show="{{ array | map | sum | isGreaterThanOrEqualTo: num }}"></div>
-<!--or: -->
-<div ng-show="{{ array | map | sum | >=: num }}"></div>
-```
+To start the web server, run:
 
-### isLessThan
-**aliases:** `<`
-```html
-<div ng-show="{{ array | map | sum | isLessThan: num }}"></div>
-<!--or: -->
-<div ng-show="{{ array | map | sum | <: num }}"></div>
-```
+    $ gulp serve
 
-### isLessThanOrEqualTo
-**aliases:** `<=`
-```html
-<div ng-show="{{ array | map | sum | isLessThanOrEqualTo: num }}"></div>
-<!--or: -->
-<div ng-show="{{ array | map | sum | <=: num }}"></div>
-```
+To access the local server, enter the following URL into your web browser:
 
-### isEqualTo
-**aliases:** `==`
-```html
-<div ng-show="{{ array | map | sum | isEqualTo: num }}"></div>
-<!--or: -->
-<div ng-show="{{ array | map | sum | ==: num }}"></div>
-```
+    http://localhost:9000
 
-### isNotEqualTo
-**aliases:** `!=`
-```html
-<div ng-show="{{ array | map | sum | isNotEqualTo: num }}"></div>
-<!--or: -->
-<div ng-show="{{ array | map | sum | !=: num }}"></div>
-```
+By default, it serves the contents of the `examples` directory.
 
-### isIdenticalTo
-**aliases:** `===`
-```html
-<div ng-show="{{ array | map | sum | isIdenticalTo: num }}"></div>
-<!--or: -->
-<div ng-show="{{ array | map | sum | ===: num }}"></div>
-```
 
-### isNotIdenticalTo
-**aliases:** `!==`
-```html
-<div ng-show="{{ array | map | sum | isNotIdenticalTo: num }}"></div>
-<!--or: -->
-<div ng-show="{{ array | map | sum | !==: num }}"></div>
-```
-## Changelog
-### 0.5.7
-* fix issue #119
+#### Building angular-ui-tree
+To build angular-ui-tree, you use the following command.
 
-### 0.5.6
-* fix issue #145
+    $ gulp build
 
-### 0.5.5
-* add `range` and `chunk-by` filters
-* fix issue #139
+This will generate non-minified and minified JavaScript files in the `dist` directory.
 
-### 0.5.4
-* add `match` and `test` filters
+#### Run tests
+You can run the unit test using a separate task.
 
-### 0.5.3
-* add `latinize` filter
+    $ gulp test
 
-### 0.5.1
-* `min` and `max` can get a property as an argument.
-* improve `slugify` filter.
-* refactor `filterWatcher`(memoize), now it works like a charm.
-* refactor `groupBy` now it can get be chain with other filters
+The E2E-tests can be executed using
 
-### 0.4.9
-* fix issue #38 with [reverseFilter](#reverse)
+    $ gulp test:e2e
+    
+    > Note: make sure you have the example website running on port `9000` (using the `$ gulp serve` command)
 
-### 0.4.8
-* add [defaultsFilter](#defaults)
-* improve docs, tests
+*Windows: If your e2e tests are failing, run the command prompt as an administrator. ([See symlink issue](https://github.com/ben-eb/gulp-symlink/issues/33))*
 
-### 0.4.7
-* add [condition filters](#Boolean) set. <br /> <br />
+#### Deploy examples
 
-## TODO
-- Add project website on branch gh-pages, see **[Github-help](https://help.github.com/articles/creating-project-pages-manually)**
-
-## Contributing
-* If you planning add some feature please **create issue before**.
-* Don't forget about tests.
-
-Clone the project: <br />
-```bash
-$ git clone
-$ npm install
-$ bower install
-```
-Run the tests:
-```bash
-$ grunt test
-```
+    $ gulp deploy
