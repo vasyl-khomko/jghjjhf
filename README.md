@@ -1,182 +1,193 @@
-
-# Rendora
-
 <p align="center">
-<img src="docs/pics/logo_200.png" alt="Rendora" title="Rendora" />
+  <a href="https://angularclass.com" target="_blank">
+    <img src="https://cloud.githubusercontent.com/assets/1016365/10355203/f50e880c-6d1d-11e5-8f59-d0d8c0870739.png" alt="Angular Websocket" width="500" height="320"/>
+  </a>
 </p>
 
-[![Go Report Card](https://goreportcard.com/badge/rendora/rendora)](http://goreportcard.com/report/rendora/rendora) [![CircleCI](https://circleci.com/gh/rendora/rendora/tree/master.svg?style=svg)](https://circleci.com/gh/rendora/rendora/tree/master) [![GoDoc](https://godoc.org/github.com/rendora/rendora?status.svg)](https://godoc.org/github.com/rendora/rendora) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/rendora/rendora/blob/master/LICENSE) [![Join the chat at https://discord.gg/6yyErk8](https://img.shields.io/badge/chat-on%20discord-7289da.svg)](https://discord.gg/6yyErk8)
+# Angular Websocket [![Join Slack](https://img.shields.io/badge/slack-join-brightgreen.svg)](https://angularclass.com/slack-join) [![Join the chat at https://gitter.im/AngularClass/angular-websocket](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/AngularClass/angular-websocket?utm_campaign=pr-badge&utm_content=badge&utm_medium=badge&utm_source=badge) [![gdi2290/angular-websocket API Documentation](https://www.omniref.com/github/gdi2290/angular-websocket.png)](https://www.omniref.com/github/gdi2290/angular-websocket)
 
-Rendora is a dynamic renderer to provide zero-configuration server-side rendering mainly to web crawlers in order to effortlessly improve SEO for websites developed in modern Javascript frameworks such as React.js, Vue.js, Angular.js, etc... Rendora works totally independently of your frontend and backend stacks
+[![Travis](https://img.shields.io/travis/gdi2290/angular-websocket.svg?style=flat)](https://travis-ci.org/gdi2290/angular-websocket) [![Bower](https://img.shields.io/bower/v/angular-websocket.svg?style=flat)](https://github.com/gdi2290/angular-websocket) [![npm](https://img.shields.io/npm/v/angular-websocket.svg?style=flat)](https://www.npmjs.com/package/angular-websocket) [![Dependency Status](https://david-dm.org/gdi2290/angular-websocket.svg)](https://david-dm.org/gdi2290/angular-websocket) [![devDependency Status](https://david-dm.org/gdi2290/angular-websocket/dev-status.svg)](https://david-dm.org/gdi2290/angular-websocket#info=devDependencies) [![NPM](https://nodei.co/npm/angular-websocket.svg?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/angular-websocket/)
 
-<p align="center">
-<img src="docs/pics/diagram.png" alt="Rendora's Diagram" title="Rendora's Diagram" />
-</p>
+### Status: Looking for feedback about new API changes
 
-## Main Features
-* Zero change needed in frontend and backend code
-* Filters based on user agents and paths
-* Single fast binary written in Golang
-* Multiple Caching strategies
-* Support for asynchronous pages
-* Prometheus metrics
-* Choose your configuration system (YAML, TOML or JSON)
-* Container ready
+An AngularJS 1.x WebSocket service for connecting client applications to servers.
 
+## How do I add this to my project?
 
-## What is Rendora?
+You can download angular-websocket by:
 
-Rendora can be seen as a reverse HTTP proxy server sitting between your backend server (e.g. Node.js/Express.js, Python/Django, etc...) and potentially your frontend proxy server (e.g. nginx, traefik, apache, etc...) or even directly to the outside world that does actually nothing but transporting requests and responses as they are **except** when it detects whitelisted requests according to the config. In that case, Rendora instructs a headless Chrome instance to request and render the corresponding page and then return the server-side rendered page back to the client (i.e. the frontend proxy server or the outside world). This simple functionality makes Rendora a powerful dynamic renderer without actually changing anything in both frontend and backend code.
+* (prefered) Using bower and running `bower install angular-websocket --save`
+* Using npm and running `npm install angular-websocket --save`
+* Downloading it manually by clicking [here to download development unminified version](https://raw.github.com/AngularClass/angular-websocket/master/dist/angular-websocket.js)
+* CDN for development `https://cdn.rawgit.com/AngularClass/angular-websocket/v2.0.0/dist/angular-websocket.js`
+* CDN for production `https://cdn.rawgit.com/AngularClass/angular-websocket/v2.0.0/dist/angular-websocket.min.js`
 
+## Usage
 
-## What is Dynamic Rendering?
-Dynamic rendering means that the server provides server-side rendered HTML to web crawlers such as GoogleBot and BingBot and at the same time provides the typical initial HTML to normal users in order to be rendered at the client side. Dynamic rendering is meant to improve SEO for websites written in modern javascript frameworks like React, Vue, Angular, etc...
+```html
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+  <script src="bower_components/angular-websocket/angular-websocket.js"></script>
+  <section ng-controller="SomeController">
+    <ul ng-repeat="data in MyData.collection track by $index" >
+      <li> {{ data }} </li>
+    </ul>
+  </section>
+  <script>
+    angular.module('YOUR_APP', [
+      'ngWebSocket' // you may also use 'angular-websocket' if you prefer
+    ])
+    //                          WebSocket works as well
+    .factory('MyData', function($websocket) {
+      // Open a WebSocket connection
+      var dataStream = $websocket('ws://website.com/data');
 
+      var collection = [];
 
-**Read more about dynamic rendering from these articles by [Google](https://developers.google.com/search/docs/guides/dynamic-rendering) and [Bing](https://blogs.bing.com/webmaster/october-2018/bingbot-Series-JavaScript,-Dynamic-Rendering,-and-Cloaking-Oh-My). Also you might want to watch this interesting talk at [Google I/O 2018](https://youtu.be/PFwUbgvpdaQ)**
+      dataStream.onMessage(function(message) {
+        collection.push(JSON.parse(message.data));
+      });
 
+      var methods = {
+        collection: collection,
+        get: function() {
+          dataStream.send(JSON.stringify({ action: 'get' }));
+        }
+      };
 
-
-## How does Rendora work?
-
-Rendora is listening by default to the port `3001` but can be changed using the config file; for every request coming from the frontend server or the outside world, there are some checks or filters that are tested against the headers and/or paths according to Rendora's configuration file to determine whether Rendora should just pass the initial HTML returned from the backend server or use headless Chrome to provide a server-side rendered HTML. To be more specific, for every request there are 2 paths:
-
-1. If the request is whitelisted as a candidate for SSR (i.e. a GET request that passes all user agent and path filters), Rendora instructs the headless Chrome instance to request the corresponding page, render it and return the response which contains the final server-side rendered HTML. You usually want to whitelist only web crawlers like GoogleBot, BingBot, etc...
-
-2. If the request isn't whitelisted (i.e. the request is not a GET request or doesn't pass any of the filters), Rendora will simply act as a transparent reverse HTTP proxy and just conveys requests and responses as they are. You usually want to blacklist real users in order to return the usual client-side rendered HTML coming from the backend server back to them.
-
-
-
-## Install and run Rendora
-
-### First, run a headless Chrome instance
-If Chrome/Chromium is installed in your system, you can run it using
-
-``` bash
-google-chrome --headless --remote-debugging-port=9222
+      return methods;
+    })
+    .controller('SomeController', function ($scope, MyData) {
+      $scope.MyData = MyData;
+    });
+  </script>
 ```
 
-_note:_ Mac users may have a `google-chrome: command not found` error. If that's the case, run the following command and repeat the previous step:
+## API
 
-```bash
-alias google-chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
+### Factory: `$websocket` (in module `ngWebSocket`)
+
+returns instance of $Websocket
+
+### Methods
+
+| name                                              | arguments                                                                                      | description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| $websocket <br />_constructor_ | url:String                                                                                     | Creates and opens a [WebSocket](http://mdn.io/API/WebSocket) instance. <br />`var ws = $websocket('ws://foo');`                                                                                                                                                                                                                                                                                                                                                                              |
+| send                                              | data:String,Object returns                                                                     | Adds data to a queue, and attempts to send if socket is ready. Accepts string or object, and will stringify objects before sending to socket.                                                                                                                                                                                                                                                                                                                                                                 |
+| onMessage                                         | callback:Function <br />options{filter:String,RegExp, autoApply:Boolean=true} | Register a callback to be fired on every message received from the websocket, or optionally just when the message's `data` property matches the filter provided in the options object. Each message handled will safely call `$rootScope.$digest()` unless `autoApply` is set to `false in the options. Callback gets called with a [MessageEvent](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent?redirectlocale=en-US&redirectslug=WebSockets%2FWebSockets_reference%2FMessageEvent) object. |
+| onOpen                                            | callback:Function                                                                              | Function to be executed each time a socket connection is opened for this instance.                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| onClose                                           | callback:Function                                                                              | Function to be executed each time a socket connection is closed for this instance.                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| onError                                           | callback:Function                                                                              | Function to be executed each time a socket connection has an Error for this instance.                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| close                                             | force:Boolean:_optional_                                                                       | Close the underlying socket, as long as no data is still being sent from the client. Optionally force close, even if data is still being sent, by passing `true` as the `force` parameter. To check if data is being sent, read the value of `socket.bufferedAmount`.                                                                                                                                                                                                                                         |
+
+### Properties
+| name               | type             | description                                                                                                                                                                                                                                                                                               |
+| ------------------ | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| socket             | window.WebSocket | [WebSocket](http://mdn.io/API/WebSocket) instance.                                                                                                                                                                                                                                                        |
+| sendQueue          | Array<function>  | Queue of `send` calls to be made on socket when socket is able to receive data. List is populated by calls to the `send` method, but this array can be spliced if data needs to be manually removed before it's been sent to a socket. Data is removed from the array after it's been sent to the socket. |
+| onOpenCallbacks    | Array<function>  | List of callbacks to be executed when the socket is opened, initially or on re-connection after broken connection. Callbacks should be added to this list through the `onOpen` method.                                                                                                                    |
+| onMessageCallbacks | Array<function>  | List of callbacks to be executed when a message is received from the socket. Callbacks should be added via the `onMessage` method.                                                                                                                                                                        |
+| onErrorCallbacks   | Array<function>  | List of callbacks to be executed when an error is received from the socket. Callbacks should be added via the `onError` method.                                                                                                                                                                           |
+| onCloseCallbacks   | Array<function>  | List of callbacks to be executed when the socket is closed. Callbacks should be added via the `onClose` method.                                                                                                                                                                                           |
+| readyState         | Number:readonly  | Returns either the readyState value from the underlying WebSocket instance, or a proprietary value representing the internal state of the lib, e.g. if the lib is in a state of re-connecting.                                                                                                            |
+| initialTimeout     | Number           | The initial timeout, should be set at the outer limits of expected response time for the service. For example, if your service responds in 1ms on average but in 10ms for 99% of requests, then set to 10ms.                                                                                              |
+| maxTimeout         | Number           | Should be as low as possible to keep your customers happy, but high enough that the system can definitely handle requests from all clients at that sustained rate.                                                                                                                                        |
+
+### CancelablePromise
+
+This type is returned from the `send()` instance method of $websocket, inherits from [$q.defer().promise](https://ng-click.com/$q).
+
+### Methods
+
+| name   | arguments                         | description                                                                                                                                                                                                                                                                                                                                        |
+| ------ | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| cancel |                                   | Alias to `deferred.reject()`, allows preventing an unsent message from being sent to socket for any arbitrary reason.                                                                                                                                                                                                                              |
+| then   | resolve:Function, reject:Function | Resolves when message has been passed to socket, presuming the socket has a `readyState` of 1. Rejects if the socket is hopelessly disconnected now or in the future (i.e. the library is no longer attempting to reconnect). All messages are immediately rejected when the library has determined that re-establishing a connection is unlikely. |
+
+
+### Service: `$websocketBackend` (in module `ngWebSocketMock`)
+
+Similar to [`httpBackend`](https://ng-click.com/$httpBackend) mock in AngularJS's `ngMock` module. You can use `ngWebSocketMock` to mock a websocket server in order to test your applications:
+
+```javascript
+    var $websocketBackend;
+
+    beforeEach(angular.mock.module('ngWebSocket', 'ngWebSocketMock');
+
+    beforeEach(inject(function (_$websocketBackend_) {
+      $websocketBackend = _$websocketBackend_;
+
+      $websocketBackend.mock();
+      $websocketBackend.expectConnect('ws://localhost:8080/api');
+      $websocketBackend.expectSend({data: JSON.stringify({test: true})});
+    }));
 ```
 
-or simply using docker
+### Methods
 
-``` bash
-docker run --tmpfs /tmp --net=host rendora/chrome-headless
+| name                           | arguments  | description                                                                    |
+| ------------------------------ | ---------- | ------------------------------------------------------------------------------ |
+| flush                          |            | Executes all pending requests                                                  |
+| expectConnect                  | url:String | Specify the url of an expected WebSocket connection                            |
+| expectClose                    |            | Expect "close" to be called on the WebSocket                                   |
+| expectSend                     | msg:String | Expectation of send to be called, with required message                        |
+| verifyNoOutstandingExpectation |            | Makes sure all expectations have been satisfied, should be called in afterEach |
+| verifyNoOutstandingRequest     |            | Makes sure no requests are pending, should be called in afterEach              |
+
+## Frequently asked questions
+
+ * *Q.*: What if the browser doesn't support WebSockets?
+ * *A.*: This module will not help; it does not have a fallback story for browsers that do not support WebSockets. Please check your browser target support [here](http://caniuse.com/#feat=websockets) and to include fallback support.
+
+## Development
+
+```shell
+$ npm install
+$ bower install
 ```
 
-*note:* the `tmpfs` flag is optional but it's recommended for performance reasons since `rendora/chrome-headless` runs with flag `--user-data-dir=/tmp`
+## Changelog
+[Changelog](https://github.com/gdi2290/angular-websocket/blob/master/CHANGELOG.md)
 
-### Then, run Rendora
+### Unit Tests
+`$ npm test` Run karma in Chrome, Firefox, and Safari
 
-you can build and run Rendora from source code, (**NOTE**: please read the [configuration manual](docs/configuration/) before running Rendora)
+### Manual Tests
 
-``` bash
-git clone https://github.com/rendora/rendora
-cd rendora
-# MAKE SURE YOU HAVE GO V1.11+ INSTALLED
-make build
-sudo make install
-rendora --config CONFIG_FILE.yaml
-```
+In the project root directory open `index.html` in the example folder or browserify example
 
-or simply using docker
+### Distribute
+`$ npm run dist` Builds files with uglifyjs
 
-``` bash
-docker run --net=host -v ./CONFIG_FILE.yaml:/etc/rendora/config.yaml rendora/rendora
-```
+### Support, Questions, or Feedback
+> Contact us anytime for anything about this repo or Angular 2
 
-## Documentation
-You can read the docs [here](https://rendora.co/docs/) or [here](docs)
-
-## Configuration
-Configuration is discussed in detail in docs [here](https://rendora.co/docs/configuration/) or [here](docs/configuration)
-
-### A minimal config file example
-```yaml
-target:
-    url: "http://127.0.0.1" # this is the base url addressed by the headless Chrome instance, it can be simply your website url
-backend:
-    url: "http://127.0.0.1:8000" # your backend server url
-
-filters:
-    userAgent: # .i.e. only whitelist useragents containing the keywords "bot", "slurp", "bing" or "crawler"
-        defaultPolicy: blacklist
-        exceptions:
-            keywords:
-                - bot
-                - slurp
-                - bing
-                - crawler
-```
-
-### A more customized config file
-
-```yaml
-listen:
-    address: 0.0.0.0
-    port: 3001
-cache:
-    type: redis
-    timeout: 6000
-    redis:
-        address: localhost:6379
-target:
-    url: "http://127.0.0.1" 
-backend:
-    url: "http://127.0.0.1:8000"
-headless:
-    waitAfterDOMLoad: 0
-    internal:
-      url: http://localhost:9222
-output:
-    minify: true
-filters:
-    userAgent:
-        defaultPolicy: blacklist
-        exceptions:
-            keywords:
-                - bot
-                - slurp
-                - bing
-                - crawler
-    paths:
-        defaultPolicy: whitelist
-        exceptions:
-            prefix:
-             - /users/
-```
+* [Slack: AngularClass](https://angularclass.com/slack-join)
+* [Gitter: angularclass/angular-websocket](https://gitter.im/AngularClass/angular-websocket)
+* [Twitter: @AngularClass](https://twitter.com/AngularClass)
 
 
-## FAQs
+## TODO
+ * Allow JSON if object is sent
+ * Allow more control over $digest cycle per WebSocket instance
+ * Add Angular interceptors
+ * Add .on(event)
+ * Include more examples of patterns for realtime Angular apps
+ * Allow for optional configuration object in $websocket constructor
+ * Add W3C Websocket support
+ * Add socket.io support
+ * Add SockJS support
+ * Add Faye support
+ * Add PubNub support ___
 
-### What is the difference between Rendora and Puppeteer?
+enjoy — **AngularClass** 
 
-[Puppeteer](https://github.com/GoogleChrome/puppeteer) is a great Node.js library which provides a generic high-level API to control headless Chrome. On the other hand, Rendora is a dynamic renderer that acts as a reverse HTTP proxy placed in front of your backend server to provide server-side rendering mainly to web crawlers in order to effortlessly improve SEO.
+<br /><br />
 
-
-### What is the difference between Rendora and Rendertron?
-[Rendertron](https://github.com/GoogleChrome/rendertron) is comparable to Rendora in the sense that they both aim to provide SSR using headless Chrome; however there are various differences that can make Rendora a much better choice:
-
-
-1. **Architecture**: Rendertron is a HTTP server that returns SSR'ed HTML back to the client. That means that your server must contain the necessary code to filter requests and asks rendertron to provide the SSR'ed HTML and then return it back to the original client. Rendora does all that automatically by acting as a reverse HTTP proxy in front of your backend.
-
-
-2. **Caching**: Rendora can be configured to use internal local store or Redis to cache SSR'ed HTML.
-3. **Performance**: In addition to caching, Rendora is able to skip fetching and rendering unnecessary content CSS, fonts, images, etc... which can substantially reduce the intial DOM load latency.
-4. **Development**: Rendertron is developed in Node.js while Rendora is a single binary written in Golang.
-5. **API and Metrics**: Rendora provides Prometheus metrics about SSR latencies and number of SSR'ed and total requests. Furthermore, Rendora provides a JSON rendering endpoint that contains body, status and headers of the SSR response by the headless Chrome instance.
-
-
-## Acknowledgements
-
-Many thanks to [@mafredri](https://github.com/mafredri) for his effort to create [cdp](https://github.com/mafredri/cdp), a great Chrome DevTools Protocols client in Golang.
+[![AngularClass](https://cloud.githubusercontent.com/assets/1016365/9863770/cb0620fc-5af7-11e5-89df-d4b0b2cdfc43.png  "Angular Class")](https://angularclass.com)
+## [AngularClass](https://angularclass.com)
+> Learn AngularJS, Angular 2, and Modern Web Development form the best. Looking for corporate Angular training, want to host us, or Angular consulting? patrick@angularclass.com
 
 
-
-Follow rendora news and releases on [Twitter](https://twitter.com/_rendora)
-
-George Badawi - 2018
+## License
+[MIT](https://github.com/angularclass/angular-websocket/blob/master/LICENSE)
