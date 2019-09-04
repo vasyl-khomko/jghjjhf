@@ -1,8 +1,8 @@
 <div align="center">
   <img src="https://raw.githubusercontent.com/scttcper/ngx-toastr/master/misc/documentation-assets/ngx-toastr-example.png" width="300" alt="Angular Toastr">
-  <br>
+  <br >
   <h1>ngx-toastr</h1>
-  <br>
+  <br >
   <a href="https://www.npmjs.org/package/ngx-toastr">
     <img src="https://badge.fury.io/js/ngx-toastr.svg" alt="npm">
   </a>
@@ -12,8 +12,8 @@
   <a href="https://codecov.io/github/scttcper/ngx-toastr">
     <img src="https://img.shields.io/codecov/c/github/scttcper/ngx-toastr.svg" alt="codecov">
   </a>
-  <br>
-  <br>
+  <br >
+  <br >
 </div>
 
 DEMO: https://ngx-toastr.netlify.com/
@@ -29,7 +29,6 @@ DEMO: https://ngx-toastr.netlify.com/
 - Output toasts to an optional target directive
 
 ## Dependencies
-
 Latest version available for each version of Angular
 
 | ngx-toastr   | Angular     |
@@ -37,7 +36,6 @@ Latest version available for each version of Angular
 | 6.4.1-beta.0 | 4.x         |
 | 8.10.2       | 5.x         |
 | 10.0.4       | 8.x 7.x 6.x |
-
 
 ## Install
 
@@ -136,7 +134,7 @@ Passed to `ToastrService.success/error/warning/info/show()`
 | extendedTimeOut   | number                          | 1000              | Time to close after a user hovers over toast                                                                                              |
 | disableTimeOut    | boolean                         | false             | Disable both timeOut and extendedTimeOut                                                                                                  |
 | easing            | string                          | 'ease-in'         | Toast component easing                                                                                                                    |
-| easeTime          | string \                       | number            | 300 | Time spent easing                                                                                                                   |
+| easeTime          | string \                       | number            | 300               | Time spent easing                                                                                                     |
 | enableHtml        | boolean                         | false             | Allow html in message                                                                                                                     |
 | progressBar       | boolean                         | false             | Show progress bar                                                                                                                         |
 | progressAnimation | `'decreasing' \| 'increasing'` | 'decreasing'      | Changes the animation of the progress bar.                                                                                                |
@@ -146,7 +144,6 @@ Passed to `ToastrService.success/error/warning/info/show()`
 | messageClass      | string                          | 'toast-message'   | Class inside toast on message                                                                                                             |
 | tapToDismiss      | boolean                         | true              | Close on click                                                                                                                            |
 | onActivateTick    | boolean                         | false             | Fires `changeDetectorRef.detectChanges()` when activated. Helps show toast from asynchronous events outside of Angular's change detection |
-
 
 #### Setting Individual Options
 
@@ -171,7 +168,6 @@ All [individual options](#individual-options) can be overridden in the global op
 | preventDuplicates       | boolean | false                              | Block duplicate messages                                                                                      |
 | countDuplicates         | boolean | false                              | Displays a duplicates counter (preventDuplicates must be true). Toast must have a title and duplicate message |
 | resetTimeoutOnDuplicate | boolean | false                              | Reset toast timeout on duplicate (preventDuplicates must be true)                                             |
-
 
 ##### iconClasses defaults
 
@@ -338,7 +334,7 @@ class AppModule {}
 
 ## FAQ
 
-1. ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked\ When opening a toast inside an angular lifecycle wrap it in setTimeout
+1.  ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked\ When opening a toast inside an angular lifecycle wrap it in setTimeout
 
 ```typescript
 ngOnInit() {
@@ -346,9 +342,9 @@ ngOnInit() {
 }
 ```
 
-2. Change default icons (check, warning sign, etc)\ Overwrite the css background-image https://github.com/scttcper/ngx-toastr/blob/master/src/lib/toastr.css
-3. How do I use this in an ErrorHandler? See: https://github.com/scttcper/ngx-toastr/issues/179
-4. How can I translate messages See: https://github.com/scttcper/ngx-toastr/issues/201
+2.  Change default icons (check, warning sign, etc)\ Overwrite the css background-image https://github.com/scttcper/ngx-toastr/blob/master/src/lib/toastr.css
+3.  How do I use this in an ErrorHandler? See: https://github.com/scttcper/ngx-toastr/issues/179
+4.  How can I translate messages See: https://github.com/scttcper/ngx-toastr/issues/201
 5. How to handle toastr click/tap action?
 
 ```ts
@@ -372,6 +368,6 @@ toasterClickedHandler() {
 
 MIT
 
-* * *
+---
 
 > GitHub [@scttcper](https://github.com/scttcper) &nbsp;&middot;&nbsp; Twitter [@scttcper](https://twitter.com/scttcper)
