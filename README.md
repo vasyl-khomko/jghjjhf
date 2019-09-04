@@ -1,158 +1,130 @@
-# jhipsterSampleApplication
+# :warning: Unmaintained
 
-This application was generated using JHipster 6.2.0, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v6.2.0](https://www.jhipster.tech/documentation-archive/v6.2.0).
+This project has been **archived** and is considered **outdated** and **unmaintained**.
 
-## Development
+With the massive rise of the CLI tools by each major JavaScript Web frameworks, it was become irrelevant to pursue the quest of being a competitive project scaffolder for modern Web project.
 
-Before you can build this project, you must install and configure the following dependencies on your machine:
+We officialy advise to use the coresponding CLI tools for the framework you use:
 
-1. [Node.js](https://nodejs.org/): We use Node to run a development web server and build the project. Depending on your system, you can install Node either from source or as a pre-packaged bundle.
+- [create-react-app](https://github.com/facebook/create-react-app) for [React](https://reactjs.org/)
+- [Vue CLI](https://cli.vuejs.org/) for [Vue.js](https://vuejs.org/)
+- [Angular CLI](https://cli.angular.io/) for [Angular](https://angular.io/)
 
-After installing Node, you should be able to run the following command to install development tools. You will only need to run this command when dependencies change in [package.json](package.json).
+Of course, we have some regrets regarding our users, Yeoman users and some goals we had with Fountain (like giving important tool choices to users, harmonizing projects configurations between frameworks...) but still, you can use official CLI tools with confidence as they are great project which went further for development experience and Web optimization.
 
-    npm install
-We use npm scripts and [Webpack](https://webpack.github.io/) as our build system.
+# Fountain Webapp Generator
+[![Build Status](https://travis-ci.org/FountainJS/generator-fountain-webapp.svg?branch=master)](https://travis-ci.org/FountainJS/generator-fountain-webapp) [![codecov](https://codecov.io/gh/FountainJS/generator-fountain-webapp/branch/master/graph/badge.svg)](https://codecov.io/gh/FountainJS/generator-fountain-webapp) [![Slack](http://slackin.fountainjs.io/badge.svg)](http://slackin.fountainjs.io/) [![OpenCollective Backers](https://opencollective.com/fountainjs/backers/badge.svg?color=blue)](#backers) [![OpenCollective Sponsors](https://opencollective.com/fountainjs/sponsors/badge.svg?color=blue)](#sponsors)
 
-Run the following commands in two separate terminals to create a blissful development experience where your browser auto-refreshes when files change on your hard drive.
+> This Yeoman generator allows you to start any Webapp with the best Developer Experience out of the box!
 
-    ./mvnw
-    npm start
+> No matter what framework or module management you want to use, we got you covered with a cutting edge working configuration.
 
-Npm is also used to manage CSS and JavaScript dependencies used in this application. You can upgrade dependencies by specifying a newer version in [package.json](package.json). You can also run `npm update` and `npm install` to manage dependencies. Add the `help` flag on any command to see how you can use it. For example, `npm help update`.
+> We use [Gulp 4](http://gulpjs.com/) as a task manager but we'll ask you questions about:
+- Framework: React, Angular 2, Angular 1, Vue 2
+- Modules management: Webpack, SystemJS, none
+- JS preprocessor: Babel, TypeScript, none
+- CSS preprocessor: Sass, Stylus, Less, none
 
-The `npm run` command will list all of the scripts available to run for this project.
+This generator is the entry point of the Yeoman Fountain generators for webapps. It can be considered as the v2 of [generator-gulp-angular](https://github.com/Swiip/generator-gulp-angular).
 
-### PWA Support
+## Generator Fountain Webapp structure
 
-JHipster ships with PWA (Progressive Web App) support, and it's disabled by default. One of the main components of a PWA is a service worker.
+To take profit of the best of the Yeoman infrastructure, we heavily relies on the composability natures of the generators.
 
-The service worker initialization code is commented out by default. To enable it, uncomment the following code in `src/main/webapp/index.html`:
+Thereby, each needs of your future application will be addressed by a dedicated Yeoman generator (each will be used depending of the options you selected or not).
 
-```html
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./service-worker.js').then(function() {
-      console.log('Service Worker Registered');
-    });
-  }
-</script>
+More informations in [DESIGN.md](http://fountainjs.io/doc/design).
+
+
+### Web framework layer
+This generators can be used directly to bypass the framework question.
+
+[![React](http://fountainjs.io/assets/imgs/react.png)](https://github.com/FountainJS/generator-fountain-react) [![Angular 1](http://fountainjs.io/assets/imgs/angular1.png)](https://github.com/FountainJS/generator-fountain-angular1) [![Angular 2](http://fountainjs.io/assets/imgs/angular2.png)](https://github.com/FountainJS/generator-fountain-angular2) [![Vue 2](http://fountainjs.io/assets/imgs/vue.png)](https://github.com/FountainJS/generator-fountain-vue)
+
+### Web tooling layer
+[![Gulp](http://fountainjs.io/assets/imgs/gulp.png)](https://github.com/FountainJS/generator-fountain-gulp) [![ESLint](http://fountainjs.io/assets/imgs/eslint.png)](https://github.com/FountainJS/generator-fountain-eslint) [![BrowserSync](http://fountainjs.io/assets/imgs/browsersync.png)](https://github.com/FountainJS/generator-fountain-browsersync) [![Karma](http://fountainjs.io/assets/imgs/karma.png)](https://github.com/FountainJS/generator-fountain-karma)
+
+### Module management layer
+[![Webpack](http://fountainjs.io/assets/imgs/webpack.png)](https://github.com/FountainJS/generator-fountain-webpack) [![SystemJS](http://fountainjs.io/assets/imgs/systemjs.png)](https://github.com/FountainJS/generator-fountain-systemjs) [![Bower](http://fountainjs.io/assets/imgs/bower.png)](https://github.com/FountainJS/generator-fountain-inject)
+
+
+### Usage
+
+### Requirement Node 6+ && NPM 3+
+This generator is targeted to be used with Node >= 6.0.0 and NPM => 3.0.0. You can check your version number with the command
+```
+node --version && npm --version
 ```
 
-Note: [Workbox](https://developers.google.com/web/tools/workbox/) powers JHipster's service worker. It dynamically generates the `service-worker.js` file.
+### Install
 
-### Managing dependencies
-For example, to add [Leaflet](http://leafletjs.com/) library as a runtime dependency of your application, you would run following command:
-
-    npm install --save --save-exact leaflet
-To benefit from TypeScript type definitions from [DefinitelyTyped](http://definitelytyped.org/) repository in development, you would run following command:
-
-    npm install --save-dev --save-exact @types/leaflet
-Then you would import the JS and CSS files specified in library's installation instructions so that [Webpack](https://webpack.github.io/) knows about them: Edit [src/main/webapp/app/vendor.ts](src/main/webapp/app/vendor.ts) file:
-
+##### Install required tools `yo`:
 ```
-import 'leaflet/dist/leaflet.js';
+npm install -g yo
 ```
 
-Edit [src/main/webapp/content/css/vendor.css](src/main/webapp/content/css/vendor.css) file:
-
+##### Install `generator-fountain-webapp`:
 ```
-@import '~leaflet/dist/leaflet.css';
-```
-
-Note: There are still a few other things remaining to do for Leaflet that we won't detail here.
-For further instructions on how to develop with JHipster, have a look at [Using JHipster in development](https://www.jhipster.tech/documentation-archive/v6.2.0/development/).
-
-### Using Angular CLI
-You can also use [Angular CLI](https://cli.angular.io/) to generate some custom client code.
-
-For example, the following command:
-
-    ng generate component my-component
-
-will generate few files:
-
-    create src/main/webapp/app/my-component/my-component.component.html
-    create src/main/webapp/app/my-component/my-component.component.ts
-    update src/main/webapp/app/app.module.ts
-
-## Building for production
-
-### Packaging as jar
-
-To build the final jar and optimize the jhipsterSampleApplication application for production, run:
-
-    ./mvnw -Pprod clean verify
-
-This will concatenate and minify the client CSS and JavaScript files. It will also modify `index.html` so it references these new files. To ensure everything worked, run:
-
-    java -jar target/*.jar
-
-Then navigate to [http://localhost:8080](http://localhost:8080) in your browser.
-Refer to [Using JHipster in production](https://www.jhipster.tech/documentation-archive/v6.2.0/production/) for more details.
-
-### Packaging as war
-
-To package your application as a war in order to deploy it to an application server, run:
-
-    ./mvnw -Pprod,war clean verify
-
-## Testing
-
-To launch your application's tests, run:
-
-    ./mvnw verify
-
-### Client tests
-Unit tests are run by [Jest](https://facebook.github.io/jest/) and written with [Jasmine](http://jasmine.github.io/2.0/introduction.html). They're located in [src/test/javascript/](src/test/javascript/) and can be run with:
-
-    npm test
-For more information, refer to the [Running tests page](https://www.jhipster.tech/documentation-archive/v6.2.0/running-tests/).
-
-### Code quality
-
-Sonar is used to analyse code quality. You can start a local Sonar server (accessible on http://localhost:9001) with:
-
-```
-docker-compose -f src/main/docker/sonar.yml up -d
+npm install -g generator-fountain-webapp
 ```
 
-You can run a Sonar analysis with using the [sonar-scanner](https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner) or by using the maven plugin.
 
-Then, run a Sonar analysis:
+### Run
 
+##### Create a new directory, and go into:
 ```
-./mvnw -Pprod clean verify sonar:sonar
-```
-
-If you need to re-run the Sonar phase, please be sure to specify at least the `initialize` phase since Sonar properties are loaded from the sonar-project.properties file.
-
-```
-./mvnw initialize sonar:sonar
+mkdir my-new-project && cd my-new-project
 ```
 
-or
-For more information, refer to the [Code quality page](https://www.jhipster.tech/documentation-archive/v6.2.0/code-quality/).
+##### Run `yo fountain-webapp`, and select desired technologies:
+```
+yo fountain-webapp
+```
+#### Use NPM scripts
 
-## Using Docker to simplify development (optional)
+- `npm run build` to build an optimized version of your application in /dist
+- `npm run serve` to launch a browser sync server on your source files
+- `npm run serve:dist` to launch a server on your optimized application
+- `npm run test` to launch your unit tests with Karma
+- `npm run test:auto` to launch your unit tests with Karma in watch mode
 
-You can use Docker to improve your JHipster development experience. A number of docker-compose configuration are available in the [src/main/docker](src/main/docker) folder to launch required third party services.
 
-For example, to start a mysql database in a docker container, run:
+#### Or Gulp tasks
 
-    docker-compose -f src/main/docker/mysql.yml up -d
+If you have [`gulp-cli`](https://www.npmjs.com/package/gulp-cli) installed in global packages you can use equivalent:
 
-To stop it and remove the container, run:
+- `gulp` or `gulp build`
+- `gulp serve`
+- `gulp serve:dist`
+- `gulp test`
+- `gulp test:auto`
 
-    docker-compose -f src/main/docker/mysql.yml down
+**If you don't have [`gulp-cli`](https://www.npmjs.com/package/gulp-cli) installed in global, you should have this error:**
+> /usr/local/lib/node_modules/gulp/bin/gulp.js:121 gulpInst.start.apply(gulpInst, toRun); TypeError: Cannot read property 'apply' of undefined
 
-You can also fully dockerize your application and all the services that it depends on. To achieve this, first build a docker image of your app by running:
+### Sub-generators
 
-    ./mvnw -Pprod verify jib:dockerBuild
+If you want to access sub-generators, you have to globally install one of the following generators:
+- [generator-fountain-react](https://github.com/FountainJS/generator-fountain-react)
+- [generator-fountain-angular2](https://github.com/FountainJS/generator-fountain-angular2)
+- [generator-fountain-angular1](https://github.com/FountainJS/generator-fountain-angular1)
+- [generator-fountain-vue](https://github.com/FountainJS/generator-fountain-vue)
 
-Then run:
+### [Start development](http://fountainjs.io/doc/usage/#use-npm-scripts)
 
-    docker-compose -f src/main/docker/app.yml up -d
-For more information refer to [Using Docker and Docker-Compose](https://www.jhipster.tech/documentation-archive/v6.2.0/docker-compose), this page also contains information on the docker-compose sub-generator (`jhipster docker-compose`), which is able to generate docker configurations for one or several JHipster applications.
+***
 
-## Continuous Integration (optional)
-To configure CI for your project, run the ci-cd sub-generator (`jhipster ci-cd`), this will let you generate configuration files for a number of Continuous Integration systems. Consult the [Setting up Continuous Integration](https://www.jhipster.tech/documentation-archive/v6.2.0/setting-up-ci/) page for more information.
+## Backers
+
+Support us with a monthly donation and help us continue our activities.
+[![Backers](https://opencollective.com/fountainjs/backers.svg)](https://opencollective.com/fountainjs#support)
+
+## Sponsors
+
+Become a sponsor and get your logo on our website fountainjs.io and on our README on Github with a link to your site.
+[![Sponsors](https://opencollective.com/fountainjs/sponsors.svg)](https://opencollective.com/fountainjs#support)
+
+## [Changelog](https://github.com/FountainJS/generator-fountain-webapp/releases)
+
+
+## [Contributing](http://fountainjs.io/doc/contributing)
