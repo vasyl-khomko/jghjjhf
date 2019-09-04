@@ -267,4 +267,5 @@ Merged from [here](https://github.com/fishme/awesome-ionic2-components).
 Are you Italian?
 ======
 
-**Join** the italian [Ionic Framework community](https://www.facebook.com/groups/380772785422827/)! ![](ionicitalia.jpg)
+**Join** the italian [Ionic Framework community](https://www.facebook.com/groups/380772785422827/)!
+![](ionicitalia.jpg)
