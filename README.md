@@ -1,309 +1,145 @@
-# Tide
+# Irony-Mode
 
-[![Build Status](https://api.travis-ci.org/ananthakumaran/tide.svg?branch=master)](https://travis-ci.org/ananthakumaran/tide)
+## A C/C++ minor mode powered by \[libclang\]\[libclang-ref\]
 
-*TypeScript Interactive Development Environment for Emacs*
+`irony-mode` is an Emacs minor-mode that aims at improving the editing experience for the C, C++ and Objective-C languages. It works by using a combination of an Emacs package and a C++ program (`irony-server`) exposing \[libclang\]\[libclang-ref\].
 
-[screencast](http://i.imgur.com/jEwgPsd.gif)
+**Features:**
 
-### Installation
+* Code completion:
+  * With Emacs' built-in `completion-at-point-functions`
+  * With \[company-mode\]\[company-ref\]'s backend: \[company-irony\]\[company-irony-ref\]
 
-* Install [node.js](https://nodejs.org/) v0.12.0 or greater.
-* Make sure [tsconfig.json](http://www.typescriptlang.org/docs/handbook/tsconfig-json.html) or [jsconfig.json](https://code.visualstudio.com/docs/languages/jsconfig) is present in the root folder of the project.
-* Tide is available in [melpa](http://melpa.org/#/tide). You can install tide via package-install <kbd>M-x package-install [ret] tide</kbd>
+* Syntax checking:
+  * With \[flycheck\]\[flycheck-ref\]'s checker: \[flycheck-irony\]\[flycheck-irony-ref\]
 
-### Configuration
+* `eldoc` integration: \[irony-eldoc\]\[irony-eldoc-ref\]
 
-#### TypeScript
-```elisp
-(defun setup-tide-mode ()
-  (interactive)
-  (tide-setup)
-  (flycheck-mode +1)
-  (setq flycheck-check-syntax-automatically '(save mode-enabled))
-  (eldoc-mode +1)
-  (tide-hl-identifier-mode +1)
-  ;; company is an optional dependency. You have to
-  ;; install it separately via package-install
-  ;; `M-x package-install [ret] company`
-  (company-mode +1))
+* \[counsel\]\[counsel-ref\] integration: https://oremacs.com/2017/03/28/emacs-cpp-ide/
 
-;; aligns annotation to the right hand side
-(setq company-tooltip-align-annotations t)
+## Dependencies
 
-;; formats the buffer before saving
-(add-hook 'before-save-hook 'tide-format-before-save)
+### Elisp dependencies
 
-(add-hook 'typescript-mode-hook #'setup-tide-mode)
-```
+These dependencies will be installed automatically when using the [standard installation](#installation) procedure described below.
 
-#### Format options
-
-Format options can be specified in multiple ways.
-
-* via elisp
-
-```elisp
-(setq tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
-```
-
-* via tsfmt.json (should be present in the root folder along with tsconfig.json)
-```json
-{
-  "indentSize": 4,
-  "tabSize": 4,
-  "insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces": false,
-  "placeOpenBraceOnNewLineForFunctions": false,
-  "placeOpenBraceOnNewLineForControlBlocks": false
-}
-```
+| Package                  | Comment                                                                          |
+| ------------------------ | -------------------------------------------------------------------------------- |
+| \[cl-lib\]\[cl-lib-ref\] | Built-in since Emacs 24.3                                                        |
+| \[json\]\[json-el-ref\]  | Built-in since Emacs 23.1                                                        |
+| \[YASnippet\]\[yas-ref\] | Optional. May be used to provide post-completion expansion of function arguments |
 
 
-Check [here](https://github.com/Microsoft/TypeScript/blob/v3.3.1/src/server/protocol.ts#L2858-L2890) for the full list of supported format options.
+### Irony-Server prerequisites
+
+`irony-server` provides the \[libclang\]\[libclang-ref\] interface to `irony-mode`. It uses a simple protocol based on S-expression. This server, written in C++ and requires the following packages to be installed on your system:
+
+* \[CMake\]\[cmake-ref\] >= 2.8.3
+* \[libclang\]\[libclang-ref\]
 
 
-#### TSX
-```elisp
-(require 'web-mode)
-(add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
-(add-hook 'web-mode-hook
-          (lambda ()
-            (when (string-equal "tsx" (file-name-extension buffer-file-name))
-              (setup-tide-mode))))
-;; enable typescript-tslint checker
-(flycheck-add-mode 'typescript-tslint 'web-mode)
-```
+## Installation
 
-Tide also provides support for editing js & jsx files. Tide checkers `javascript-tide` and `jsx-tide` are not enabled by default for js & jsx files. It can be enabled by setting [`flycheck-checker`](http://www.flycheck.org/en/latest/user/syntax-checkers.html#variable-flycheck-checker)
+The recommended way to install `irony-mode` and its dependencies is to use a package manager.
 
-#### JavaScript
+* Using [MELPA](http://melpa.milkbox.net/)
+  
+        M-x package-install RET irony RET
 
-Create `jsconfig.json` in the root folder of your project. `jsconfig.json` is `tsconfig.json` with `allowJs` attribute set to true.
+* Using `apt` on Debian ≥10 and derivatives
+  
+        sudo apt install elpa-irony
 
-```json
-{
-  "compilerOptions": {
-    "target": "es2017",
-    "allowSyntheticDefaultImports": true,
-    "noEmit": true,
-    "checkJs": true,
-    "jsx": "react",
-    "lib": [ "dom", "es2017" ]
-  }
-}
+## Configuration
+
+~~~el
+(add-hook 'c++-mode-hook 'irony-mode)
+(add-hook 'c-mode-hook 'irony-mode)
+(add-hook 'objc-mode-hook 'irony-mode)
+
+(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+~~~
+
+
+## Windows considerations
+
+`irony-mode` should work fine on Windows but there are some things to take care of first.
+
+* `libclang.dll` is expected to be available in the `PATH` or in Emacs' `exec-path`.
+
+* **Emacs >= 24.4 is required.** A bug in previous versions makes irony unuseable (Emacs bug #18420).
+
+* `w32-pipe-read-delay` default value of `50` should be changed. This should not cause any issue on today's version of Windows. The default value of `50` may be lowered in mainline Emacs in future versions, until then, I suggest to set it to `0`.
+
+* `w32-pipe-buffer-size`, introduced by Emacs 25, can be set to a larger value than the default to improve `irony-server` communication performances (c.f. https://github.com/Sarcasm/irony-mode/issues/321). The variable to customize is `irony-server-w32-pipe-buffer-size`.
+
+
+Windows configuration tweaks to add to your Emacs configuration:
+
+```el
+;; Windows performance tweaks
+;;
+(when (boundp 'w32-pipe-read-delay)
+  (setq w32-pipe-read-delay 0))
+;; Set the buffer size to 64K on Windows (from the original 4K)
+(when (boundp 'w32-pipe-buffer-size)
+  (setq irony-server-w32-pipe-buffer-size (* 64 1024)))
 ```
 
 
-```elisp
-(add-hook 'js2-mode-hook #'setup-tide-mode)
-;; configure javascript-tide checker to run after your default javascript checker
-(flycheck-add-next-checker 'javascript-eslint 'javascript-tide 'append)
-```
+## Usage
 
-#### JSX
-```elisp
-(require 'web-mode)
-(add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
-(add-hook 'web-mode-hook
-          (lambda ()
-            (when (string-equal "jsx" (file-name-extension buffer-file-name))
-              (setup-tide-mode))))
-;; configure jsx-tide checker to run after your default jsx checker
-(flycheck-add-mode 'javascript-eslint 'web-mode)
-(flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
-```
+On the first run, `irony-mode` will ask you to build and install `irony-server`. To do so, type `M-x irony-install-server RET`.
 
-#### Use Package
-```elisp
-(use-package tide
-  :ensure t
-  :after (typescript-mode company flycheck)
-  :hook ((typescript-mode . tide-setup)
-         (typescript-mode . tide-hl-identifier-mode)
-         (before-save . tide-format-before-save)))
-```
+To tune `irony-mode`, use `customize`:
 
-### Commands
+    M-x customize-group RET irony RET
 
-| Keyboard shortcuts        | Description                                                                                    |
-| ------------------------- | ---------------------------------------------------------------------------------------------- |
-| <kbd>M-.</kbd> | Jump to the definition of the symbol at point. With a prefix arg, Jump to the type definition. |
-| <kbd>M-,</kbd> | Return to your pre-jump position.                                                              |
+In order to provide context sensitive and accurate information, `irony-mode` needs to know about the compiler flags used to parse the current buffer. The best way to achieve this is to use a [Compilation Database](#compilation-database).
 
-<kbd>M-x tide-restart-server</kbd> Restart tsserver. This would come in handy after you edit tsconfig.json or checkout a different branch.
 
-<kbd>M-x tide-documentation-at-point</kbd> Show documentation for the symbol at point.
+## Compilation Database
 
-<kbd>M-x tide-references</kbd> List all references to the symbol at point in a buffer. References can be navigated using <kbd>n</kbd>
-and <kbd>p</kbd>. Press <kbd>enter</kbd> to open the file.
+In order to work correctly, `irony-mode` needs to know the compile flags. `irony-cdb` aims to provide *as automatic as possible* compile flags discovery, with minimal user input.
 
-<kbd>M-x tide-project-errors</kbd> List all errors in the project. Errors can be navigated using <kbd>n</kbd> and
-<kbd>p</kbd>. Press <kbd>enter</kbd> to open the file.
+Please refer to `irony-cdb-autosetup-compile-options` and `irony-cdb-compilation-databases`.
 
-<kbd>M-x tide-error-at-point</kbd> Show the details of the error at point.
+Right now `irony-cdb` supports the following compilation databases:
 
-<kbd>M-x tide-rename-symbol</kbd> Rename all occurrences of the symbol at point.
+* \[JSON Compilation Database\]\[clang-compile-db-ref\] - A JSON formatted file generated by various build tools. The file is named `compile_commands.json`, it lists the compile options associated to each file in the project.
 
-<kbd>M-x tide-rename-file</kbd> Rename current file and all it's references in other files.
+  * \[CMake >= 2.8.5\]\[cmake-ref\] will generate a compilation database in the build directory when issuing the following command `cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON <...>`.
 
-<kbd>M-x tide-format</kbd> Format the current region or buffer.
+  * \[ninja >= 1.2\]\[ninja-ref\] will generate a JSON Compilation Database when using the `compdb` tool.
 
-<kbd>M-x tide-fix</kbd> Apply code fix for the error at point. When invoked with a prefix arg, apply code fix for all the errors in the file that are similar to the error at point.
+  * \[Bear\]\[bear-ref\] generates a JSON Compilation Database file by "monitoring" the build of a project. The typical usage for a `make`-based project will be `bear -- make -B`.
 
-<kbd>M-x tide-add-tslint-disable-next-line</kbd> If the point is on one or more tslint errors, add a 
+* \[.clang_complete\]\[clang_complete-doc-ref\] - A file at the root of your project containing the compilation flags, one per line. This is compatible with the with plugin \[Rip-Rip/clang_complete\]\[clang_complete-vim-ref\]. If you want to generate the `.clang_complete` automatically, take a look at the \[cc_args.py documentation\]\[cc_args-py-doc-ref\].
 
-`tslint:disable-next-line` flag on the previous line to silence the errors. Or, if a flag already exists on the previous line, modify the flag to silence the errors.
+More detailed information on compilation database is available here:
 
-<kbd>M-x tide-refactor</kbd> Refactor code at point or current region.
+* https://sarcasm.github.io/notes/dev/compilation-database.html
 
-<kbd>M-x tide-jsdoc-template</kbd> Insert JSDoc comment template at point.
+## FAQ
 
-<kbd>M-x tide-verify-setup</kbd> Show the version of tsserver.
+__It's slow, why?__
 
-<kbd>M-x tide-organize-imports</kbd> Organize imports in the file.
+A bug in old version of Clang (at least '3.1-8') caused the completion to fail on the standard library types. To eliminate this bug an optimisation has been disabled in the parsing of a translation unit. This result in a slower parsing.
 
-<kbd>M-x tide-list-servers</kbd> List the `tsserver` processes launched by tide.
+This only affect old versions of Clang (< 3.2), it is suggested to update your libclang installation if you want to take advantage of the optimizations.
 
-### Features
+__libclang.so: cannot open shared object file...__
 
-* ElDoc
-* Auto complete
-* Flycheck
-* Jump to definition, Jump to type definition
-* Find occurrences
-* Rename symbol
-* Imenu
-* Compile On Save
-* Highlight Identifiers
-* Code Fixes
-* Code Refactor
-* Organize Imports
+Compiling `irony-server` succeed but you have the following message when you try to run the `irony-server` executable:
 
-### Debugging
+    'irony-server: error while loading shared libraries: libclang.so: cannot open shared object file: No such file or directory
 
-![architecture](https://github.com/ananthakumaran/tide/raw/master/doc/architecture.mmd.png)
+When `libclang` is installed in a non-standard location (one that is missing from the path list of the dynamic loader, see *ld.so.conf*) you can tell CMake to use the \[rpath\]\[rpath-ref\] when installing the target `irony-server`. To enable rpath in CMake use the following command:
 
-Tide uses [tsserver](https://github.com/Microsoft/TypeScript/wiki/Standalone-Server-%28tsserver%29) as the backend for most of the features. It writes out a comprehensive log file which can be captured by setting `tide-tsserver-process-environment` variable.
+    cmake -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON <args...>
 
-```lisp
-(setq tide-tsserver-process-environment '("TSS_LOG=-level verbose -file /tmp/tss.log"))
-```
+If you're running OS X, you can also use `install_name_tool` to explicitly tell `irony-server` where an appropriate version of `libclang.dylib` lives. For example, Homebrew (with `brew install llvm --with-clang`) will install a `libclang.dylib` library at `/usr/local/opt/llvm/lib/libclang.dylib`; you can instruct `irony-server` to use this with something like:
 
-### FAQ?
+    install_name_tool -change @rpath/libclang.dylib /usr/local/opt/llvm/lib/libclang.dylib irony-server
 
-**How do I configure tide to use a specific version of TypeScript compiler?**
-
-For TypeScript 2.0 and above, you can customize the `tide-tsserver-executable` variable. For example
-```lisp
-(setq tide-tsserver-executable "node_modules/typescript/bin/tsserver")
-```
-
-Sadly, this won't work for TypeScript < 2.0. You can clone the repo locally and checkout the old version though.
-
-### Custom Variables
-
-##### tide-sync-request-timeout `2`
-
-The number of seconds to wait for a sync response.
-
-##### tide-tsserver-process-environment `'nil`
-
-List of extra environment variables to use when starting tsserver.
-
-##### tide-tsserver-executable `nil`
-
-Name of tsserver executable to run instead of the bundled tsserver.
-
-This may either be an absolute path or a relative path. Relative paths are resolved against the project root directory.
-
-Note that this option only works with TypeScript version 2.0 and above.
-
-##### tide-tscompiler-executable `nil`
-
-Name of tsc executable.
-
-This may either be an absolute path or a relative path. Relative paths are resolved against the project root directory.
-
-##### tide-node-executable `"node"`
-
-Name or path of the node executable binary file.
-
-##### tide-post-code-edit-hook `nil`
-
-Hook run after code edits are applied in a buffer.
-
-##### tide-sort-completions-by-kind `nil`
-
-Whether completions should be sorted by kind.
-
-##### tide-format-options `'nil`
-
-Format options plist.
-
-##### tide-user-preferences `'(:includeCompletionsForModuleExports t :includeCompletionsWithInsertText t :allowTextChangesInNewFiles t)`
-
-User preference plist used on the configure request.
-
-Check https://github.com/Microsoft/TypeScript/blob/17eaf50b73c1355d2fd15bdc3912aa64a73483dd/src/server/protocol.ts#L2684 for the full list of available options.
-
-##### tide-disable-suggestions `nil`
-
-Disable suggestions.
-
-If set to non-nil, suggestions will not be shown in flycheck errors and tide-project-errors buffer.
-
-##### tide-completion-ignore-case `nil`
-
-CASE will be ignored in completion if set to non-nil.
-
-##### tide-completion-detailed `nil`
-
-Completion dropdown will contain detailed method information if set to non-nil.
-
-##### tide-completion-enable-autoimport-suggestions `t`
-
-Whether to include external module exports in completions.
-
-##### tide-navto-item-filter `#'tide-navto-item-filter-default`
-
-The filter for items returned by tide-nav. Defaults to class, interface, type, enum
-
-##### tide-jump-to-definition-reuse-window `t`
-
-Reuse existing window when jumping to definition.
-
-##### tide-imenu-flatten `nil`
-
-Imenu index will be flattened if set to non-nil.
-
-##### tide-allow-popup-select `'(code-fix refactor)`
-
-The list of commands where popup selection is allowed.
-
-##### tide-always-show-documentation `nil`
-
-Show the documentation window even if only type information is available.
-
-##### tide-server-max-response-length `102400`
-
-Maximum allowed response length from tsserver. Any response greater than this would be ignored.
-
-##### tide-tsserver-locator-function `#'tide-tsserver-locater-npmlocal-projectile-npmglobal`
-
-Function used by tide to locate tsserver.
-
-##### tide-default-mode `"TS"`
-
-The default mode to open buffers not backed by files (e.g. Org source blocks) in.
-
-##### tide-recenter-after-jump `t`
-
-Recenter buffer after jumping to definition
-
-##### tide-filter-out-warning-completions `nil`
-
-Completions whose `:kind` property is "warning" will be filtered out if set to non-nil. This option is useful for Javascript code completion, because tsserver often returns a lot of irrelevant completions whose `:kind` property is "warning" for Javascript code. You can fix this behavior by setting this variable to non-nil value for Javascript buffers using `setq-local` macro.
-
-##### tide-hl-identifier-idle-time `0.5`
-
-How long to wait after user input before highlighting the current identifier.
+[ac-irony-ref]: https://github.com/Sarcasm/ac-irony "AC Irony" [ac-ref]: https://github.com/auto-complete/auto-complete "Auto Complete" [bear-ref]: https://github.com/rizsotto/Bear "Bear" [cc_args-py-doc-ref]: https://github.com/Rip-Rip/clang_complete/blob/c8673142759b87316265eb0edd1f620196ec1fba/doc/clang_complete.txt#L270 "cc_args.py documentation" [cl-lib-ref]: http://elpa.gnu.org/packages/cl-lib.html "cl-lib" [clang-compile-db-ref]: http://clang.llvm.org/docs/JSONCompilationDatabase.html "Clang: JSONCompilationDatabase" [clang_complete-doc-ref]: https://github.com/Rip-Rip/clang_complete/blob/c8673142759b87316265eb0edd1f620196ec1fba/doc/clang_complete.txt#L55 ".clang_complete" [clang_complete-vim-ref]: https://github.com/Rip-Rip/clang_complete "clang_complete Vim plugin" [cmake-ref]: http://www.cmake.org "CMake" [counsel-ref]: https://github.com/abo-abo/swiper#counsel "Counsel on Github" [company-irony-ref]: https://github.com/Sarcasm/company-irony "Company Irony" [company-ref]: https://github.com/company-mode/company-mode "Company-Mode" [flycheck-irony-ref]: https://github.com/Sarcasm/flycheck-irony "Flycheck Irony" [flycheck-ref]: http://www.flycheck.org "Flycheck -- Modern Emacs syntax checking" [irony-eldoc-ref]: https://github.com/ikirill/irony-eldoc "irony-eldoc -- irony-mode support for eldoc-mode" [json-el-ref]: http://edward.oconnor.cx/2006/03/json.el "Introducing json.el" [libclang-ref]: http://clang.llvm.org/doxygen/group__CINDEX.html "libclang: C Interface to Clang" [ninja-ref]: https://ninja-build.org "Ninja" [rpath-ref]: http://en.wikipedia.org/wiki/Rpath "rpath Wikipedia article" [yas-ref]: https://github.com/capitaomorte/yasnippet "YASnippet"
