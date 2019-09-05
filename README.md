@@ -1,1411 +1,618 @@
-# Ngx-restangular. Maintained by [2muchcoffee](https://2muchcoffee.com/).
-
-This project is the follow-up of the [Restangular](https://github.com/mgonto/restangular/). Ngx-restangular is an Angular 2+ service that simplifies common GET, POST, DELETE, and UPDATE requests with a minimum of client code. It's a perfect fit for any WebApp that consumes data from a RESTful API.
-
-# Demo
-
-You can check post about using ngx-restangular with [restdb.io](https://restdb.io/) service in [simple TODO Application](http://blog.2muchcoffee.com/angular_todo_application_with_ng2-restangular_and_restdb-io/)
-
-# Current stage
-
-Ngx-restangular almost all functionality was transferred from the Restangular. We are open to any cooperation in terms of its further development.
-
-# Renaming project from ng2-restangular to ngx-restangular
-
-This project was renamed from **ng2-restangular** to **ngx-restangular** due to implementation of Semantic Versioning by Angular Core Team. NPM name has also changed, you can install actual version of the project with `npm install ngx-restangular`.
-
-# Table of contents
-
-- [How do I add this to my project in angular 5+?](#how-do-i-add-this-to-my-project-in-angular-5)
-- [How do I add this to my project in angular 4?](#how-do-i-add-this-to-my-project-in-angular-4)
-- [How do I add this to my project in angular 2?](#how-do-i-add-this-to-my-project-in-angular-2)
-
-- [Dependencies](#dependencies)
-- [Starter Guide](#starter-guide)
-  - [Quick configuration for Lazy Readers](#quick-configuration-for-lazy-readers)
-  - [Using Restangular](#using-restangular)
-    - [Creating Main Restangular object](#creating-main-restangular-object)
-    - [Lets Code with Observables!](#lets-code-with-observables)
-    - [Here is Example of code with using promises!](#here-is-example-of-code-with-using-promises)
-  - [Configuring Restangular](#configuring-restangular)
-    - [Properties](#properties)
-      - [withConfig](#withconfig)
-      - [setBaseUrl](#setbaseurl)
-      - [setExtraFields](#setextrafields)
-      - [setParentless](#setparentless)
-      - [addElementTransformer](#addelementtransformer)
-      - [setTransformOnlyServerElements](#settransformonlyserverelements)
-      - [setOnElemRestangularized](#setonelemrestangularized)
-      - [addResponseInterceptor](#addresponseinterceptor)
-      - [addFullRequestInterceptor](#addfullrequestinterceptor)
-      - [addErrorInterceptor](#adderrorinterceptor)
-      - [setRestangularFields](#setrestangularfields)
-      - [setMethodOverriders](#setmethodoverriders)
-      - [setDefaultRequestParams](#setdefaultrequestparams)
-      - [setFullResponse](#setfullresponse)
-      - [setDefaultHeaders](#setdefaultheaders)
-      - [setRequestSuffix](#setrequestsuffix)
-      - [setUseCannonicalId](#setusecannonicalid)
-      - [setPlainByDefault](#setplainbydefault)
-      - [setEncodeIds](#setencodeids)
-    - [Accessing configuration](#accessing-configuration)
-    - [How to configure them globally](#how-to-configure-them-globally)
-      - [Configuring in the AppModule](#configuring-in-the-appmodule)
-      - [Configuring in the AppModule with Dependency Injection applied](#configuring-in-the-appmodule-with-dependency-injection-applied)
-    - [How to create a Restangular service with a different configuration from the global one](#how-to-create-a-restangular-service-with-a-different-configuration-from-the-global-one)
-    - [Decoupled Restangular Service](#decoupled-restangular-service)
-  - [Methods description](#methods-description)
-    - [Restangular methods](#restangular-methods)
-    - [Element methods](#element-methods)
-    - [Collection methods](#collection-methods)
-    - [Custom methods](#custom-methods)
-  - [Copying elements](#copying-elements)
-  - [Using values directly in templates with Observables](#using-values-directly-in-templates-with-observables)
-  - [URL Building](#url-building)
-  - [Creating new Restangular Methods](#creating-new-restangular-methods)
-  - [Adding Custom Methods to Collections](#adding-custom-methods-to-collections)
-    - [Example:](#example)
-  - [Adding Custom Methods to Models](#adding-custom-methods-to-models)
-    - [Example:](#example-1)
-- [FAQ](#faq)
-    - [How can I handle errors?](#how-can-i-handle-errors)
-   - [I need to send Authorization token in EVERY Restangular request, how can I do this?](#i-need-to-send-authorization-token-in-every-restangular-request-how-can-i-do-this)
-    - [I need to send one header in EVERY Restangular request, how can I do this?](#i-need-to-send-one-header-in-every-restangular-request-how-can-i-do-this)
-    - [How can I send a delete WITHOUT a body?](#how-can-i-send-a-delete-without-a-body)
-    - [I use Mongo and the ID of the elements is _id not id as the default. Therefore requests are sent to undefined routes](#i-use-mongo-and-the-id-of-the-elements-is-_id-not-id-as-the-default-therefore-requests-are-sent-to-undefined-routes)
-    - [What if each of my models has a different ID name like CustomerID for Customer](#what-if-each-of-my-models-has-a-different-id-name-like-customerid-for-customer)
-    - [How can I send files in my request using Restangular?](#how-can-i-send-files-in-my-request-using-restangular)
-    - [How do I handle CRUD operations in a List returned by Restangular?](#how-do-i-handle-crud-operations-in-a-list-returned-by-restangular)
-    - [Removing an element from a collection, keeping the collection restangularized](#removing-an-element-from-a-collection-keeping-the-collection-restangularized)
-    - [How can I access the unrestangularized element as well as the restangularized one?](#how-can-i-access-the-unrestangularized-element-as-well-as-the-restangularized-one)
-    - [How can add withCredentials params to requests?](#how-can-add-withcredentials-params-to-requests)
-- [Server Frameworks](#server-frameworks)
-- [Contributing](#contributing)
-- [License](#license)
-
-**[Back to top](#table-of-contents)**
-
-
-# How do I add this to my project in angular 5+?
-
-You can download this by npm and running `npm install ngx-restangular`. This will install latest version of ngx-restangular (v.2.0.0).
-
-**[Back to top](#table-of-contents)**
-
-
-# How do I add this to my project in angular 4?
-
-You can download this by npm and running `npm install --save ngx-restangular@1.0.13`
-
-Versions from 1.0.14 to 1.1.4 are deprecated. Npm warns you after their installation. Those versions would be removed.
-
-**[Back to top](#table-of-contents)**
-
-
-# How do I add this to my project in angular 2?
-
-You can download this by npm and running `npm install ng2-restangular`
-
-**[Back to top](#table-of-contents)**
-
-# Dependencies
-
-Restangular depends on Angular 2+ and Lodash.
-
-**[Back to top](#table-of-contents)**
-
-# Starter Guide
-
-## Quick Configuration (For Lazy Readers)
-This is all you need to start using all the basic Restangular features.
-
-<pre><code class="javascript">import { NgModule } from '@angular/core';
-import { AppComponent } from './app.component';
-import { RestangularModule, Restangular } from 'ngx-restangular';
-
-// Function for setting the default restangular configuration
-export function RestangularConfigFactory (RestangularProvider) {
-  RestangularProvider.setBaseUrl('http://api.restngx.local/v1');
-  RestangularProvider.setDefaultHeaders({'Authorization': 'Bearer UDXPx-Xko0w4BRKajozCVy20X11MRZs1'});
-}
-
-// AppModule is the main entry point into Angular2 bootstraping process
-@NgModule({
-  bootstrap: [ AppComponent ],
-  declarations: [
-    AppComponent,
-  ],
-  imports: [
-    // Importing RestangularModule and making default configs for restanglar
-    RestangularModule.forRoot(RestangularConfigFactory),
-  ]
-})
-export class AppModule {
-}
-
-// later in code ...
-
-@Component({
-  ...
-})
-export class OtherComponent {
-  constructor(private restangular: Restangular) {
-  }
-
-  ngOnInit() {
-    // GET http://api.test.local/v1/users/2/accounts
-    this.restangular.one('users', 2).all('accounts').getList();
-  }
-</code></pre>
-**[Back to top](#table-of-contents)**
-
-## Using Restangular
-
-### Creating Main Restangular object
-
-There are 3 ways of creating a main Restangular object. The first one and most common one is by stating the main route of all requests. The second one is by stating the main route and object of all requests.
-
-<pre><code class="javascript">// Only stating main route
-Restangular.all('accounts')
-
-// Stating main object
-Restangular.one('accounts', 1234)
-
-// Gets a list of all of those accounts
-Restangular.several('accounts', 1234, 123, 12345);
-</code></pre>
-
-**[Back to top](#table-of-contents)**
-
-### Lets Code with Observables!
-
-Now that we have our main Object let's start playing with it.
-
-<pre><code class="javascript">// AppModule is the main entry point into Angular2 bootstraping process
-@NgModule({
-  bootstrap: [ AppComponent ],
-  declarations: [
-    AppComponent,
-  ],
-  imports: [
-    // Importing RestangularModule
-    RestangularModule,
-  ]
-})
-export class AppModule {
-}
-
-@Component({
-  ...
-})
-export class OtherComponent {
-  allAccounts;
-  accounts;
-  account;
-
-  constructor(private restangular: Restangular) {
-  }
-
-  ngOnInit() {
-    // First way of creating a this.restangular object. Just saying the base URL
-    let baseAccounts = this.restangular.all('accounts');
-
-    // This will query /accounts and return a observable.
-    baseAccounts.getList().subscribe(accounts =&gt; {
-      this.allAccounts = accounts;
-    });
-
-
-    let newAccount = {name: "Gonto's account"};
-
-    // POST /accounts
-    baseAccounts.post(newAccount);
-
-    // GET to http://www.google.com/ You set the URL in this case
-    this.restangular.allUrl('googlers', 'http://www.google.com/').getList();
-
-    // GET to http://www.google.com/1 You set the URL in this case
-    this.restangular.oneUrl('googlers', 'http://www.google.com/1').get();
-
-    // You can do RequestLess "connections" if you need as well
-
-    // Just ONE GET to /accounts/123/buildings/456
-    this.restangular.one('accounts', 123).one('buildings', 456).get();
-
-    // Just ONE GET to /accounts/123/buildings
-    this.restangular.one('accounts', 123).getList('buildings');
-
-    // Here we use Observables
-    // GET /accounts
-    let baseAccounts$ = baseAccounts.getList().subscribe(accounts =&gt; {
-      // Here we can continue fetching the tree :).
-
-      let firstAccount = accounts[0];
-      // This will query /accounts/123/buildings considering 123 is the id of the firstAccount
-      let buildings = firstAccount.getList("buildings");
-
-      // GET /accounts/123/places?query=param with request header: x-user:mgonto
-      let loggedInPlaces = firstAccount.getList("places", {query: 'param'}, {'x-user': 'mgonto'});
-
-      // This is a regular JS object, we can change anything we want :)
-      firstAccount.name = "Gonto";
-
-      // If we wanted to keep the original as it is, we can copy it to a new element
-      let editFirstAccount = this.restangular.copy(firstAccount);
-      editFirstAccount.name = "New Name";
-
-
-      // PUT /accounts/123. The name of this account will be changed from now on
-      firstAccount.put();
-      editFirstAccount.put();
-
-      // PUT /accounts/123. Save will do POST or PUT accordingly
-      firstAccount.save();
-
-      // DELETE /accounts/123 We don't have first account anymore :(
-      firstAccount.remove();
-
-    }, () =&gt; {
-      alert("Oops error from server :(");
-    });
-
-
-    // Get first account
-    let firstAccount$ = baseAccounts$.map(accounts =&gt; accounts[0]);
-
-
-    // POST /accounts/123/buildings with MyBuilding information
-    firstAccount$.switchMap(firstAccount =&gt; {
-      var myBuilding = {
-        name: "Gonto's Building",
-        place: "Argentina"
-      };
-
-      return firstAccount.post("Buildings", myBuilding)
-    })
-    .subscribe(() =&gt; {
-      console.log("Object saved OK");
-    }, () =&gt; {
-      console.log("There was an error saving");
-    });
-
-
-    // GET /accounts/123/users?query=params
-    firstAccount$.switchMap(firstAccount =&gt; {
-      var myBuilding = {
-        name: "Gonto's Building",
-        place: "Argentina"
-      };
-
-      return firstAccount.getList("users", {query: 'params'});
-    })
-    .subscribe((users) =&gt; {
-      // Instead of posting nested element, a collection can post to itself
-      // POST /accounts/123/users
-      users.post({userName: 'unknown'});
-
-      // Custom methods are available now :).
-      // GET /accounts/123/users/messages?param=myParam
-      users.customGET("messages", {param: "myParam"});
-
-      var firstUser = users[0];
-
-      // GET /accounts/123/users/456. Just in case we want to update one user :)
-      let userFromServer = firstUser.get();
-
-      // ALL http methods are available :)
-      // HEAD /accounts/123/users/456
-      firstUser.head()
-    }, () =&gt; {
-      console.log("There was an error saving");
-    });
-
-
-    // Second way of creating this.restangular object. URL and ID :)
-    var account = this.restangular.one("accounts", 123);
-
-    // GET /accounts/123?single=true
-    this.account = account.get({single: true});
-
-    // POST /accounts/123/messages?param=myParam with the body of name: "My Message"
-    account.customPOST({name: "My Message"}, "messages", {param: "myParam"}, {})
-  }
-}
-</code></pre>
-
-**[Back to top](#table-of-contents)**
-
-### Here is Example of code with using promises!
-
-<pre><code class="javascript">@Component({
-  ...
-})
-export class OtherComponent {
-  allAccounts;
-  accounts;
-  account;
-
-  constructor(private restangular: Restangular) {
-  }
-
-  ngOnInit() {
-
-    // First way of creating a this.restangular object. Just saying the base URL
-    let baseAccounts = this.restangular.all('accounts');
-
-    // This will query /accounts and return a promise.
-    baseAccounts.getList().toPromise().then(function(accounts) {
-      this.allAccounts = accounts;
-    });
-
-    var newAccount = {name: "Gonto's account"};
-
-    // POST /accounts
-    baseAccounts.post(newAccount);
-
-    // GET to http://www.google.com/ You set the URL in this case
-    this.restangular.allUrl('googlers', 'http://www.google.com/').getList();
-
-    // GET to http://www.google.com/1 You set the URL in this case
-    this.restangular.oneUrl('googlers', 'http://www.google.com/1').get();
-
-    // You can do RequestLess "connections" if you need as well
-
-    // Just ONE GET to /accounts/123/buildings/456
-    this.restangular.one('accounts', 123).one('buildings', 456).get();
-
-    // Just ONE GET to /accounts/123/buildings
-    this.restangular.one('accounts', 123).getList('buildings');
-
-    // Here we use Promises then
-    // GET /accounts
-    baseAccounts.getList().toPromise().then(function (accounts) {
-      // Here we can continue fetching the tree :).
-
-      var firstAccount = accounts[0];
-      // This will query /accounts/123/buildings considering 123 is the id of the firstAccount
-      this.buildings = firstAccount.getList("buildings");
-
-      // GET /accounts/123/places?query=param with request header: x-user:mgonto
-      this.loggedInPlaces = firstAccount.getList("places", {query: 'param'}, {'x-user': 'mgonto'});
-
-      // This is a regular JS object, we can change anything we want :)
-      firstAccount.name = "Gonto";
-
-      // If we wanted to keep the original as it is, we can copy it to a new element
-      var editFirstAccount = this.restangular.copy(firstAccount);
-      editFirstAccount.name = "New Name";
-
-
-      // PUT /accounts/123. The name of this account will be changed from now on
-      firstAccount.put();
-      editFirstAccount.put();
-
-      // PUT /accounts/123. Save will do POST or PUT accordingly
-      firstAccount.save();
-
-      // DELETE /accounts/123 We don't have first account anymore :(
-      firstAccount.remove();
-
-      var myBuilding = {
-        name: "Gonto's Building",
-        place: "Argentina"
-      };
-
-      // POST /accounts/123/buildings with MyBuilding information
-      firstAccount.post("Buildings", myBuilding).toPromise().then(function() {
-        console.log("Object saved OK");
-      }, function() {
-        console.log("There was an error saving");
-      });
-
-      // GET /accounts/123/users?query=params
-      firstAccount.getList("users", {query: 'params'}).toPromise().then(function(users) {
-        // Instead of posting nested element, a collection can post to itself
-        // POST /accounts/123/users
-        users.post({userName: 'unknown'});
-
-        // Custom methods are available now :).
-        // GET /accounts/123/users/messages?param=myParam
-        users.customGET("messages", {param: "myParam"});
-
-        var firstUser = users[0];
-
-        // GET /accounts/123/users/456. Just in case we want to update one user :)
-        this.userFromServer = firstUser.get();
-
-        // ALL http methods are available :)
-        // HEAD /accounts/123/users/456
-        firstUser.head()
-
-      });
-
-    }, function errorCallback() {
-      alert("Oops error from server :(");
-    });
-
-    // Second way of creating this.restangular object. URL and ID :)
-    var account = this.restangular.one("accounts", 123);
-
-    // GET /accounts/123?single=true
-    this.account = account.get({single: true});
-
-    // POST /accounts/123/messages?param=myParam with the body of name: "My Message"
-    account.customPOST({name: "My Message"}, "messages", {param: "myParam"}, {})
-  }
-}
-</code></pre>
-
-**[Back to top](#table-of-contents)**
-
-
-## Configuring Restangular
-
-### Properties
-Restangular comes with defaults for all of its properties but you can configure them. **So, if you don't need to configure something, there's no need to add the configuration.** You can set all these configurations in **[RestangularModule](#how-to-configure-them-globally) to change the global configuration**, you can also **use the [withConfig](#how-to-create-a-restangular-service-with-a-different-configuration-from-the-global-one) method in Restangular service to create a new Restangular service with some scoped configuration** or **use [withConfig](#withconfig) in component to make specified Restangular**
-
-#### withConfig
-You can configure Restangular "withConfig" like in example below, you can also configure them globally [RestangularModule](#how-to-configure-them-globally) or in service with [withConfig](#how-to-create-a-restangular-service-with-a-different-configuration-from-the-global-one)
-
-<pre><code class="javascript">// Function for settting the default restangular configuration
-export function RestangularConfigFactory (RestangularProvider) {
-  RestangularProvider.setBaseUrl('http://www.google.com');
-}
-
-@NgModule({
-  bootstrap: [ AppComponent ],
-  declarations: [
-    AppComponent,
-  ],
-  imports: [
-    // Global configuration
-    RestangularModule.forRoot(RestangularConfigFactory),
-  ]
-})
-export class AppModule {}
-// Let's use it in the component
-@Component({
-  ...
-})
-export class OtherComponent {
-  constructor(private restangular: Restangular) {}
-
-  ngOnInit() {
-    restangular.withConfig((RestangularConfigurer) =&gt; {
-      RestangularConfigurer.setBaseUrl('http://www.bing.com');
-    }).all('users').getList()
-  }
-};
-</code></pre>
-
-#### setBaseUrl
-The base URL for all calls to your API. For example if your URL for fetching accounts is http://example.com/api/v1/accounts, then your baseUrl is `/api/v1`. The default baseUrl is an empty string which resolves to the same url that Angular2 is running, but you can also set an absolute url like `http://api.example.com/api/v1` if you need to set another domain.
-
-#### setExtraFields
-These are the fields that you want to save from your parent resources if you need to display them. By default this is an Empty Array which will suit most cases
-
-#### setParentless
-Use this property to control whether Restangularized elements to have a parent or not. So, for example if you get an account and then get a nested list of buildings, you may want the buildings URL to be simple `/buildings/123` instead of `/accounts/123/buildings/123`. This property lets you do that.
-
-This method accepts 1 parameter, it could be:
-
-* Boolean: Specifies if all elements should be parentless or not
-* Array: Specifies the routes (types) of all elements that should be parentless. For example `['buildings']`
-
-#### addElementTransformer
-This is a hook. After each element has been "restangularized" (Added the new methods from Restangular), the corresponding transformer will be called if it fits.
-
-This should be used to add your own methods / functions to entities of certain types.
-
-You can add as many element transformers as you want. The signature of this method can be one of the following:
-
-* **addElementTransformer(route, transformer)**: Transformer is called with all elements that have been restangularized, no matter if they're collections or not.
-
-* **addElementTransformer(route, isCollection, transformer)**: Transformer is called with all elements that have been restangularized and match the specification regarding if it's a collection or not (true | false)
-
-#### setTransformOnlyServerElements
-This sets whether transformers will be run for local objects and not by objects returned by the server. This is by default true but can be changed to false if needed (Most people won't need this).
-
-
-#### setOnElemRestangularized
-This is a hook. After each element has been "restangularized" (Added the new methods from Restangular), this will be called. It means that if you receive a list of objects in one call, this method will be called first for the collection and then for each element of the collection.
-
-**I favor the usage of `addElementTransformer` instead of `onElemRestangularized` whenever possible as the implementation is much cleaner.**
-
-
-This callback is a function that has 4 parameters:
-
-* **elem**: The element that has just been restangularized. Can be a collection or a single element.
-* **isCollection**: Boolean indicating if this is a collection or a single element.
-* **what**: The model that is being modified. This is the "path" of this resource. For example `buildings`
-* **Restangular**: The instanced service to use any of its methods
-
-This can be used together with `addRestangularMethod` (Explained later) to add custom methods to an element
-
-<pre><code class="javascript">service.setOnElemRestangularized((element, isCollection, what, Restangular) =&gt; {
-  element.newField = "newField";
-  return element;
-});
-</code></pre>
-
-#### addResponseInterceptor
-The responseInterceptor is called after we get each response from the server. It's a function that receives this arguments:
-
-* **data**: The data received got from the server
-* **operation**: The operation made. It'll be the HTTP method used except for a `GET` which returns a list of element which will return `getList` so that you can distinguish them.
-* **what**: The model that's being requested. It can be for example: `accounts`, `buildings`, etc.
-* **url**: The relative URL being requested. For example: `/api/v1/accounts/123`
-* **response**: Full server response including headers
-
-Some of the use cases of the responseInterceptor are handling wrapped responses and enhancing response elements with more methods among others.
-
-The responseInterceptor must return the restangularized data element.
-
-<pre><code class="javascript"> RestangularProvider.addResponseInterceptor((data, operation, what, url, response)=&gt; {
-       return data;
-     });
- });
-</code></pre>
-
-#### addFullRequestInterceptor
-This adds a new fullRequestInterceptor. The fullRequestInterceptor is similar to the `requestInterceptor` but more powerful. It lets you change the element, the request parameters and the headers as well.
-
-It's a function that receives the same as the `requestInterceptor` plus the headers and the query parameters (in that order).
-
-It can return an object with any (or all) of following properties:
-* **headers**: The headers to send
-* **params**: The request parameters to send
-* **element**: The element to send
-
-<pre><code class="javascript">RestangularProvider.addFullRequestInterceptor((element, operation, path, url, headers, params)=&gt; {
-   return {
-     params: Object.assign({}, params, {sort:"name"}),
-     headers: headers,
-     element: element
-   }
- });
-</code></pre>
-If a property isn't returned, the one sent is used.
-
-#### addErrorInterceptor
-The errorInterceptor is called whenever there's an error. It's a function that receives the response, subject and the Restangular-response handler as parameters.
-
-The errorInterceptor function, whenever it returns false, prevents the observable linked to a Restangular request to be executed. All other return values (besides false) are ignored and the observable follows the usual path, eventually reaching the success or error hooks.
-
-The refreshAccesstoken function must return observable. It`s function that will be done before repeating the request, there you can make some actions. In switchMap you might do some transformations to request.
-
-<pre><code class="javascript">// Function for settting the default restangular configuration
-export function RestangularConfigFactory (RestangularProvider, authService) {
-  RestangularProvider.setBaseUrl('http://api.test.com/v1');
-
-  // This function must return observable
-  var refreshAccesstoken = function () {
-    // Here you can make action before repeated request
-    return authService.functionForTokenUpdate();
-  };
-
-  RestangularProvider.addErrorInterceptor((response, subject, responseHandler) =&gt; {
-    if (response.status === 403) {
-
-      refreshAccesstoken()
-      .switchMap(refreshAccesstokenResponse =&gt; {
-        //If you want to change request or make with it some actions and give the request to the repeatRequest func.
-        //Or you can live it empty and request will be the same.
-
-        // update Authorization header
-        const newHeaders = response.request.headers.set('Authorization', 'Bearer ' + refreshAccesstokenResponse);
-        const newRequest = response.request.clone({headers: newHeaders});
-
-        return response.repeatRequest(newRequest);
-      })
-      .subscribe(
-        res =&gt; responseHandler(res),
-        err =&gt; subject.error(err)
-      );
-
-      return false; // error handled
+<!-- GFM-TOC -->
+* [一、概述](#一概述)
+* [二、数据类型](#二数据类型)
+    * [STRING](#string)
+    * [LIST](#list)
+    * [SET](#set)
+    * [HASH](#hash)
+    * [ZSET](#zset)
+* [三、数据结构](#三数据结构)
+    * \[字典\](#字典)
+    * [跳跃表](#跳跃表)
+* [四、使用场景](#四使用场景)
+    * [计数器](#计数器)
+    * [缓存](#缓存)
+    * [查找表](#查找表)
+    * [消息队列](#消息队列)
+    * [会话缓存](#会话缓存)
+    * [分布式锁实现](#分布式锁实现)
+    * \[其它\](#其它)
+* [五、Redis 与 Memcached](#五redis-与-memcached)
+    * [数据类型](#数据类型)
+    * \[数据持久化\](#数据持久化)
+    * [分布式](#分布式)
+    * \[内存管理机制\](#内存管理机制)
+* \[六、键的过期时间\](#六键的过期时间)
+* [七、数据淘汰策略](#七数据淘汰策略)
+* \[八、持久化\](#八持久化)
+    * \[RDB 持久化\](#rdb-持久化)
+    * \[AOF 持久化\](#aof-持久化)
+* [九、事务](#九事务)
+* [十、事件](#十事件)
+    * [文件事件](#文件事件)
+    * [时间事件](#时间事件)
+    * [事件的调度与执行](#事件的调度与执行)
+* [十一、复制](#十一复制)
+    * [连接过程](#连接过程)
+    * [主从链](#主从链)
+* [十二、Sentinel](#十二sentinel)
+* [十三、分片](#十三分片)
+* [十四、一个简单的论坛系统分析](#十四一个简单的论坛系统分析)
+    * [文章信息](#文章信息)
+    * [点赞功能](#点赞功能)
+    * [对文章进行排序](#对文章进行排序)
+* [参考资料](#参考资料)
+<!-- GFM-TOC -->
+
+
+# 一、概述
+
+Redis 是速度非常快的非关系型（NoSQL）内存键值数据库，可以存储键和五种不同类型的值之间的映射。
+
+键的类型只能为字符串，值支持五种数据类型：字符串、列表、集合、散列表、有序集合。
+
+Redis 支持很多特性，例如将内存中的数据持久化到硬盘中，使用复制来扩展读性能，使用分片来扩展写性能。
+
+# 二、数据类型
+
+|  数据类型  |   可以存储的值    |                                操作                                 |
+|:------:|:-----------:|:-----------------------------------------------------------------:|
+| STRING | 字符串、整数或者浮点数 |           对整个字符串或者字符串的其中一部分执行操作</br> 对整数和浮点数执行自增或者自减操作            |
+|  LIST  |     列表      |         从两端压入或者弹出元素 </br> 对单个或者多个元素进行修剪，</br> 只保留一个范围内的元素         |
+|  SET   |    无序集合     | 添加、获取、移除单个元素</br> 检查一个元素是否存在于集合中</br> 计算交集、并集、差集</br> 从集合里面随机获取元素 |
+|  HASH  | 包含键值对的无序散列表 |             添加、获取、移除单个键值对</br> 获取所有键值对</br> 检查某个键是否存在             |
+|  ZSET  |    有序集合     |           添加、获取、删除元素</br> 根据分值范围或者成员来获取元素</br> 计算一个键的排名           |
+
+> [What Redis data structures look like](https://redislabs.com/ebook/part-1-getting-started/chapter-1-getting-to-know-redis/1-2-what-redis-data-structures-look-like/)
+
+## STRING
+
+<div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/6019b2db-bc3e-4408-b6d8-96025f4481d6.png" width="400"/> </div><br />
+
+```html
+> set hello world
+OK
+> get hello
+"world"
+> del hello
+(integer) 1
+> get hello
+(nil)
+```
+
+## LIST
+
+<div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/fb327611-7e2b-4f2f-9f5b-38592d408f07.png" width="400"/> </div><br />
+
+```html
+> rpush list-key item
+(integer) 1
+> rpush list-key item2
+(integer) 2
+> rpush list-key item
+(integer) 3
+
+> lrange list-key 0 -1
+1) "item"
+2) "item2"
+3) "item"
+
+> lindex list-key 1
+"item2"
+
+> lpop list-key
+"item"
+
+> lrange list-key 0 -1
+1) "item2"
+2) "item"
+```
+
+## SET
+
+<div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/cd5fbcff-3f35-43a6-8ffa-082a93ce0f0e.png" width="400"/> </div><br />
+
+```html
+> sadd set-key item
+(integer) 1
+> sadd set-key item2
+(integer) 1
+> sadd set-key item3
+(integer) 1
+> sadd set-key item
+(integer) 0
+
+> smembers set-key
+1) "item"
+2) "item2"
+3) "item3"
+
+> sismember set-key item4
+(integer) 0
+> sismember set-key item
+(integer) 1
+
+> srem set-key item2
+(integer) 1
+> srem set-key item2
+(integer) 0
+
+> smembers set-key
+1) "item"
+2) "item3"
+```
+
+## HASH
+
+<div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/7bd202a7-93d4-4f3a-a878-af68ae25539a.png" width="400"/> </div><br />
+
+```html
+> hset hash-key sub-key1 value1
+(integer) 1
+> hset hash-key sub-key2 value2
+(integer) 1
+> hset hash-key sub-key1 value1
+(integer) 0
+
+> hgetall hash-key
+1) "sub-key1"
+2) "value1"
+3) "sub-key2"
+4) "value2"
+
+> hdel hash-key sub-key2
+(integer) 1
+> hdel hash-key sub-key2
+(integer) 0
+
+> hget hash-key sub-key1
+"value1"
+
+> hgetall hash-key
+1) "sub-key1"
+2) "value1"
+```
+
+## ZSET
+
+<div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/1202b2d6-9469-4251-bd47-ca6034fb6116.png" width="400"/> </div><br />
+
+```html
+> zadd zset-key 728 member1
+(integer) 1
+> zadd zset-key 982 member0
+(integer) 1
+> zadd zset-key 982 member0
+(integer) 0
+
+> zrange zset-key 0 -1 withscores
+1) "member1"
+2) "728"
+3) "member0"
+4) "982"
+
+> zrangebyscore zset-key 0 800 withscores
+1) "member1"
+2) "728"
+
+> zrem zset-key member1
+(integer) 1
+> zrem zset-key member1
+(integer) 0
+
+> zrange zset-key 0 -1 withscores
+1) "member0"
+2) "982"
+```
+
+# 三、数据结构
+
+## 字典
+
+dictht 是一个散列表结构，使用拉链法解决哈希冲突。
+
+```c
+/* This is our hash table structure. Every dictionary has two of this as we
+ * implement incremental rehashing, for the old to the new table. */
+typedef struct dictht {
+    dictEntry **table;
+    unsigned long size;
+    unsigned long sizemask;
+    unsigned long used;
+} dictht;
+```
+
+```c
+typedef struct dictEntry {
+    void *key;
+    union {
+        void *val;
+        uint64_t u64;
+        int64_t s64;
+        double d;
+    } v;
+    struct dictEntry *next;
+} dictEntry;
+```
+
+Redis 的字典 dict 中包含两个哈希表 dictht，这是为了方便进行 rehash 操作。在扩容时，将其中一个 dictht 上的键值对 rehash 到另一个 dictht 上面，完成之后释放空间并交换两个 dictht 的角色。
+
+```c
+typedef struct dict {
+    dictType *type;
+    void *privdata;
+    dictht ht[2];
+    long rehashidx; /* rehashing not in progress if rehashidx == -1 */
+    unsigned long iterators; /* number of iterators currently running */
+} dict;
+```
+
+rehash 操作不是一次性完成，而是采用渐进方式，这是为了避免一次性执行过多的 rehash 操作给服务器带来过大的负担。
+
+渐进式 rehash 通过记录 dict 的 rehashidx 完成，它从 0 开始，然后每执行一次 rehash 都会递增。例如在一次 rehash 中，要把 dict[0] rehash 到 dict[1]，这一次会把 dict[0] 上 table[rehashidx] 的键值对 rehash 到 dict[1] 上，dict[0] 的 table[rehashidx] 指向 null，并令 rehashidx++。
+
+在 rehash 期间，每次对字典执行添加、删除、查找或者更新操作时，都会执行一次渐进式 rehash。
+
+采用渐进式 rehash 会导致字典中的数据分散在两个 dictht 上，因此对字典的查找操作也需要到对应的 dictht 去执行。
+
+```c
+/* Performs N steps of incremental rehashing. Returns 1 if there are still
+ * keys to move from the old to the new hash table, otherwise 0 is returned.
+ *
+ * Note that a rehashing step consists in moving a bucket (that may have more
+ * than one key as we use chaining) from the old to the new hash table, however
+ * since part of the hash table may be composed of empty spaces, it is not
+ * guaranteed that this function will rehash even a single bucket, since it
+ * will visit at max N*10 empty buckets in total, otherwise the amount of
+ * work it does would be unbound and the function may block for a long time. */
+int dictRehash(dict *d, int n) {
+    int empty_visits = n * 10; /* Max number of empty buckets to visit. */
+    if (!dictIsRehashing(d)) return 0;
+
+    while (n-- && d->ht[0].used != 0) {
+        dictEntry *de, *nextde;
+
+        /* Note that rehashidx can't overflow as we are sure there are more
+         * elements because ht[0].used != 0 */
+        assert(d->ht[0].size > (unsigned long) d->rehashidx);
+        while (d->ht[0].table[d->rehashidx] == NULL) {
+            d->rehashidx++;
+            if (--empty_visits == 0) return 1;
+        }
+        de = d->ht[0].table[d->rehashidx];
+        /* Move all the keys in this bucket from the old to the new hash HT */
+        while (de) {
+            uint64_t h;
+
+            nextde = de->next;
+            /* Get the index in the new hash table */
+            h = dictHashKey(d, de->key) & d->ht[1].sizemask;
+            de->next = d->ht[1].table[h];
+            d->ht[1].table[h] = de;
+            d->ht[0].used--;
+            d->ht[1].used++;
+            de = nextde;
+        }
+        d->ht[0].table[d->rehashidx] = NULL;
+        d->rehashidx++;
     }
-    return true; // error not handled
-  });
+
+    /* Check if we already rehashed the whole table... */
+    if (d->ht[0].used == 0) {
+        zfree(d->ht[0].table);
+        d->ht[0] = d->ht[1];
+        _dictReset(&d->ht[1]);
+        d->rehashidx = -1;
+        return 0;
+    }
+
+    /* More to rehash... */
+    return 1;
 }
-
-// AppModule is the main entry point into Angular2 bootstraping process
-@NgModule({
-  bootstrap: [ AppComponent ],
-  imports: [ 
-    // Importing RestangularModule and making default configs for restanglar
-    RestangularModule.forRoot([authService], RestangularConfigFactory),
-  ],
-})
-</code></pre>
-
-#### setRestangularFields
-
-Restangular required 3 fields for every "Restangularized" element. These are:
-
-* id: Id of the element. Default: id
-* route: Name of the route of this element. Default: route
-* parentResource: The reference to the parent resource. Default: parentResource
-* restangularCollection: A boolean indicating if this is a collection or an element. Default: restangularCollection
-* cannonicalId: If available, the path to the cannonical ID to use. Useful for PK changes
-* etag: Where to save the ETag received from the server. Defaults to `restangularEtag`
-* selfLink: The path to the property that has the URL to this item. If your REST API doesn't return a URL to an item, you can just leave it blank. Defaults to `href`
-
-Also all of Restangular methods and functions are configurable through restangularFields property. All of these fields except for `id` and `selfLink` are handled by Restangular, so most of the time you won't change them. You can configure the name of the property that will be binded to all of this fields by setting restangularFields property.
-
-#### setMethodOverriders
-
-You can now Override HTTP Methods. You can set here the array of methods to override. All those methods will be sent as POST and Restangular will add an X-HTTP-Method-Override header with the real HTTP method we wanted to do.
-
-<pre><code class="javascript">RestangularProvider.setMethodOverriders(["Get","Put"]);
-</code></pre>
-
-#### setDefaultRequestParams
-
-You can set default Query parameters to be sent with every request and every method.
-
-Additionally, if you want to configure request params per method, you can use `requestParams` configuration similar to `$http`. For example `RestangularProvider.requestParams.get = {single: true}`.
-
-Supported method to configure are: remove, get, post, put, common (all)
-
-<pre><code class="javascript">// set params for multiple methods at once
-RestangularProvider.setDefaultRequestParams(['remove', 'post'], {confirm: true});
-
-// set only for get method
-RestangularProvider.setDefaultRequestParams('get', {limit: 10});
-
-// or for all supported request methods
-RestangularProvider.setDefaultRequestParams({apikey: "secret key"});
-</code></pre>
-
-#### setFullResponse
-
-You can set fullResponse to true to get the whole response every time you do any request. The full response has the restangularized data in the `data` field, and also has the headers and config sent. By default, it's set to false. Please note that in order for Restangular to access custom HTTP headers, your server must respond having the `Access-Control-Expose-Headers:` set.
-
-<pre><code class="javascript">// set params for multiple methods at once
-RestangularProvider.setFullResponse(true);
-</code></pre>
-
-Or set it per service
-
-<pre><code class="javascript">// Restangular factory that uses setFullResponse
-export const REST_FUL_RESPONSE = new InjectionToken&lt;any&gt;('RestFulResponse');
-export function RestFulResponseFactory(restangular: Restangular) {
-  return restangular.withConfig((RestangularConfigurer) =&gt; {
-    RestangularConfigurer.setFullResponse(true);
-  });
-}
-
-
-// Configure factory in AppModule module
-// AppModule is the main entry point into Angular2 bootstraping process
-@NgModule({
-  bootstrap: [ AppComponent ],
-  declarations: [
-    AppComponent,
-  ],
-  imports: [RestangularModule],
-  providers: [
-    { provide: REST_FUL_RESPONSE, useFactory:  RestFulResponseFactory, deps: [Restangular] }
-  ]
-})
-export class AppModule {}
-
-
-// Let's use it in the component
-@Component({
-  ...
-})
-export class OtherComponent {
-  users;
-
-  constructor(@Inject(REST_FUL_RESPONSE) public restFulResponse) {
-  }
-
-  ngOnInit() {
-    this.restFulResponse.all('users').getList().subscribe( response =&gt; {
-      this.users = response.data;
-      console.log(response.headers);
-    });
-  }
-}
-</code></pre>
-
-#### setDefaultHeaders
-
-You can set default Headers to be sent with every request. Send format: {header_name: header_value}
-
-<pre><code class="javascript">import { NgModule } from '@angular/core';
-import { RestangularModule, Restangular } from 'ngx-restangular';
-
-// Function for settting the default restangular configuration
-export function RestangularConfigFactory (RestangularProvider) {
-  RestangularProvider.setDefaultHeaders({'Authorization': 'Bearer UDXPx-Xko0w4BRKajozCVy20X11MRZs1'});
-}
-
-// AppModule is the main entry point into Angular2 bootstraping process
-@NgModule({
-  ...
-  imports: [
-    // Importing RestangularModule and making default configs for restanglar
-    RestangularModule.forRoot(RestangularConfigFactory),
-  ]
-})
-export class AppModule {
-}
-</code></pre>
-
-#### setRequestSuffix
-
-If all of your requests require to send some suffix to work, you can set it here. For example, if you need to send the format like `/users/123.json` you can add that `.json` to the suffix using the `setRequestSuffix` method
-
-#### setUseCannonicalId
-
-You can set this to either `true` or `false`. By default it's false. If set to true, then the cannonical ID from the element will be used for URL creation (in DELETE, PUT, POST, etc.). What this means is that if you change the ID of the element and then you do a put, if you set this to true, it'll use the "old" ID which was received from the server. If set to false, it'll use the new ID assigned to the element.
-
-#### setPlainByDefault
-
-You can set this to `true` or `false`. By default it's false. If set to true, data retrieved will be returned with no embed methods from restangular.
-
-#### setEncodeIds
-
-You can set here if you want to URL Encode IDs or not. By default, it's true.
-
-### Accessing configuration
-
-You can also access the configuration via `RestangularModule` and `Restangular.provider` via the `configuration` property if you don't want to use the setters. Check it out:
-
-<pre><code class="js">RestangularProvider.configuration.requestSuffix = '/';
-</code></pre>
-
-**[Back to top](#table-of-contents)**
-
-### How to configure them globally
-
-You can configure this in either the `AppModule`.
-
-#### Configuring in the `AppModule`
-
-<pre><code class="javascript">import { RestangularModule } from 'ngx-restangular';
-
-// Function for settting the default restangular configuration
-export function RestangularConfigFactory (RestangularProvider) {
-  RestangularProvider.setBaseUrl('http://api.restngx.local/v1');
-  RestangularProvider.setDefaultHeaders({'Authorization': 'Bearer UDXPx-Xko0w4BRKajozCVy20X11MRZs1'});
-}
-
-// AppModule is the main entry point into Angular2 bootstraping process
-@NgModule({
-  bootstrap: [ AppComponent ],
-  declarations: [
-    AppComponent,
-  ],
-  imports: [
-    RestangularModule.forRoot(RestangularConfigFactory),
-  ]
-})
-export class AppModule {
-}
-</code></pre>
-
-**[Back to top](#table-of-contents)**
-
-
-#### Configuring in the `AppModule` with Dependency Injection applied
-
-<pre><code class="javascript">import { RestangularModule } from 'ngx-restangular';
-
-// Function for settting the default restangular configuration
-export function RestangularConfigFactory (RestangularProvider, http) {
-  RestangularProvider.setBaseUrl('http://api.restngx.local/v1');
-  RestangularProvider.setDefaultHeaders({'Authorization': 'Bearer UDXPx-Xko0w4BRKajozCVy20X11MRZs1'});
-
-  // Example of using Http service inside global config restangular
-  RestangularProvider.addElementTransformer('me', true, ()=&gt;{
-    return http.get('http://api.test.com/v1/users/2', {});
-  });
-}
-
-// AppModule is the main entry point into Angular2 bootstraping process
-@NgModule({
-  bootstrap: [ AppComponent ],
-  declarations: [
-    AppComponent,
-  ],
-  imports: [
-    RestangularModule.forRoot([Http], RestangularConfigFactory),
-  ]
-})
-export class AppModule {
-}
-</code></pre>
-
-**[Back to top](#table-of-contents)**
-
-### How to create a Restangular service with a different configuration from the global one
-Let's assume that for most requests you need some configuration (The global one), and for just a bunch of methods you need another configuration. In that case, you'll need to create another Restangular service with this particular configuration. This scoped configuration will inherit all defaults from the global one. Let's see how.
-
-<pre><code class="javascript">// Function for settting the default restangular configuration
-export function RestangularConfigFactory (RestangularProvider) {
-  RestangularProvider.setBaseUrl('http://www.google.com');
-}
-
-//Restangular service that uses Bing
-export const RESTANGULAR_BING = new InjectionToken&lt;any&gt;('RestangularBing');
-export function RestangularBingFactory(restangular: Restangular) {
-  return restangular.withConfig((RestangularConfigurer) =&gt; {
-     RestangularConfigurer.setBaseUrl('http://www.bing.com');
-   });
-}
-
-
-// AppModule is the main entry point into Angular2 bootstraping process
-@NgModule({
-  bootstrap: [ AppComponent ],
-  declarations: [
-    AppComponent,
-  ],
-  imports: [
-    // Global configuration
-    RestangularModule.forRoot(RestangularConfigFactory),
-  ],
-  providers: [
-    { provide: RESTANGULAR_BING, useFactory:  RestangularBingFactory, deps: [Restangular] }
-  ]
-})
-export class AppModule {}
-
-
-// Let's use it in the component
-@Component({
-  ...
-})
-export class OtherComponent {
-  constructor(
-    @Inject(Restangular) public Restangular,
-    @Inject(RESTANGULAR_BING) public RestangularBing
-  ) {}
-
-  ngOnInit() {
-    // GET to http://www.google.com/users
-    // Uses global configuration
-    Restangular.all('users').getList()
-
-    // GET to http://www.bing.com/users
-    // Uses Bing configuration which is based on Global one, therefore .json is added.
-    RestangularBing.all('users').getList()
-  }
-};
-</code></pre>
-
-**[Back to top](#table-of-contents)**
-
-### Decoupled Restangular Service
-
-There're some times where you want to use Restangular but you don't want to expose Restangular object anywhere. For those cases, you can actually use the `service` feature of Restangular.
-
-Let's see how it works:
-
-<pre><code class="js">// Restangular factory that uses Users
-export const USER_REST = new InjectionToken&lt;any&gt;('UserRest');
-export function UserRestFactory(restangular: Restangular) {
-  return restangular.service('users');
-}
-
-
-// AppModule is the main entry point into Angular2 bootstraping process
-@NgModule({
-  bootstrap: [ AppComponent ],
-  declarations: [
-    AppComponent,
-  ],
-  imports: [RestangularModule],
-  providers: [
-    { provide: USER_REST, useFactory:  UserRestFactory, deps: [Restangular] } // Configurating our factory
-  ]
-})
-export class AppModule {
-}
-
-
-// Let's use it in the component
-export class OtherComponent {
-  constructor(@Inject(USER_REST) public User) {
-    Users.one(2).get() // GET to /users/2
-    Users.post({data}) // POST to /users
-
-    // GET to /users
-    Users.getList().subscribe( users =&gt; {
-      var user = users[0]; // user === {id: 1, name: "Tonto"}
-      user.name = "Gonto";
-      // PUT to /users/1
-      user.put();
-    })
-  }
-}
-</code></pre>
-
-We can also use Nested RESTful resources with this:
-
-<pre><code class="js">var Cars = Restangular.service('cars', Restangular.one('users', 1));
-
-Cars.getList() // GET to /users/1/cars
-</code></pre>
-
-**[Back to top](#table-of-contents)**
-
-## Methods description
-
-There are 3 sets of methods. Collections have some methods and elements have others. There are are also some common methods for all of them
-
-### Restangular methods
-These are the methods that can be called on the Restangular object.
-* **one(route, id)**: This will create a new Restangular object that is just a pointer to one element with the route `route` and the specified id.
-* **all(route)**: This will create a new Restangular object that is just a pointer to a list of elements for the specified path.
-* **oneUrl(route, url)**: This will create a new Restangular object that is just a pointer to one element with the specified URL.
-* **allUrl(route, url)**: This creates a Restangular object that is just a pointer to a list at the specified URL.
-* **copy(fromElement)**: This will create a copy of the from element so that we can modify the copied one.
-* **restangularizeElement(parent, element, route, queryParams)**: Restangularizes a new element
-* **restangularizeCollection(parent, element, route, queryParams)**: Restangularizes a new collection
-
-**[Back to top](#table-of-contents)**
-
-### Element methods
-* **get([queryParams, headers])**: Gets the element. Query params and headers are optionals
-* **getList(subElement, [queryParams, headers])**: Gets a nested resource. subElement is mandatory. **It's a string with the name of the nested resource (and URL)**. For example `buildings`
-* **put([queryParams, headers])**: Does a put to the current element
-* **post(subElement, elementToPost, [queryParams, headers])**: Does a POST and creates a subElement. Subelement is mandatory and is the nested resource. Element to post is the object to post to the server
-* **remove([queryParams, headers])**: Does a DELETE. By default, `remove` sends a request with an empty object, which may cause problems with some servers or browsers. [This](https://github.com/mgonto/restangular/issues/193) shows how to configure RESTangular to have no payload.
-* **head([queryParams, headers])**: Does a HEAD
-* **trace([queryParams, headers])**: Does a TRACE
-* **options([queryParams, headers])**: Does a OPTIONS
-* **patch(object, [queryParams, headers])**: Does a PATCH
-* **one(route, id)**: Used for RequestLess connections and URL Building. See section below.
-* **all(route)**: Used for RequestLess connections and URL Building. See section below.
-* **several(route, ids*)**: Used for RequestLess connections and URL Building. See section below.
-* **oneUrl(route, url)**: This will create a new Restangular object that is just a pointer to one element with the specified URL.
-* **allUrl(route, url)**: This creates a Restangular object that is just a pointer to a list at the specified URL.
-* **getRestangularUrl()**: Gets the URL of the current object.
-* **getRequestedUrl()**: Gets the real URL the current object was requested with (incl. GET parameters). Will equal getRestangularUrl() when no parameters were used, before calling `get()`, or when using on a nested child.
-* **getParentList()**: Gets the parent list to which it belongs (if any)
-* **clone()**: Copies the element. It's an alias to calling `Restangular.copy(elem)`.
-* **plain()**: Returns the plain element received from the server without any of the enhanced methods from Restangular. It's an alias to calling `Restangular.stripRestangular(elem)`
-* **save**: Calling save will determine whether to do PUT or POST accordingly
-
-**[Back to top](#table-of-contents)**
-
-### Collection methods
-* **getList([queryParams, headers]): Gets itself again (Remember this is a collection)**.
-* **get(id): Gets one item from the collection by id**.
-* **post(elementToPost, [queryParams, headers])**: Creates a new element of this collection.
-* **head([queryParams, headers])**: Does a HEAD
-* **trace: ([queryParams, headers])**: Does a TRACE
-* **options: ([queryParams, headers])**: Does a OPTIONS
-* **patch(object, [queryParams, headers])**: Does a PATCH
-* **remove([queryParams, headers])**: Does a DELETE. By default, `remove` sends a request with an empty object, which may cause problems with some servers or browsers. [This](https://github.com/mgonto/restangular/issues/193) shows how to configure RESTangular to have no payload.
-* **putElement(index, params, headers)**: Puts the element on the required index and returns a observable of the updated new array
-
-<pre><code class="js">Restangular.all('users').getList()
-.subscribe( users =&gt; {
-  users.putElement(2, {'name': 'new name'});
-});
-</code></pre>
-* **getRestangularUrl()**: Gets the URL of the current object.
-* **getRequestedUrl()**: Gets the real URL the current object was requested with (incl. GET parameters). Will equal getRestangularUrl() when no parameters were used, before calling `getList()`, or when using on a nested child.
-* **one(route, id)**: Used for RequestLess connections and URL Building. See section below.
-* **all(route)**: Used for RequestLess connections and URL Building. See section below.
-* **several(route, ids*)**: Used for RequestLess connections and URL Building. See section below.
-* **oneUrl(route, url)**: This will create a new Restangular object that is just a pointer to one element with the specified URL.
-* **allUrl(route, url)**: This creates a Restangular object that is just a pointer to a list at the specified URL.
-* **clone()**: Copies the collection. It's an alias to calling `Restangular.copy(collection)`.
-
-**[Back to top](#table-of-contents)**
-
-### Custom methods
-* **customGET(path, [params, headers])**: Does a GET to the specific path. Optionally you can set params and headers.
-* **customGETLIST(path, [params, headers])**: Does a GET to the specific path. **In this case, you expect to get an array, not a single element**. Optionally you can set params and headers.
-* **customDELETE(path, [params, headers])**: Does a DELETE to the specific path. Optionally you can set params and headers.
-* **customPOST([elem, path, params, headers])**: Does a POST to the specific path. Optionally you can set params and headers and elem. Elem is the element to post. If it's not set, it's assumed that it's the element itself from which you're calling this function.
-* **customPUT([elem, path, params, headers])**: Does a PUT to the specific path. Optionally you can set params and headers and elem. Elem is the element to post. If it's not set, it's assumed that it's the element itself from which you're calling this function.
-* **customPATCH([elem, path, params, headers])**: Does a PATCH to the specific path. Accepts the same arguments as customPUT.
-* **customOperation(operation, path, [params, headers, elem])**: This does a custom operation to the path that we specify. This method is actually used from all the others in this subsection. Operation can be one of: get, post, put, remove, head, options, patch, trace
-* **addRestangularMethod(name, operation, [path, params, headers, elem])**: This will add a new restangular method to this object with the name `name` to the operation and path specified (or current path otherwise). There's a section on how to do this later.
-
-Let's see an example of this:
-
-<pre><code class="javascript">// GET /accounts/123/messages
-Restangular.one("accounts", 123).customGET("messages")
-
-// GET /accounts/messages?param=param2
-Restangular.all("accounts").customGET("messages", {param: "param2"})
-</code></pre>
-
-**[Back to top](#table-of-contents)**
-
-## Copying elements
-Before modifying an object, we sometimes want to copy it and then modify the copied object. We can use `Restangular.copy(fromElement)`.
-
-**[Back to top](#table-of-contents)**
-
-## Using values directly in templates with Observables
-
-If you want to use values directly in templates use `AsyncPipe`
-
-<pre><code class="js">this.accounts = this.restangular.all('accounts').getList();
-</code></pre>
-
-<pre><code class="html">&lt;tr *ngFor="let account of accounts | async"&gt;
-  &lt;td&gt;{{account.fullName}}&lt;/td&gt;
-&lt;/tr&gt;
-</code></pre>
-
-**[Back to top](#table-of-contents)**
-
-## URL Building
-Sometimes, we have a lot of nested entities (and their IDs), but we just want the last child. In those cases, doing a request for everything to get the last child is overkill. For those cases, I've added the possibility to create URLs using the same API as creating a new Restangular object. This connections are created without making any requests. Let's see how to do this:
-
-<pre><code class="javascript">
-var restangularSpaces = Restangular.one("accounts",123).one("buildings", 456).all("spaces");
-
-// This will do ONE get to /accounts/123/buildings/456/spaces
-restangularSpaces.getList()
-
-// This will do ONE get to /accounts/123/buildings/456/spaces/789
-Restangular.one("accounts", 123).one("buildings", 456).one("spaces", 789).get()
-
-// POST /accounts/123/buildings/456/spaces
-Restangular.one("accounts", 123).one("buildings", 456).all("spaces").post({name: "New Space"});
-
-// DELETE /accounts/123/buildings/456
-Restangular.one("accounts", 123).one("buildings", 456).remove();
-</code></pre>
-
-**[Back to top](#table-of-contents)**
-
-## Creating new Restangular Methods
-
-Let's assume that your API needs some custom methods to work. If that's the case, always calling customGET or customPOST for that method with all parameters is a pain in the ass. That's why every element has a `addRestangularMethod` method.
-
-This can be used together with the hook `addElementTransformer` to do some neat stuff. Let's see an example to learn this:
-
-<pre><code class="javascript">// Function for settting the default restangular configuration
-export function RestangularConfigFactory (RestangularProvider) {
-  // It will transform all building elements, NOT collections
-  RestangularProvider.addElementTransformer('buildings', false, function(building) {
-    // This will add a method called evaluate that will do a get to path evaluate with NO default
-    // query params and with some default header
-    // signature is (name, operation, path, params, headers, elementToPost)
-
-    building.addRestangularMethod('evaluate', 'get', 'evaluate', undefined, {'myHeader': 'value'});
-
-    return building;
-  });
-
-  RestangularProvider.addElementTransformer('users', true, function(user) {
-    // This will add a method called login that will do a POST to the path login
-    // signature is (name, operation, path, params, headers, elementToPost)
-
-    user.addRestangularMethod('login', 'post', 'login');
-
-    return user;
-  });
-}
-
-// AppModule is the main entry point into Angular2 bootstraping process
-@NgModule({
-  bootstrap: [ AppComponent ],
-  imports: [ // import Angular's modules
-    RestangularModule.forRoot(RestangularConfigFactory),
-  ],
-})
-
-// Then, later in your code you can do the following:
-
-// GET to /buildings/123/evaluate?myParam=param with headers myHeader: value
-
-// Signature for this "custom created" methods is (params, headers, elem) if it's a safe operation (GET, OPTIONS, etc.)
-// If it's an unsafe operation (POST, PUT, etc.), signature is (elem, params, headers).
-
-// If something is set to any of this variables, the default set in the method creation will be overridden
-// If nothing is set, then the defaults are sent
-Restangular.one('buildings', 123).evaluate({myParam: 'param'});
-
-// GET to /buildings/123/evaluate?myParam=param with headers myHeader: specialHeaderCase
-
-Restangular.one('buildings', 123).evaluate({myParam: 'param'}, {'myHeader': 'specialHeaderCase'});
-
-// Here the body of the POST is going to be {key: value} as POST is an unsafe operation
-Restangular.all('users').login({key: value});
-
-</code></pre>
-
-**[Back to top](#table-of-contents)**
-
-## Adding Custom Methods to Collections
-
-Create custom methods for your collection using Restangular.extendCollection(). This is an alias for:
-
-```js
-  RestangularProvider.addElementTransformer(route, true, fn);
 ```
 
-### Example:
-```js
-  // create methods for your collection
-  Restangular.extendCollection('accounts', function(collection) {
-    collection.totalAmount = function() {
-      // implementation here
-    };
+## 跳跃表
 
-    return collection;
-  });
+是有序集合的底层实现之一。
 
-  var accounts$ = Restangular.all('accounts').getList();
+跳跃表是基于多指针有序链表实现的，可以看成多个有序链表。
 
-  accounts$.subscribe( accounts => {
-    accounts.totalAmount(); // invoke your custom collection method
-  });
+<div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/beba612e-dc5b-4fc2-869d-0b23408ac90a.png" width="600px"/> </div><br />
+
+在查找时，从上层指针开始查找，找到对应的区间之后再到下一层去查找。下图演示了查找 22 的过程。
+
+<div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/0ea37ee2-c224-4c79-b895-e131c6805c40.png" width="600px"/> </div><br />
+
+与红黑树等平衡树相比，跳跃表具有以下优点：
+
+- 插入速度非常快速，因为不需要进行旋转等操作来维护平衡性；
+- 更容易实现；
+- 支持无锁操作。
+
+# 四、使用场景
+
+## 计数器
+
+可以对 String 进行自增自减运算，从而实现计数器功能。
+
+Redis 这种内存型数据库的读写性能非常高，很适合存储频繁读写的计数量。
+
+## 缓存
+
+将热点数据放到内存中，设置内存的最大使用量以及淘汰策略来保证缓存的命中率。
+
+## 查找表
+
+例如 DNS 记录就很适合使用 Redis 进行存储。
+
+查找表和缓存类似，也是利用了 Redis 快速的查找特性。但是查找表的内容不能失效，而缓存的内容可以失效，因为缓存不作为可靠的数据来源。
+
+## 消息队列
+
+List 是一个双向链表，可以通过 lpush 和 rpop 写入和读取消息
+
+不过最好使用 Kafka、RabbitMQ 等消息中间件。
+
+## 会话缓存
+
+可以使用 Redis 来统一存储多台应用服务器的会话信息。
+
+当应用服务器不再存储用户的会话信息，也就不再具有状态，一个用户可以请求任意一个应用服务器，从而更容易实现高可用性以及可伸缩性。
+
+## 分布式锁实现
+
+在分布式场景下，无法使用单机环境下的锁来对多个节点上的进程进行同步。
+
+可以使用 Redis 自带的 SETNX 命令实现分布式锁，除此之外，还可以使用官方提供的 RedLock 分布式锁实现。
+
+## 其它
+
+Set 可以实现交集、并集等操作，从而实现共同好友等功能。
+
+ZSet 可以实现有序性操作，从而实现排行榜等功能。
+
+# 五、Redis 与 Memcached
+
+两者都是非关系型内存键值数据库，主要有以下不同：
+
+## 数据类型
+
+Memcached 仅支持字符串类型，而 Redis 支持五种不同的数据类型，可以更灵活地解决问题。
+
+## 数据持久化
+
+Redis 支持两种持久化策略：RDB 快照和 AOF 日志，而 Memcached 不支持持久化。
+
+## 分布式
+
+Memcached 不支持分布式，只能通过在客户端使用一致性哈希来实现分布式存储，这种方式在存储和查询时都需要先在客户端计算一次数据所在的节点。
+
+Redis Cluster 实现了分布式的支持。
+
+## 内存管理机制
+
+- 在 Redis 中，并不是所有数据都一直存储在内存中，可以将一些很久没用的 value 交换到磁盘，而 Memcached 的数据则会一直在内存中。
+
+- Memcached 将内存分割成特定长度的块来存储数据，以完全解决内存碎片的问题。但是这种方式会使得内存的利用率不高，例如块的大小为 128 bytes，只存储 100 bytes 的数据，那么剩下的 28 bytes 就浪费掉了。
+
+# 六、键的过期时间
+
+Redis 可以为每个键设置过期时间，当键过期时，会自动删除该键。
+
+对于散列表这种容器，只能为整个键设置过期时间（整个散列表），而不能为键里面的单个元素设置过期时间。
+
+# 七、数据淘汰策略
+
+可以设置内存最大使用量，当内存使用量超出时，会施行数据淘汰策略。
+
+Redis 具体有 6 种淘汰策略：
+
+|       策略        |             描述             |
+|:---------------:|:--------------------------:|
+|  volatile-lru   | 从已设置过期时间的数据集中挑选最近最少使用的数据淘汰 |
+|  volatile-ttl   |  从已设置过期时间的数据集中挑选将要过期的数据淘汰  |
+| volatile-random |   从已设置过期时间的数据集中任意选择数据淘汰    |
+|   allkeys-lru   |    从所有数据集中挑选最近最少使用的数据淘汰    |
+| allkeys-random  |     从所有数据集中任意选择数据进行淘汰      |
+|   noeviction    |           禁止驱逐数据           |
+
+作为内存数据库，出于对性能和内存消耗的考虑，Redis 的淘汰算法实际实现上并非针对所有 key，而是抽样一小部分并且从中选出被淘汰的 key。
+
+使用 Redis 缓存数据时，为了提高缓存命中率，需要保证缓存数据都是热点数据。可以将内存最大使用量设置为热点数据占用的内存量，然后启用 allkeys-lru 淘汰策略，将最近最少使用的数据淘汰。
+
+Redis 4.0 引入了 volatile-lfu 和 allkeys-lfu 淘汰策略，LFU 策略通过统计访问频率，将访问频率最少的键值对淘汰。
+
+# 八、持久化
+
+Redis 是内存型数据库，为了保证数据在断电后不会丢失，需要将内存中的数据持久化到硬盘上。
+
+## RDB 持久化
+
+将某个时间点的所有数据都存放到硬盘上。
+
+可以将快照复制到其它服务器从而创建具有相同数据的服务器副本。
+
+如果系统发生故障，将会丢失最后一次创建快照之后的数据。
+
+如果数据量很大，保存快照的时间会很长。
+
+## AOF 持久化
+
+将写命令添加到 AOF 文件（Append Only File）的末尾。
+
+使用 AOF 持久化需要设置同步选项，从而确保写命令同步到磁盘文件上的时机。这是因为对文件进行写入并不会马上将内容同步到磁盘上，而是先存储到缓冲区，然后由操作系统决定什么时候同步到磁盘。有以下同步选项：
+
+|    选项    |     同步频率     |
+|:--------:|:------------:|
+|  always  |   每个写命令都同步   |
+| everysec |    每秒同步一次    |
+|    no    | 让操作系统来决定何时同步 |
+
+- always 选项会严重减低服务器的性能；
+- everysec 选项比较合适，可以保证系统崩溃时只会丢失一秒左右的数据，并且 Redis 每秒执行一次同步对服务器性能几乎没有任何影响；
+- no 选项并不能给服务器性能带来多大的提升，而且也会增加系统崩溃时数据丢失的数量。
+
+随着服务器写请求的增多，AOF 文件会越来越大。Redis 提供了一种将 AOF 重写的特性，能够去除 AOF 文件中的冗余写命令。
+
+# 九、事务
+
+一个事务包含了多个命令，服务器在执行事务期间，不会改去执行其它客户端的命令请求。
+
+事务中的多个命令被一次性发送给服务器，而不是一条一条发送，这种方式被称为流水线，它可以减少客户端与服务器之间的网络通信次数从而提升性能。
+
+Redis 最简单的事务实现方式是使用 MULTI 和 EXEC 命令将事务操作包围起来。
+
+# 十、事件
+
+Redis 服务器是一个事件驱动程序。
+
+## 文件事件
+
+服务器通过套接字与客户端或者其它服务器进行通信，文件事件就是对套接字操作的抽象。
+
+Redis 基于 Reactor 模式开发了自己的网络事件处理器，使用 I/O 多路复用程序来同时监听多个套接字，并将到达的事件传送给文件事件分派器，分派器会根据套接字产生的事件类型调用相应的事件处理器。
+
+<div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/9ea86eb5-000a-4281-b948-7b567bd6f1d8.png" width=""/> </div><br />
+
+## 时间事件
+
+服务器有一些操作需要在给定的时间点执行，时间事件是对这类定时操作的抽象。
+
+时间事件又分为：
+
+- 定时事件：是让一段程序在指定的时间之内执行一次；
+- 周期性事件：是让一段程序每隔指定时间就执行一次。
+
+Redis 将所有时间事件都放在一个无序链表中，通过遍历整个链表查找出已到达的时间事件，并调用相应的事件处理器。
+
+## 事件的调度与执行
+
+服务器需要不断监听文件事件的套接字才能得到待处理的文件事件，但是不能一直监听，否则时间事件无法在规定的时间内执行，因此监听时间应该根据距离现在最近的时间事件来决定。
+
+事件调度与执行由 aeProcessEvents 函数负责，伪代码如下：
+
+```python
+def aeProcessEvents():
+    # 获取到达时间离当前时间最接近的时间事件
+    time_event = aeSearchNearestTimer()
+    # 计算最接近的时间事件距离到达还有多少毫秒
+    remaind_ms = time_event.when - unix_ts_now()
+    # 如果事件已到达，那么 remaind_ms 的值可能为负数，将它设为 0
+    if remaind_ms < 0:
+        remaind_ms = 0
+    # 根据 remaind_ms 的值，创建 timeval
+    timeval = create_timeval_with_ms(remaind_ms)
+    # 阻塞并等待文件事件产生，最大阻塞时间由传入的 timeval 决定
+    aeApiPoll(timeval)
+    # 处理所有已产生的文件事件
+    procesFileEvents()
+    # 处理所有已到达的时间事件
+    processTimeEvents()
 ```
 
-**[Back to top](#table-of-contents)**
+将 aeProcessEvents 函数置于一个循环里面，加上初始化和清理函数，就构成了 Redis 服务器的主函数，伪代码如下：
 
-## Adding Custom Methods to Models
-
-Create custom methods for your models using Restangular.extendModel(). This is an alias for:
-
-```js
-  RestangularProvider.addElementTransformer(route, false, fn);
+```python
+def main():
+    # 初始化服务器
+    init_server()
+    # 一直处理事件，直到服务器关闭为止
+    while server_is_not_shutdown():
+        aeProcessEvents()
+    # 服务器关闭，执行清理操作
+    clean_server()
 ```
 
-**[Back to top](#table-of-contents)**
+从事件处理的角度来看，服务器运行流程如下：
 
-### Example:
-```js
-  Restangular.extendModel('accounts', function(model) {
-    model.prettifyAmount = function() {};
-    return model;
-  });
+<div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/c0a9fa91-da2e-4892-8c9f-80206a6f7047.png" width="350"/> </div><br />
 
-  var account$ = Restangular.one('accounts', 1).get();
+# 十一、复制
 
-  account$.subscribe(function(account) {
-    account.prettifyAmount(); // invoke your custom model method
-  });
-```
+通过使用 slaveof host port 命令来让一个服务器成为另一个服务器的从服务器。
 
-**[Back to top](#table-of-contents)**
+一个从服务器只能有一个主服务器，并且不支持主主复制。
 
-# FAQ
+## 连接过程
 
-#### **How can I handle errors?**
+1. 主服务器创建快照文件，发送给从服务器，并在发送期间使用缓冲区记录执行的写命令。快照文件发送完毕之后，开始向从服务器发送存储在缓冲区中的写命令；
 
-Errors can be checked on the second argument of the subscribe.
+2. 从服务器丢弃所有旧数据，载入主服务器发来的快照文件，之后从服务器开始接受主服务器发来的写命令；
 
-<pre><code class="javascript">Restangular.all("accounts").getList().subscribe( response =&gt; {
-  console.log("All ok");
-}, errorResponse =&gt; {
-  console.log("Error with status code", errorResponse.status);
-});
-</code></pre>
+3. 主服务器每执行一次写命令，就向从服务器发送相同的写命令。
 
-#### **I need to send Authorization token in EVERY Restangular request, how can I do this?**
+## 主从链
 
-You can use `setDefaultHeaders` or `addFullRequestInterceptor`
+随着负载不断上升，主服务器可能无法很快地更新所有从服务器，或者重新连接和重新同步从服务器将导致系统超载。为了解决这个问题，可以创建一个中间层来分担主服务器的复制工作。中间层的服务器是最上层服务器的从服务器，又是最下层服务器的主服务器。
 
-<pre><code class="javascript">import { NgModule } from '@angular/core';
-import { AppComponent } from './app.component';
-import { RestangularModule } from 'ngx-restangular';
-import { authService } from '../your-services';
+<div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/395a9e83-b1a1-4a1d-b170-d081e7bb5bab.png" width="600"/> </div><br />
 
-// Function for settting the default restangular configuration
-export function RestangularConfigFactory (RestangularProvider, authService) {
+# 十二、Sentinel
 
-  // set static header
-  RestangularProvider.setDefaultHeaders({'Authorization': 'Bearer UDXPx-Xko0w4BRKajozCVy20X11MRZs1'});
+Sentinel（哨兵）可以监听集群中的服务器，并在主服务器进入下线状态时，自动从从服务器中选举出新的主服务器。
 
-  // by each request to the server receive a token and update headers with it
-  RestangularProvider.addFullRequestInterceptor((element, operation, path, url, headers, params) =&gt; {
-    let bearerToken = authService.getBearerToken();
+# 十三、分片
 
-    return {
-      headers: Object.assign({}, headers, {Authorization: `Bearer ${bearerToken}`})
-    };
-  });
-}
+分片是将数据划分为多个部分的方法，可以将数据存储到多台机器里面，这种方法在解决某些问题时可以获得线性级别的性能提升。
 
-// AppModule is the main entry point into Angular2 bootstraping process
-@NgModule({
-  bootstrap: [ AppComponent ],
-  declarations: [
-    AppComponent,
-  ],
-  imports: [
-    // Importing RestangularModule and making default configs for restanglar
-    RestangularModule.forRoot([authService], RestangularConfigFactory),
-  ]
-})
-export class AppModule {
-}
-</code></pre>
-**[Back to top](#table-of-contents)**
+假设有 4 个 Redis 实例 R0，R1，R2，R3，还有很多表示用户的键 user:1，user:2，... ，有不同的方式来选择一个指定的键存储在哪个实例中。
 
+- 最简单的方式是范围分片，例如用户 id 从 0\~1000 的存储到实例 R0 中，用户 id 从 1001\~2000 的存储到实例 R1 中，等等。但是这样需要维护一张映射范围表，维护操作代价很高。
+- 还有一种方式是哈希分片，使用 CRC32 哈希函数将键转换为一个数字，再对实例数量求模就能知道应该存储的实例。
 
-#### **I need to send one header in EVERY Restangular request, how can I do this?**
+根据执行分片的位置，可以分为三种分片方式：
 
-You can use `defaultHeaders` property for this. `defaultsHeaders` can be scoped with `withConfig` so it's really cool.
+- 客户端分片：客户端使用一致性哈希等算法决定键应当分布到哪个节点。
+- 代理分片：将客户端请求发送到代理上，由代理转发请求到正确的节点上。
+- 服务器分片：Redis Cluster。
 
-#### **How can I send a delete WITHOUT a body?**
+# 十四、一个简单的论坛系统分析
 
-You must add a requestInterceptor for this.
+该论坛系统功能如下：
 
-<pre><code class="js">RestangularProvider.setRequestInterceptor(function(elem, operation) {
-  if (operation === "remove") {
-     return null;
-  }
-  return elem;
-})
-</code></pre>
+- 可以发布文章；
+- 可以对文章进行点赞；
+- 在首页可以按文章的发布时间或者文章的点赞数进行排序显示。
 
-#### **I use Mongo and the ID of the elements is `_id` not `id` as the default. Therefore requests are sent to undefined routes**
+## 文章信息
 
-What you need to do is to configure the `RestangularFields` and set the `id` field to `_id`. Let's see how:
+文章包括标题、作者、赞数等信息，在关系型数据库中很容易构建一张表来存储这些信息，在 Redis 中可以使用 HASH 来存储每种信息以及其对应的值的映射。
 
-<pre><code class="javascript">RestangularProvider.setRestangularFields({
-  id: "_id"
-});
-</code></pre>
+Redis 没有关系型数据库中的表这一概念来将同种类型的数据存放在一起，而是使用命名空间的方式来实现这一功能。键名的前面部分存储命名空间，后面部分的内容存储 ID，通常使用 : 来进行分隔。例如下面的 HASH 的键名为 article:92617，其中 article 为命名空间，ID 为 92617。
 
-#### **What if each of my models has a different ID name like CustomerID for Customer**
+<div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/7c54de21-e2ff-402e-bc42-4037de1c1592.png" width="400"/> </div><br />
 
-In some cases, people have different ID name for each entity. For example, they have CustomerID for customer and EquipmentID for Equipment. If that's the case, you can override Restangular's getIdFromElem. For that, you need to do:
+## 点赞功能
 
-<pre><code class="js">RestangularProvider.configuration.getIdFromElem = function(elem) {
-  // if route is customers ==&gt; returns customerID
-  return elem[_.initial(elem.route).join('') + "ID"];
-}
-</code></pre>
-With that, you'd get what you need :)
+当有用户为一篇文章点赞时，除了要对该文章的 votes 字段进行加 1 操作，还必须记录该用户已经对该文章进行了点赞，防止用户点赞次数超过 1。可以建立文章的已投票用户集合来进行记录。
 
-#### **How can I send files in my request using Restangular?**
+为了节约内存，规定一篇文章发布满一周之后，就不能再对它进行投票，而文章的已投票集合也会被删除，可以为文章的已投票集合设置一个一周的过期时间就能实现这个规定。
 
-This can be done using the customPOST / customPUT method. Look at the following example:
+<div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/485fdf34-ccf8-4185-97c6-17374ee719a0.png" width="400"/> </div><br />
 
-<pre><code class="js">Restangular.all('users')
-.customPOST(formData, undefined, undefined, { 'Content-Type': undefined });
-</code></pre>
-This basically tells the request to use the *Content-Type: multipart/form-data* as the header. Also *formData* is the body of the request, be sure to add all the params here, including the File you want to send of course.
+## 对文章进行排序
 
-#### **How do I handle CRUD operations in a List returned by Restangular?**
+为了按发布时间和点赞数进行排序，可以建立一个文章发布时间的有序集合和一个文章点赞数的有序集合。（下图中的 score 就是这里所说的点赞数；下面所示的有序集合分值并不直接是时间和点赞数，而是根据时间和点赞数间接计算出来的）
 
-<pre><code class="javascript">Restangular.all('users').getList().subscribe( users =&gt; {
-  this.users = users;
-  var userWithId = _.find(users, function(user) {
-    return user.id === 123;
-  });
+<div align="center"> <img src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/f7d170a3-e446-4a64-ac2d-cb95028f81a8.png" width="800"/> </div><br />
 
-  userWithId.name = "Gonto";
-  userWithId.put();
+# 参考资料
 
-  // Alternatively delete the element from the list when finished
-  userWithId.remove().subscribe( () =&gt; {
-    // Updating the list and removing the user after the response is OK.
-    this.users = _.without(this.users, userWithId);
-  });
-
-});
-</code></pre>
-
-#### Removing an element from a collection, keeping the collection restangularized
-
-While the example above removes the deleted user from the collection, it also overwrites the collection object with a plain array (because of `_.without`) which no longer knows about its Restangular attributes.
-
-If want to keep the restangularized collection, remove the element by modifying the collection in place:
-
-```javascript
-userWithId.remove().subscribe( () => {
-  let index = $scope.users.indexOf(userWithId);
-  if (index > -1) this.users.splice(index, 1);
-});
-```
-
-#### How can I access the `unrestangularized` element as well as the `restangularized` one?
-
-In order to get this done, you need to use the `responseExtractor`. You need to set a property there that will point to the original response received. Also, you need to actually copy this response as that response is the one that's going to be `restangularized` later
-
-<pre><code class="javascript">RestangularProvider.setResponseExtractor( (response) =&gt; {
-  var newResponse = response;
-  if (_.isArray(response)) {
-    _.forEach(newResponse, function(value, key) {
-      newResponse[key].originalElement = _.clone(value);
-    });
-  } else {
-    newResponse.originalElement = _.clone(response);
-  }
-
-  return newResponse;
-});
-</code></pre>
-Alternatively, if you just want the stripped out response on any given call, you can use the .plain() method, doing something like this:
-
-<pre><code class="javascript">
-this.showData = function () {
-  baseUrl.post(someData).subscribe( (response) =&gt; {
-    console.log(response.plain());
-  });
-};
-</code></pre>
-
-**[Back to top](#table-of-contents)**
-
-#### How can add withCredentials params to requests?
-
-<pre><code class="javascript">// Function for settting the default restangular configuration
-export function RestangularConfigFactory (RestangularProvider) {
-  // Adding withCredential parametr to all Restangular requests
-  RestangularProvider.setDefaultHttpFields({ withCredentials: true });
-}
-
-@NgModule({
-  bootstrap: [ AppComponent ],
-  declarations: [
-    AppComponent,
-  ],
-  imports: [
-    // Global configuration
-    RestangularModule.forRoot(RestangularConfigFactory),
-  ]
-})
-export class AppModule {}
-</code></pre>
-
-**[Back to top](#table-of-contents)**
-
-# Server Frameworks
-
-Users reported that this server frameworks play real nice with Ngx-restangular, as they let you create a Nested RESTful Resources API easily:
-
-* Ruby on Rails
-* CakePHP, Laravel and FatFREE, Symfony2 with RestBundle, Silex for PHP
-* Play1 & 2 for Java & scala
-* Dropwizard for Java
-* Restify and Express for NodeJS
-* Tastypie and Django Rest Framework for Django
-* Slim Framework
-* Symfony2 with FOSRestBundle (PHP)
-* Microsoft ASP.NET Web API 2
-* Grails Framework
-
-**[Back to top](#table-of-contents)**
+- Carlson J L. Redis in Action[J]. Media.johnwiley.com.au, 2013.
+- [黄健宏. Redis 设计与实现 [M]. 机械工业出版社, 2014.](http://redisbook.com/index.html)
+- [REDIS IN ACTION](https://redislabs.com/ebook/foreword/)
+- [Skip Lists: Done Right](http://ticki.github.io/blog/skip-lists-done-right/)
+- [论述 Redis 和 Memcached 的差异](http://www.cnblogs.com/loveincode/p/7411911.html)
+- [Redis 3.0 中文版- 分片](http://wiki.jikexueyuan.com/project/redis-guide)
+- [Redis 应用场景](http://www.scienjus.com/redis-use-case/)
+- [Using Redis as an LRU cache](https://redis.io/topics/lru-cache)
 
 
-# Contributing
-Please read [contributing guidelines here](https://github.com/2muchcoffeecom/ngx-restangular/blob/master/CONTRIBUTING.md).
-
-**[Back to top](#table-of-contents)**
 
 
-# License
+# 微信公众号
 
-The MIT License
 
-**[Back to top](#table-of-contents)**
+更多精彩内容将发布在微信公众号 CyC2018 上，你也可以在公众号后台和我交流学习和求职相关的问题。另外，公众号提供了该项目的 PDF 等离线阅读版本，后台回复 "下载" 即可领取。公众号也提供了一份技术面试复习大纲，不仅系统整理了面试知识点，而且标注了各个知识点的重要程度，从而帮你理清多而杂的面试知识点，后台回复 "大纲" 即可领取。我基本是按照这个大纲来进行复习的，对我拿到了 BAT 头条等 Offer 起到很大的帮助。你们完全可以和我一样根据大纲上列的知识点来进行复习，就不用看很多不重要的内容，也可以知道哪些内容很重要从而多安排一些复习时间。
+
+<br /><div align="center"><img width="320px" src="https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/other/公众号海报6.png"></img></div>
