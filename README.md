@@ -214,5 +214,4 @@ The full angular-bootstrap-datetimepicker license is located [in the project rep
 
 ## Donating
 Support this project and other work by Dale Lotts via [gittip](https://www.gittip.com/dalelotts/).
-
 [![Support via Gittip](https://rawgithub.com/twolfson/gittip-badge/master/dist/gittip.png)](https://www.gittip.com/dalelotts/)
