@@ -1,102 +1,130 @@
-![Screenshot](https://raw.githubusercontent.com/slap-editor/slap/master/screenshot.png)
+<p align="center">
+  <img width="150" align="center" src="src/Notepads/Assets/appicon_ws.gif">
+</p>
+<h1 align="center">
+  Notepads
+</h1>
+<p align="center">
+  A modern, lightweight text editor with minimum design.
+</p>
+<p align="center">
+  <a href="https://www.microsoft.com/store/apps/9nhl4nsc67wm">
+    <img src="https://img.shields.io/badge/Microsoft%20Store-Download-orange.svg?style=flat-square" alt="Store link" />
+  </a>
+  <a href="https://github.com/JasonStein/Notepads/releases">
+    <img src="https://img.shields.io/github/release/jasonstein/notepads.svg?label=beta%20release&style=flat-square" alt="Releases" />
+  </a>
+  <a>
+    <img src="https://img.shields.io/badge/platform-windows%2010%20%7C%20uwp-yellow.svg?style=flat-square" alt="Platform" />
+  </a>
+  <a href="https://discord.gg/VqetCub">
+    <img src="https://img.shields.io/discord/588473626651787274.svg?style=flat-square" alt="Discord" />
+  </a>
+</p>
 
-slap :wave: [![Build Status](https://img.shields.io/travis/slap-editor/slap.svg)](https://travis-ci.org/slap-editor/slap) [![Donate](https://img.shields.io/gratipay/slap.svg)](https://gratipay.com/slap/)
-====
+## What is Notepads and why do I care?
 
-slap is a Sublime-like terminal-based text editor that strives to make editing from the terminal easier. It has:
+I have waited long enough for a modern windows 10 notepad app to come before I have to do it myself. Don’t get me wrong, Notepad++, VS Code and Sublime are good text editors. I have used most of them and I will continue use them in the future. However, they are either too heavy or looks old. I really need a win32 notepad.exe replacement that feels light and looks cool to help me get things done as quickly as possible and use it as a turnaround text editor to quickly modify config files or write some notes. Most importantly, it has to be blazingly fast and beautiful.
 
-* first-class mouse support (even over an SSH connection)
-* a Sublime-like file sidebar
-* double-click to select word, highlight other occurrences
-* configurable Sublime-like [keybindings](#default-keybindings)[*](#some-keys-dont-work) (<kbd>Ctrl+S</kbd> save, <kbd>Ctrl+Z</kbd> undo, etc.)
-* copying/pasting with OS clipboard support
-* infinite undo/redo
-* syntax highlighting for [100+ languages](https://github.com/isagalaev/highlight.js/tree/master/src/languages)
-* bracket matching
-* autoindentation
-* heavily customizeable via [plugins](#plugins)
-* ... many other features that will make you leave nano, vim, and emacs behind
+So here comes the “Notepads” 🎉 (s stands for Sets).
 
-Installation
-------------
+* Fluent design with built-in Tab system.
+* Blazingly fast, feels like win32 notepad.exe but looks better.
+* Launch from command line or PowerShell by typing: "notepads" or "notepads %path-to-your-file%".
+* Multi-line handwriting support.
+* Built-in Markdown file live preview.
+* Built-in diff viewer (Preview your changes).
 
-    $ curl -sL https://raw.githubusercontent.com/slap-editor/slap/master/install.sh | sh
+![Screenshot Dark](ScreenShots/1.png?raw=true "Dark") ![Screenshot Markdown](ScreenShots/2.png?raw=true "Markdown") ![Screenshot DiffViewer](ScreenShots/3.png?raw=true "DiffViewer") ![Screenshot Light](ScreenShots/4.png?raw=true "Light")
 
-If you already have [NodeJS](http://nodejs.org/download/) installed:
+******* 📣 Notepads App is still under active development. *******
 
-    $ sudo npm install -g slap@latest
+## Status update
 
-Usage
------
+[[08-12-2019] Status update and KPI report](https://github.com/JasonStein/Notepads/issues/138)
 
-    $ slap fish.c
-    $ slap fish1.c fish2.c
-    $ slap redfish/ # open dir
-    $ slap # new file
+![image](https://user-images.githubusercontent.com/1166162/62916469-75eb5800-bd4d-11e9-9f97-a632792400c0.png)
 
-### Default keybindings
+## Things are not working or not implemented in this version:
 
-* **Quit**: <kbd>Ctrl+Q</kbd>
-* **Movement**: mouse or arrow keys and <kbd>PageUp/Down</kbd>/<kbd>Home</kbd>/<kbd>End</kbd>
-  * <kbd>Shift</kbd> or click+drag to select, <kbd>Ctrl</kbd>/<kbd>Alt</kbd> to move faster
-* **Save**: <kbd>Ctrl+S</kbd>
-* **Undo**: <kbd>Ctrl+Z</kbd>, **redo**: <kbd>Ctrl+Y</kbd>
-* **List open tabs**: <kbd>Ctrl+L</kbd>
-* **Next/previous tab**: <kbd>Ctrl+Alt+PageUp/Down</kbd>
-* **Close tab**: <kbd>Ctrl+W</kbd>
-* **Find**: <kbd>Ctrl+F</kbd>
-* **Go to line**: <kbd>Ctrl+G</kbd>
-* **Go to matching bracket**: <kbd>Ctrl+]</kbd>
-* **Open**: <kbd>Ctrl+O</kbd> (or click the filebrowser)
-* **New file**: <kbd>Ctrl+N</kbd>
+* File Print.
 
-### Configuration
+## Shortcuts:
 
-slap supports INI or JSON config files. You can put configuration [wherever rc can find it](https://github.com/dominictarr/rc#standards). A mostly empty configuration file with some useful comments is created in [`~/.slap/config`](default-config.ini) if an existing file isn't found.
+* Ctrl+N/T to create new tab.
+* Ctrl+(Shift)+Tab to switch between tabs.
+* Ctrl+"+"/"-" to zoom font size. Ctrl+"0" to reset font size to default.
+* Ctrl+L/R to change text flow direction. (LTR/RTL)
+* Ctrl+P to toggle preivew split view for Markdown file.
+* Alt+D to toggle side-by-side diff viewer.
 
-Pass configuration via command line:
+## Author’s Notes:
 
-    $ slap --header.style.bg red file.c
+The beta is intended to collect feedback, report bugs and glitches. For issue reporting and feature requests, please use [Github Issues](https://github.com/JasonStein/Notepads/issues). You can also join Notepads Discord server and chat with me directly: [Notepads Discord Server](https://discord.gg/VqetCub)
 
-### Plugins
+## Platform limitations (UWP):
 
-Slap is fully customizeable and supports plugins written in JS. You can place single JS files, or NodeJS packages, into `~/.slap/plugins/`.
+* You won't be able to save files to system folders due to UWP restriction (windows, system32 etc.).
+* You can not associate potentially harmful file types (.ps1, .bat, .xaml etc) with Notepads.
+* If you drag a file into Notepads, file save picker will ask you to save it before closing due to UWP restriction.
+* Notepads does not work well with large file, so I am setting the file size limit to 1MB for now. I will add large file support later.
 
-To write your own plugin, a good starting point is [slap-clipboard-plugin](https://github.com/slap-editor/slap-clipboard-plugin). Please note that plugin packages must have `"keywords": ["slap-plugin"]` in `package.json`.
+## Downloads:
 
-OS support
-----------
+Please head over to [Github Releases](https://github.com/JasonStein/Notepads/releases) section to download latest release or get the latest version of Notepads in the [Microsoft Store](https://www.microsoft.com/store/apps/9nhl4nsc67wm).
 
-### OSX
+## Roadmap:
 
-iTerm2 supports the mouse and most keybindings out of the box. For optimal Terminal.app usage, see [slap-Terminal.app-profile](https://github.com/slap-editor/slap-Terminal.app-profile).
+* [Project Roadmap](ROADMAP.md)
 
-### Linux
+## Changelog:
 
-If you are using X.Org, ensure xclip is installed for OS clipboard support.
+* [Notepads Releases](https://github.com/JasonStein/Notepads/releases)
 
-### Windows
+## Disclaimer and Privacy statement:
 
-Most terminal emulators in Windows do not support mouse events, PuTTY being a notable exception. In Cygwin, slap crashes on startup due to [joyent/node#6459](https://github.com/joyent/node/issues/6459).
+To be 100% transparent, Notepads is not and will never collect user information in terms of user privacy. I might use analytics tools to collect usage data like how many times it has been downloaded or been used but that’s it. I will not track your IP or listen your typings or read any of your files and send it over to me, or third parties. Feel free to check the source code as well.
 
-[Issues](../../issues/new)
---------
+On the other hand, you might noticed that I work for Microsoft. However, Notepads is just my personal side project and I do it for fun and for good (To empower every person and every organization on the planet to achieve more😃). I do not work for Windows team, nor do I work for any Microsoft’s UX/App team. I am not expert on creating Windows apps either. I learned how to code UWP as soon as I started this project which is like only few weeks back. So don’t put too much hope on me or treat it as a project sponsored by Microsoft.
 
-Join us in [#slap on Freenode](http://webchat.freenode.net/?channels=slap) for troubleshooting, theme/plugin/core development, or palm strike discussion of any nature.
+## Contributing:
 
-### Some keys don't work!
+* [How to contribute?](CONTRIBUTING.md)
+* Notepads is free and open source, if you like my work, please consider:
+   * Star this project on GitHub
+   * Leave me a review [here](https://www.microsoft.com/store/apps/9nhl4nsc67wm)
+   * [![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/D1D6Y3C6)
 
-*NOTE: if you are using Terminal.app, see [slap-Terminal.app-profile](https://github.com/slap-editor/slap-Terminal.app-profile).*
+## Dependencies and References:
+* [Windows Community Toolkit](https://github.com/windows-toolkit/WindowsCommunityToolkit)
+* [XAML Controls Gallery](https://github.com/microsoft/Xaml-Controls-Gallery)
+* [Windows UI Library](https://github.com/Microsoft/microsoft-ui-xaml)
+* [UICompositionAnimations](https://github.com/Sergio0694/UICompositionAnimations)
+* [DiffPlex](https://github.com/mmanela/diffplex)
 
-Unfortunately most terminal emulators do not support certain keystrokes and as such there is no way to handle them. These include `C-backspace`, `S-home/end`, and `S-pageup/down`. Most of these actions have alternate keybindings, inspired by emacs and other editors, but if you find one that doesn't work, please [submit an issue](../../issues/new)!
+## Special Thanks:
 
-### Slow on single cores, Raspberry Pi
+* [Yi Zhou](http://zhouyiwork.com/) - App icon designer, Notepads App Icon is greatly inspired by the new icon for Windows Terminal.
+* Alexandru Sterpu - App Tester, who helped me a lot during preview/beta testing.
+* Code Contributors: [DanverZ](https://github.com/chenghanzou), [BernhardWebstudio](https://github.com/BernhardWebstudio), [Csányi István](https://github.com/AmionSky), [Pavel Erokhin](https://github.com/MairwunNx), [Sergio Pedri](https://github.com/Sergio0694), [Lucas Pinho B. Santos](https://github.com/pinholucas)
+* Localization Contributors:
+    * \[fr-FR\]\[French\]: [François Rousselet](https://github.com/frousselet), [François-Joseph du Fou](https://github.com/FJduFou)
+    * \[es-ES\]\[Spanish\]: [Jose Pinilla](https://github.com/joseppinilla)
+    * \[zh-CN\]\[Simplified Chinese\]: [lindexi](https://github.com/lindexi), [walterlv](https://github.com/walterlv), [Jackie Liu](https://github.com/JasonStein)
+    * \[hu-HU\]\[Hungarian\]: [Csányi István](https://github.com/AmionSky)
+    * \[tr-TR\]\[Turkish\]: [Mert Demir](https://github.com/validatedev)
+    * \[ja-JP\]\[Japanese\]: [Mamoru Satoh](https://github.com/pnp0a03)
+    * \[de-DE\]\[German\]/\[de-CH\]\[German (Switzerland)\]: [Walter Wolf](https://github.com/WalterWolf49)
+    * \[ru-RU\]\[Russian\]: [Pavel Erokhin](https://github.com/MairwunNx)
+    * \[fi-FI\]\[Finnish\]: [Esa Elo](https://github.com/sauihdik)
+    * \[uk-UA\]\[Ukrainian\]: [Taras Fomin aka Tarik02](https://github.com/Tarik02)
+    * \[it-IT\]\[Italian\]: [Andrea Guarinoni](https://github.com/guari)
+    * \[cs-CZ\]\[Czech\]: [Jan Rajnoha](https://github.com/JanRajnoha)
+    * \[pt-BR\]\[Brazilian\]: [Lucas Pinho B. Santos](https://github.com/pinholucas)
 
-slap is based on Github's [atom/text-buffer](https://github.com/atom/text-buffer), and as such should be very performant, even with very large files.
+[![](https://sourcerer.io/fame/JasonStein/JasonStein/Notepads/images/0)](https://sourcerer.io/fame/JasonStein/JasonStein/Notepads/links/0)[![](https://sourcerer.io/fame/JasonStein/JasonStein/Notepads/images/1)](https://sourcerer.io/fame/JasonStein/JasonStein/Notepads/links/1)[![](https://sourcerer.io/fame/JasonStein/JasonStein/Notepads/images/2)](https://sourcerer.io/fame/JasonStein/JasonStein/Notepads/links/2)[![](https://sourcerer.io/fame/JasonStein/JasonStein/Notepads/images/3)](https://sourcerer.io/fame/JasonStein/JasonStein/Notepads/links/3)[![](https://sourcerer.io/fame/JasonStein/JasonStein/Notepads/images/4)](https://sourcerer.io/fame/JasonStein/JasonStein/Notepads/links/4)[![](https://sourcerer.io/fame/JasonStein/JasonStein/Notepads/images/5)](https://sourcerer.io/fame/JasonStein/JasonStein/Notepads/links/5)[![](https://sourcerer.io/fame/JasonStein/JasonStein/Notepads/images/6)](https://sourcerer.io/fame/JasonStein/JasonStein/Notepads/links/6)[![](https://sourcerer.io/fame/JasonStein/JasonStein/Notepads/images/7)](https://sourcerer.io/fame/JasonStein/JasonStein/Notepads/links/7)
 
-Try `--editor.highlight false` or adding the following to `~/.slap/config`:
+## Stay tuned 📢:
 
-    [editor]
-    highlight = false
-
-If that doesn't improve performance, please run with `--perf.profile true` and [submit an issue](../../issues/new) with the newly-created `v8.log` file.
+* [Original Reddit Post](https://www.reddit.com/r/Windows10/comments/btx5qs/my_design_implementation_of_modern_fluent_notepad/)
+* [Notepads Discord Server](https://discord.gg/VqetCub)
