@@ -38,7 +38,6 @@ Usage
 
 * **Quit**: <kbd>Ctrl+Q</kbd>
 * **Movement**: mouse or arrow keys and <kbd>PageUp/Down</kbd>/<kbd>Home</kbd>/<kbd>End</kbd>
-
   * <kbd>Shift</kbd> or click+drag to select, <kbd>Ctrl</kbd>/<kbd>Alt</kbd> to move faster
 * **Save**: <kbd>Ctrl+S</kbd>
 * **Undo**: <kbd>Ctrl+Z</kbd>, **redo**: <kbd>Ctrl+Y</kbd>
