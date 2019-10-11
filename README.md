@@ -1,7 +1,7 @@
 
-<p align="center">
+<span align="center">
   The `Board` class constructs objects that represent the physical board itself. All device objects depend on an initialized and ready board object.
-</p>
+</span>
 
 
 Johnny-Five (sans IO Plugin) has been tested on, but is not limited to, the following boards:
