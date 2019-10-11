@@ -59,7 +59,8 @@ To initialize control of a board, construct an instance of the `Board` class.
 new five.Board();
 ```
 
-<center>You may optionally specify the port by providing it as a property of the options object parameter.</center>
+<
+er>You may optionally specify the port by providing it as a property of the options object parameter.</center>
 
 ```js
 // OSX
@@ -91,7 +92,7 @@ var board = new five.Board({
 
 ## Usage
 
-A basic, but complete example usage of the `Board` constructor:
+<center>A basic, but complete example usage of the `Board` constructor:</center>
 
 
 ```js
