@@ -46,7 +46,7 @@ See also:
 
 ## Shape
 
-| Property Name | Description                                             | Read Only |
+| Property Name | <span align="center">Description</span>                                             | Read Only |
 | ------------- | ------------------------------------------------------- | --------- |
 | `io`          | A reference to the IO protocol layer.                   | No        |
 | `id`          | A user definable id value. Defaults to a generated uid. | No        |
